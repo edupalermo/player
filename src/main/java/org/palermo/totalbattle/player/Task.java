@@ -15,6 +15,7 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -115,7 +116,7 @@ public class Task {
         options.setExperimentalOption("useAutomationExtension", false);
 
         WebDriver driver = new ChromeDriver(options);
-        driver.get("https://totalbattle.com/en");
+        driver.get(getAddress());
 
         waitPageToBeLoaded(driver);
 
@@ -123,6 +124,29 @@ public class Task {
 
         robot.sleep(2000);
         return driver;
+    }
+    
+    private static String getAddress() {
+        LocalDate today = LocalDate.now();
+        int weekdayNumber = today.getDayOfWeek().getValue();
+        
+        switch (weekdayNumber) {
+            case 1:
+                return "https://totalbattle.com/en/?present=gold";
+            case 2:
+                return "https://totalbattle.com/en/?present=xp";
+            case 3:
+                return "https://totalbattle.com/en/?present=tar";
+            case 4:
+                return "https://totalbattle.com/en/?present=march25";
+            case 5:
+                return "https://totalbattle.com/en/?present=gold500";
+            case 6:
+                return "https://totalbattle.com/en/?present=speedups15";
+            case 7:
+                return "https://totalbattle.com/en/?present=speedups3";
+        }
+        
     }
     
     public static void login(Player player) {
@@ -224,7 +248,7 @@ public class Task {
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(1000);
 
-        robot.leftClick(Point.of(992, 600)); // Click in the center
+        robot.leftClick(Point.of(959, 563)); // Click in the center Should depend on the zoom level
         robot.sleep(1000);
 
         BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
