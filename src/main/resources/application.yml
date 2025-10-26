@@ -1,2 +1,6 @@
 server:
   port: 9095
+
+spring:
+  main:
+    headless: false

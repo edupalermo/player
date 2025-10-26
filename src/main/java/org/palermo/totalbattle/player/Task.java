@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Task {
 
@@ -47,7 +48,7 @@ public class Task {
         try {
             driver = openBrowser(player);
             login(player);
-            attackArena();
+            attackArena(Point.of(100, 100));
             helpClanMembers();
             collectChests();
             
@@ -63,7 +64,7 @@ public class Task {
     }
     
     
-    private static void collectChests() {
+    public static void collectChests() {
 
         BufferedImage screen = robot.captureScreen();
         
@@ -99,9 +100,10 @@ public class Task {
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
     }
     
-    private static WebDriver openBrowser(Player player) {
+    public static WebDriver openBrowser(Player player) {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -132,25 +134,38 @@ public class Task {
             System.out.println("Login link found");
             login(player, linkLoginImage, linkLoginPoint);
         }
-        else {
-            robot.sleep(5000);
-        }
+        robot.sleep(5000);
         
         System.out.println("User already logged");
-        
-        // Wait for Bonus Sales creen
-        BufferedImage labelBonusSales = ImageUtil.loadResource("player/label_bonus_sales.png");
-        waitImage(labelBonusSales, "Bonus Sales label", 300000);
-        System.out.println("Bonus Sales screen detected.");
-        robot.sleep(2000);
 
-        BufferedImage bonusSalesRightProgressBar = ImageUtil.loadResource("player/bonus_sales_right_progress_bar.png");
-        waitImageDisappear(bonusSalesRightProgressBar, "Bonus Sales Progress Bar", 60000);
-        
+        BufferedImage labelClan = ImageUtil.loadResource("player/label_clan.png");
         BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
-        Point buttonBonusSalesClosePoint = waitImage(buttonBonusSalesClose, "Bonus Sales close button", 60000);
-        System.out.println("Bonus Sales screen close button detected.");
-        robot.leftClick(buttonBonusSalesClosePoint, buttonBonusSalesClose);
+        long start = System.currentTimeMillis();
+        boolean found = false;
+        do {
+            screen = robot.captureScreen();
+            Point point = ImageUtil.searchSurroundings(labelClan, screen, 0.1, 20).orElse(null);
+            if (point != null) {
+                found = true;
+            }
+            else {
+                screen = robot.captureScreen();
+                Point buttonClosepoint = ImageUtil.searchSurroundings(buttonBonusSalesClose, screen, 0.1, 20).orElse(null);
+                if (buttonClosepoint != null) {
+                    robot.leftClick(buttonClosepoint, buttonBonusSalesClose);                    
+                }
+                else {
+                    System.out.println("Trying to hit scape to close initial pop-ups");
+                    robot.type(KeyEvent.VK_ESCAPE);
+                    robot.sleep(300);
+                }
+            }
+        } while (!found && (System.currentTimeMillis() - start) < 60000);
+        if (!found) {
+            ImageUtil.write(screen, "error_screen.png");
+            ImageUtil.write(labelClan, "error_image.png");
+            throw new RuntimeException("Not found image!");
+        }
         
         System.out.println("Press scape twice to close random pop ups");
         robot.sleep(300);
@@ -176,9 +191,9 @@ public class Task {
         }
     }
     
-    public static void attackArena() {
+    public static boolean attackArena(Point arenaLocation) {
         BufferedImage labelMap = ImageUtil.loadResource("player/label_map.png");
-        Point labelMapPoint = waitImage(labelMap, "Map label", 5000);
+        Point labelMapPoint = waitMandatoryImage(labelMap, "Map label", 5000);
         robot.leftClick(labelMapPoint.move(12, -31));
         robot.sleep(2000);
 
@@ -188,22 +203,22 @@ public class Task {
 
         // Click on the magnifier icon
         BufferedImage iconMagnifier = ImageUtil.loadResource("player/icon_magnifier.png");
-        Point iconMagnifierPoint = waitImage(iconMagnifier, "Magnifier icon", 10000);
+        Point iconMagnifierPoint = waitMandatoryImage(iconMagnifier, "Magnifier icon", 10000);
         robot.leftClick(iconMagnifierPoint, iconMagnifier);
         robot.sleep(1000);
 
         BufferedImage buttonGo = ImageUtil.loadResource("player/button_go.png");
-        Point buttonGoPoint = waitImage(buttonGo, "Go Button", 5000);
+        Point buttonGoPoint = waitMandatoryImage(buttonGo, "Go Button", 5000);
 
         robot.leftClick(Point.of(buttonGoPoint, Point.of(981, 617), Point.of(1022, 580)));
         robot.clearText();
         robot.sleep(200);
-        robot.typeString("398");
+        robot.typeString(Integer.toString(arenaLocation.getX()));
 
         robot.leftClick(Point.of(buttonGoPoint, Point.of(981, 617), Point.of(1127, 580)));
         robot.clearText();
         robot.sleep(200);
-        robot.typeString("508");
+        robot.typeString(Integer.toString(arenaLocation.getY()));
 
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(1000);
@@ -212,8 +227,13 @@ public class Task {
         robot.sleep(1000);
 
         BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
-        Point labelArenaPoint = waitImage(labelArena, "Label rena", 5000);
-
+        Point labelArenaPoint = waitImage(labelArena, "Label rena", 3000).orElse(null);
+        if (labelArenaPoint == null) {
+            System.out.println("Arena doesn't exist anymore!");
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return false;
+        }
 
         BufferedImage iconCheckmark = ImageUtil.loadResource("player/icon_checkmark.png");
         BufferedImage screen = robot.captureScreen();
@@ -232,6 +252,9 @@ public class Task {
         // Close Arena window if Hero is not available
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        
+        return true; // Atacou!
     }
     
     public static void helpClanMembers() {
@@ -248,8 +271,8 @@ public class Task {
             robot.leftClick(point, iconHelpAllies);
         }
     }
-    
-    private static Point waitImage(BufferedImage image, String name, long timeout) {
+
+    private static Optional<Point> waitImage(BufferedImage image, String name, long timeout) {
         long start = System.currentTimeMillis();
         Point point;
 
@@ -262,13 +285,21 @@ public class Task {
                 robot.sleep(500);
             }
         } while (point == null && (System.currentTimeMillis() - start < timeout));
-        
+
         if (point == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(image, "error_image.png");
-            throw new RuntimeException("Couldn't find image inside of the timeout period!");
+            ImageUtil.write(screen, "error_last_screen.png");
+            return Optional.empty();
         }
-        
+
+        return Optional.of(point);
+    }
+
+    private static Point waitMandatoryImage(BufferedImage image, String name, long timeout) {
+        Point point = waitImage(image, name, timeout).orElse(null);
+        if (point == null) {
+            ImageUtil.write(image, "error_image.png");
+            throw new RuntimeException("Image didn't disappear!");
+        }
         return point;
     }
 
@@ -334,7 +365,7 @@ public class Task {
         return false;
     }
     
-    private static void waitUntilWindowIsClosed(WebDriver driver) {
+    public static void waitUntilWindowIsClosed(WebDriver driver) {
         System.out.println("Waiting browser to be closed...");
         while (true) {
             try {
