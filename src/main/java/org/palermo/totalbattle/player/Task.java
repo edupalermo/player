@@ -152,12 +152,13 @@ public class Task {
                 screen = robot.captureScreen();
                 Point buttonClosepoint = ImageUtil.searchSurroundings(buttonBonusSalesClose, screen, 0.1, 20).orElse(null);
                 if (buttonClosepoint != null) {
-                    robot.leftClick(buttonClosepoint, buttonBonusSalesClose);                    
+                    robot.leftClick(buttonClosepoint, buttonBonusSalesClose);
+                    robot.sleep(500);
                 }
                 else {
                     System.out.println("Trying to hit scape to close initial pop-ups");
                     robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(300);
+                    robot.sleep(500);
                 }
             }
         } while (!found && (System.currentTimeMillis() - start) < 60000);
