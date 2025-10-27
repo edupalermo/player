@@ -146,7 +146,7 @@ public class Task {
             case 7:
                 return "https://totalbattle.com/en/?present=speedups3";
         }
-        
+        throw new RuntimeException("Week day problem!");
     }
     
     public static void login(Player player) {
@@ -214,6 +214,8 @@ public class Task {
         if (iconSoundOnPoint != null) {
             robot.leftClick(iconSoundOnPoint, iconSoundOn);
         }
+        
+        robot.sleep(1500); // The help icon is not appearing
     }
     
     public static boolean attackArena(Point arenaLocation) {
