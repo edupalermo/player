@@ -50,8 +50,8 @@ public class Task {
             driver = openBrowser(player);
             login(player);
             attackArena(Point.of(100, 100));
-            helpClanMembers();
             collectChests();
+            helpClanMembers();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
