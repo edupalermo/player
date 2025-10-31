@@ -76,8 +76,10 @@ public class PlayerRunnable implements Runnable {
                     SharedData.INSTANCE.removeArena(arenaLocation);
                 }
             }
-            Task.helpClanMembers();
+            Task.freeSale();
+            Task.quests();
             Task.collectChests();
+            Task.helpClanMembers();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

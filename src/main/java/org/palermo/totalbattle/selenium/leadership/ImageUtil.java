@@ -135,6 +135,17 @@ public class ImageUtil {
     }
 
     public static Optional<Point> search(BufferedImage item, BufferedImage screen, Area area, double limit) {
+        if (area.getWidth() < item.getWidth() || area.getHeight() < item.getHeight()) { 
+            throw new RuntimeException("Cannot search in a area smaller than the image");
+        }
+        if (area.getWidth() <= 0 || area.getHeight() <= 0) {
+            throw new RuntimeException("Area cannot have negative measures");
+        }
+        if (area.getX() + area.getWidth() > screen.getWidth() ||
+                area.getY() + area.getHeight() > screen.getHeight()) {
+            throw new RuntimeException("Area doesn't fit to screen");
+        }
+        
         return search(item, screen, area.getX(), area.getY(), area.getWidth(), area.getHeight(), limit);
     }
 
