@@ -52,8 +52,8 @@ public class Task {
             driver = openBrowser(player);
             login(player);
             //attackArena(Point.of(100, 100));
-            collectChests();
-            quests();
+            //collectChests();
+            //quests();
             freeSale();
             // helpClanMembers();
             
@@ -153,17 +153,17 @@ public class Task {
     public static void freeSale() {
         BufferedImage screen = robot.captureScreen();
 
-        BufferedImage labelEnglish = ImageUtil.loadResource("player/label_english.png");
-        Point labelEnglishPoint = ImageUtil.searchSurroundings(labelEnglish, screen, 0.1, 20).orElse(null);
+        BufferedImage logoTotalBattle = ImageUtil.loadResource("player/logo_total_battle.png");
+        Point logoTotalBattlePoint = ImageUtil.searchSurroundings(logoTotalBattle, screen, 0.1, 20).orElse(null);
 
-        if (labelEnglishPoint == null) {
+        if (logoTotalBattlePoint == null) {
             ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(labelEnglish, "error_image.png");
+            ImageUtil.write(logoTotalBattle, "error_image.png");
             throw new RuntimeException("Couldn't find english label!");
         }
 
         // Click on the Free Sale Icon
-        robot.leftClick(labelEnglishPoint.move(25, 72));
+        robot.leftClick(logoTotalBattlePoint.move(1870 - logoTotalBattlePoint.getX(), 73));
         robot.sleep(1000);
 
         screen = robot.captureScreen();
