@@ -255,7 +255,9 @@ public class Task {
         
         BufferedImage screen = robot.captureScreen();
         BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
-        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, Area.fromTwoPoints(910, 337, 1066, 361), 0.1).orElse(null);
+        Area speedUpsTitleArea = Area.fromTwoPoints(910, 325, 1066, 361);
+        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, speedUpsTitleArea));
+        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, speedUpsTitleArea, 0.1).orElse(null);
         if (speedUpsTitlePoint == null) {
             throw new RuntimeException("Could not find speed up title");
         }
@@ -556,7 +558,7 @@ public class Task {
         tabs.add(Point.of(78, 374));
         
         // Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
-        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(347, 873), Point.of(455, 896));
+        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(341, 873), Point.of(455, 896));
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/button_bs_free.png");
         BufferedImage iconHourglass = ImageUtil.loadResource("player/icon_bs_hourglass.png");
@@ -584,6 +586,7 @@ public class Task {
                 LocalDateTime nextLocalDateTime = calculateNext(nextAsText).orElse(null);
                 if (nextLocalDateTime != null) {
                     SharedData.INSTANCE.setWait(player, Scenario.BONUS_SALES_FREE, nextLocalDateTime);
+                    break;
                 }
             }
         }
@@ -762,7 +765,7 @@ public class Task {
         boolean found = false;
         do {
             screen = robot.captureScreen();
-            Point point = ImageUtil.searchSurroundings(labelClan, screen, 0.1, 20).orElse(null);
+            Point point = ImageUtil.searchSurroundings(labelClan, screen, 0.12, 20).orElse(null);
             if (point != null) {
                 found = true;
             }
@@ -845,7 +848,11 @@ public class Task {
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(1000);
 
-        robot.leftClick(Point.of(959, 563)); // Click in the center Should depend on the zoom level
+
+
+
+        // robot.leftClick(Point.of(959, 563)); // Click in the center Should depend on the zoom level
+        robot.leftClick(Point.of(965, 563)); // Click in the center Should depend on the zoom level
         robot.sleep(1000);
 
         BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
@@ -861,7 +868,7 @@ public class Task {
         BufferedImage iconCheckmark = ImageUtil.loadResource("player/icon_checkmark.png");
         BufferedImage screen = robot.captureScreen();
         Area areaForCheckmark = Area.of(labelArenaPoint, Point.of(971, 322), Point.of(865, 705), Point.of(901, 739));
-        ImageUtil.showImageAndWait(ImageUtil.crop(screen, areaForCheckmark));
+        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, areaForCheckmark));
         Point iconCheckmarkPoint = ImageUtil.search(iconCheckmark, screen, areaForCheckmark, 0.1)
                 .orElse(null);
 

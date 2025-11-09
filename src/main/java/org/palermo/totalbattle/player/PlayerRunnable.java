@@ -18,7 +18,7 @@ public class PlayerRunnable implements Runnable {
                 .profileFolder("chrome-profiles/palermo")
                 .username("fp2268@gmail.com")
                 .password("Alemanha79")
-                .build());                
+                .build());
          */
         players.add(Player.builder()
                 .name("Peter II")
@@ -92,11 +92,11 @@ public class PlayerRunnable implements Runnable {
         while (true) {
             try {
                 play(players.get(counter % players.size()));
-                counter++;
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
+            counter++;
         }
     }
     

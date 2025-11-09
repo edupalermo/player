@@ -61,7 +61,7 @@ public enum SharedData {
     }
 
     public Optional<LocalDateTime> getWait(Player player, Scenario scenario) {
-        return Optional.of(wait
+        return Optional.ofNullable(wait
                 .computeIfAbsent(player.getName(), (k) -> new HashMap<>())
                 .get(scenario));
     }

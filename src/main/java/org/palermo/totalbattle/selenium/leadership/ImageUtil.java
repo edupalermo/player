@@ -125,7 +125,7 @@ public class ImageUtil {
             int height = Math.min(screen.getHeight() - y, item.getHeight() + (2 * variation));
             actual = search(item, screen, x, y, width, height, limit).orElse(null);
         }
-        else {
+        if (actual == null) {
             actual = search(item, screen, area, limit).orElse(null);
         }
         if (actual != null) {
@@ -603,7 +603,13 @@ public class ImageUtil {
     
     public static String ocr(BufferedImage image, String whitelist, int pageSegMode, String language) {
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("/usr/share/tesseract-ocr/5/tessdata");
+        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+
+        if (isWindows) {
+            tesseract.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
+        } else {
+            tesseract.setDatapath("/usr/share/tesseract-ocr/5/tessdata");
+        }
         if (language != null) {
             tesseract.setLanguage(language);
         }
