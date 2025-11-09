@@ -44,7 +44,6 @@ public enum SharedData {
 
     public void lock(String playerName) {
         lock.add(playerName);
-        ;
     }
 
     public void clearLock() {
@@ -53,6 +52,10 @@ public enum SharedData {
 
     public Set<String> getLock() {
         return lock;
+    }
+    
+    public boolean isLocked(Player player) {
+        return lock.contains(player.getName());        
     }
 
     public void setWait(Player player, Scenario scenario, LocalDateTime dateTime) {

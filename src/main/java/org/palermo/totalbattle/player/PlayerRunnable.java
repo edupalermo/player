@@ -91,7 +91,10 @@ public class PlayerRunnable implements Runnable {
         
         while (true) {
             try {
-                play(players.get(counter % players.size()));
+                Player player = players.get(counter % players.size());
+                if (!SharedData.INSTANCE.isLocked(player)) {
+                    play(player);
+                }
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
