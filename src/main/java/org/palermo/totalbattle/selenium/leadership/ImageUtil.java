@@ -6,6 +6,7 @@ import net.sourceforge.tess4j.TesseractException;
 import org.palermo.totalbattle.selenium.Clock;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
@@ -26,6 +27,8 @@ public class ImageUtil {
 
     private static final int GRAY_THRESHOLD = 255;
 
+    public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:hms";
+    public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH = "0123456789,/";
     public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
     public static final String WHITELIST_FOR_NUMBERS = "0123456789,";
@@ -108,6 +111,10 @@ public class ImageUtil {
     private static Map<Long, Point> searchSurroundingsHistory = IoUtil.deserializeFromFile(SEARCH_SURROUNDINGS, Map.class)
             .orElseGet(() -> new HashMap<>());
     public static Optional<Point> searchSurroundings(BufferedImage item, BufferedImage screen, double limit, int variation) {
+        return searchSurroundings(item, screen, Area.of(0,0,screen.getWidth(),screen.getHeight()), limit, variation);
+    }
+
+    public static Optional<Point> searchSurroundings(BufferedImage item, BufferedImage screen, Area area, double limit, int variation) {
         long crc = crcImage(item);
         Point past = searchSurroundingsHistory.get(crc);
         Point actual = null;
@@ -119,7 +126,7 @@ public class ImageUtil {
             actual = search(item, screen, x, y, width, height, limit).orElse(null);
         }
         else {
-            actual = search(item, screen, 0, 0, screen.getWidth(), screen.getHeight(), limit).orElse(null);
+            actual = search(item, screen, area, limit).orElse(null);
         }
         if (actual != null) {
             searchSurroundingsHistory.put(crc, actual);
@@ -127,8 +134,6 @@ public class ImageUtil {
         }
         return Optional.ofNullable(actual);
     }
-    
-    
 
     public static Optional<Point> search(BufferedImage item, BufferedImage screen, double limit) {
         return search(item, screen, 0, 0, screen.getWidth(), screen.getHeight(), limit);
@@ -202,7 +207,7 @@ public class ImageUtil {
         // System.out.println("Difference: " + difference + " Percentage: " + percentage);
         
         if (percentage > limit) {
-            //System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
+            System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
             return Optional.empty();
         }
 
@@ -679,5 +684,35 @@ public class ImageUtil {
         int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
         for (int p : pixels) crc.update(p);
         return crc.getValue();
+    }
+
+    public static void showImageAndWait(BufferedImage image) {
+        showImageAndWait(image, null);
+    }
+
+
+    public static void showImageAndWait(BufferedImage image, String title) {
+        Runnable ui = () -> {
+            JDialog dialog = new JDialog((Frame) null, title != null ? title : "Image", true); // modal
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+            JLabel lbl = new JLabel(new ImageIcon(image));
+            JScrollPane scroller = new JScrollPane(lbl);
+            dialog.getContentPane().add(scroller, BorderLayout.CENTER);
+
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true); // blocks until dialog is disposed/closed
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            ui.run(); // safe: modal dialog pumps events
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(ui); // blocks caller until window closes
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to show image", e);
+            }
+        }
     }
 }

@@ -1,6 +1,27 @@
 server:
   port: 9095
 
+management:
+  server:
+    port: 9096  
+  endpoints:
+    web:
+      exposure:
+        include: logfile
+  endpoint:
+    logfile:
+      enabled: true
+      external-file: app.log        
+
 spring:
   main:
     headless: false
+
+logging:
+  file:
+    name: app.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+  level:
+    root: INFO

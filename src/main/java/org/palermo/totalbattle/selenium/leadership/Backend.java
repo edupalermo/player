@@ -21,9 +21,27 @@ import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 public class Backend {
+    
+    public enum MonsterOverride {
+          DEFAULT("Default"), EXCLUDE_ALL("Exclude all"), INCLUDE_ALL("Include all");
+
+        private final String label;
+
+        MonsterOverride(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    };
 
     
-    public static List<Unit> getUnits(String player, Set<Attribute> exclusions, int tiers) {
+    public static List<Unit> getUnits(String player, 
+                                      Set<Attribute> exclusions, 
+                                      int tiers, 
+                                      MonsterOverride monsterOverride) {
         
         List<Unit> troops = new ArrayList<>();
         
@@ -42,6 +60,7 @@ public class Backend {
                     troops.add(Unit.G3_MOUNTED);
                 }
                 if (tiers >= 2) {
+                    troops.add(Unit.S4_SWORDSMAN);
                     troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
@@ -53,33 +72,37 @@ public class Backend {
                     troops.add(Unit.G5_GRIFFIN);
                 }
 
-                if (tiers >= 3) {
-                    troops.add(Unit.EMERALD_DRAGON);
-                    troops.add(Unit.WATER_ELEMENTAL);
-                    troops.add(Unit.STONE_GARGOYLE);
-                    troops.add(Unit.BATTLE_BOAR);
-                }
-                if (tiers >= 2) {
-                    troops.add(Unit.MAGIC_DRAGON);
-                    troops.add(Unit.ICE_PHOENIX);
-                    troops.add(Unit.MANY_ARMED_GUARDIAN);
-                    troops.add(Unit.GORGON_MEDUSA);
-                }
-                if (tiers >= 1) {
-                    troops.add(Unit.DESERT_VANQUISER);
-                    troops.add(Unit.FLAMING_CENTAUR);
-                    troops.add(Unit.ETTIN);
-                    troops.add(Unit.FEARSOME_MANTICORE);
+                if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
+                        monsterOverride == MonsterOverride.DEFAULT) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
+                        troops.add(Unit.EMERALD_DRAGON);
+                        troops.add(Unit.WATER_ELEMENTAL);
+                        troops.add(Unit.STONE_GARGOYLE);
+                        troops.add(Unit.BATTLE_BOAR);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                        troops.add(Unit.MAGIC_DRAGON);
+                        troops.add(Unit.ICE_PHOENIX);
+                        troops.add(Unit.MANY_ARMED_GUARDIAN);
+                        troops.add(Unit.GORGON_MEDUSA);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.DESERT_VANQUISER);
+                        troops.add(Unit.FLAMING_CENTAUR);
+                        troops.add(Unit.ETTIN);
+                        troops.add(Unit.FEARSOME_MANTICORE);
+                    }
                 }
 
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
-                troops.add(Unit.ARBALESTER_VI);
-                troops.add(Unit.LEGIONARY_VI);
-                troops.add(Unit.CHARIOT_VI);
-                troops.add(Unit.SPHYNX_VI);
-                
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
+                    troops.add(Unit.ARBALESTER_VI);
+                    troops.add(Unit.LEGIONARY_VI);
+                    troops.add(Unit.CHARIOT_VI);
+                    troops.add(Unit.SPHYNX_VI);
 
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                }
             }
             case PETER_II, MIGHTSHAPER -> {
                 if (tiers >= 3) {
@@ -100,28 +123,33 @@ public class Backend {
                     troops.add(Unit.G4_MOUNTED);
                 }
 
-                if (tiers >= 2) {
-                    troops.add(Unit.EMERALD_DRAGON);
-                    troops.add(Unit.WATER_ELEMENTAL);
-                    troops.add(Unit.STONE_GARGOYLE);
-                    troops.add(Unit.BATTLE_BOAR);
-                }
-                if (tiers >= 1) {
-                    troops.add(Unit.MAGIC_DRAGON);
-                    troops.add(Unit.ICE_PHOENIX);
-                    troops.add(Unit.MANY_ARMED_GUARDIAN);
-                    troops.add(Unit.GORGON_MEDUSA);
+                if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
+                        monsterOverride == MonsterOverride.DEFAULT) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                        troops.add(Unit.EMERALD_DRAGON);
+                        troops.add(Unit.WATER_ELEMENTAL);
+                        troops.add(Unit.STONE_GARGOYLE);
+                        troops.add(Unit.BATTLE_BOAR);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.MAGIC_DRAGON);
+                        troops.add(Unit.ICE_PHOENIX);
+                        troops.add(Unit.MANY_ARMED_GUARDIAN);
+                        troops.add(Unit.GORGON_MEDUSA);
+                    }
                 }
 
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
-                troops.add(Unit.ARBALESTER_VI);
-                troops.add(Unit.LEGIONARY_VI);
-                troops.add(Unit.CHARIOT_VI);
-                troops.add(Unit.SPHYNX_VI);
+                if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
+                    troops.add(Unit.ARBALESTER_VI);
+                    troops.add(Unit.LEGIONARY_VI);
+                    troops.add(Unit.CHARIOT_VI);
+                    troops.add(Unit.SPHYNX_VI);
 
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                }
             }
-            case GRIRANA -> {
+            case GRIRANA, ELANIN -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S1_SWORDSMAN);
                     troops.add(Unit.G1_RANGED);
@@ -138,32 +166,6 @@ public class Backend {
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
-                }
-
-                if (tiers >= 1) {
-                    troops.add(Unit.EMERALD_DRAGON);
-                    troops.add(Unit.WATER_ELEMENTAL);
-                    troops.add(Unit.STONE_GARGOYLE);
-                    troops.add(Unit.BATTLE_BOAR);
-                }
-
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
-            }
-            case ELANIN -> {
-                if (tiers >= 3) {
-                    troops.add(Unit.S1_SWORDSMAN);
-                    troops.add(Unit.G1_RANGED);
-                    troops.add(Unit.G1_MELEE);
-                }
-                if (tiers >= 2) {
-                    troops.add(Unit.G1_MOUNTED);
-                    troops.add(Unit.G2_RANGED);
-                    troops.add(Unit.G2_MELEE);
-                }
-                if (tiers >= 1) {
-                    troops.add(Unit.G2_MOUNTED);
-                    troops.add(Unit.G3_RANGED);
-                    troops.add(Unit.G3_MELEE);
                 }
 
                 if (tiers >= 1) {
@@ -387,7 +389,7 @@ public class Backend {
                 }
             });
             
-            final int delta = 60;
+            final int delta = 50;
 
             if (processed.size() < stack.size()) {
                 Point scroolBar = Point.of(closeButtonLocation, Point.of(1438, 356), Point.of(978, 448));
@@ -406,7 +408,7 @@ public class Backend {
 
         } while ((!ImageUtil.compare(newPosition, oldPosition, 0.01))  && 
                 processed.size() < stack.size() &&
-                lastPosition < 1091
+                lastPosition < 1081
         );
 
         if (processed.size() < stack.size()) {

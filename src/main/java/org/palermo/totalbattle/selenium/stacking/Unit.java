@@ -13,6 +13,7 @@ public enum Unit {
     S1_SWORDSMAN(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_i.png", Pool.LEADERSHIP, 1),
     S2_SWORDSMAN(90, 270, UnitType.MELEE, 2, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_ii.png", Pool.LEADERSHIP, 1),
     S3_SWORDSMAN(160, 480, UnitType.MELEE, 3, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_iii.png", Pool.LEADERSHIP, 1),
+    S4_SWORDSMAN(290, 870, UnitType.MELEE, 4, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_iv.png", Pool.LEADERSHIP, 1),
     G1_MELEE(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_i.png", Pool.LEADERSHIP, 1),
     G1_RANGED(50, 150, UnitType.ARCHER, 1, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_i.png", Pool.LEADERSHIP, 1),
     G1_MOUNTED(100, 300, UnitType.RIDER, 1, Attribute.GUARDSMAN_RIDER, "leadership/mounted_i.png", Pool.LEADERSHIP, 2),

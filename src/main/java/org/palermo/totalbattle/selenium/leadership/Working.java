@@ -69,35 +69,4 @@ public class Working {
         }
         return Integer.parseInt(leadershipText.substring(slashIndex + 1).trim());
     }
-
-
-    public static void showImageAndWait(BufferedImage image) {
-        showImageAndWait(image, null);
-    }
-
-
-    public static void showImageAndWait(BufferedImage image, String title) {
-        Runnable ui = () -> {
-            JDialog dialog = new JDialog((Frame) null, title != null ? title : "Image", true); // modal
-            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-            JLabel lbl = new JLabel(new ImageIcon(image));
-            JScrollPane scroller = new JScrollPane(lbl);
-            dialog.getContentPane().add(scroller, BorderLayout.CENTER);
-
-            dialog.pack();
-            dialog.setLocationRelativeTo(null);
-            dialog.setVisible(true); // blocks until dialog is disposed/closed
-        };
-
-        if (SwingUtilities.isEventDispatchThread()) {
-            ui.run(); // safe: modal dialog pumps events
-        } else {
-            try {
-                SwingUtilities.invokeAndWait(ui); // blocks caller until window closes
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to show image", e);
-            }
-        }
-    }
 }

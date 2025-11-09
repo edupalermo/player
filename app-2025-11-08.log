@@ -1,0 +1,84 @@
+2025-11-08 19:56:05 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 19:56:05 INFO  [main] i.g.bonigarcia.wdm.online.Downloader - Downloading https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.61/linux64/chromedriver-linux64.zip
+2025-11-08 19:56:07 INFO  [main] i.g.bonigarcia.wdm.online.Downloader - Extracting driver from compressed file chromedriver-linux64.zip
+2025-11-08 19:56:08 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 19:59:24 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 19:59:24 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:07:09 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:07:10 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:08:30 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:08:30 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:13:38 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:13:38 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:30:08 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:30:08 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:34:31 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:34:31 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:37:41 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:37:41 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:39:15 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:39:15 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:42:55 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:42:55 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 20:44:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 20:44:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:11:05 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:11:05 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:32:16 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:32:16 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:34:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:34:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:41:34 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:41:34 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:49:06 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:49:06 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:50:21 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:50:21 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 21:59:25 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 21:59:25 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:00:16 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:00:16 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:02:40 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:02:40 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:05:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:05:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:19:22 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:19:22 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:21:03 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:21:03 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:36:05 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:36:05 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:41:26 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:41:26 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 22:48:08 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 22:48:08 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:10:28 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:10:28 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:11:13 ERROR [main] org.palermo.totalbattle.player.Task - Invalid format: 41m:575
+2025-11-08 23:15:04 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:15:04 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:15:47 ERROR [main] org.palermo.totalbattle.player.Task - Impossible to parse! 36m:175
+2025-11-08 23:17:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:17:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:17:48 ERROR [main] org.palermo.totalbattle.player.Task - Impossible to parse! 34m:195
+2025-11-08 23:18:42 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:18:42 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:19:21 ERROR [main] org.palermo.totalbattle.player.Task - Impossible to parse! 32m405
+2025-11-08 23:27:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:27:12 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:28:58 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:28:58 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:31:36 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:31:36 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:32:45 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:32:45 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:45:19 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:45:19 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:47:07 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:47:07 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:48:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:48:11 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:49:16 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:49:17 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver
+2025-11-08 23:59:23 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Using chromedriver 142.0.7444.61 (resolved driver for Chrome 142)
+2025-11-08 23:59:23 INFO  [main] i.g.bonigarcia.wdm.WebDriverManager - Exporting webdriver.chrome.driver as /home/eduardo/.cache/selenium/chromedriver/linux64/142.0.7444.61/chromedriver

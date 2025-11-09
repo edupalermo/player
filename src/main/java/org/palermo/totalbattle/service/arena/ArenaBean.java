@@ -1,4 +1,4 @@
-package org.palermo.totalbattle.controller;
+package org.palermo.totalbattle.service.arena;
 
 import lombok.Builder;
 import lombok.Getter;

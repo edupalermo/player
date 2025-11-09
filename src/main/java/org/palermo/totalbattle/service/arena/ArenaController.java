@@ -1,4 +1,4 @@
-package org.palermo.totalbattle.controller;
+package org.palermo.totalbattle.service.arena;
 
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Point;
