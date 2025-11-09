@@ -35,6 +35,7 @@ public class TroopManagerApp extends JFrame {
     // ===== Limit =====
     private JComboBox<String> limitCombo;
     private JComboBox<String> waveCombo;
+    private JComboBox<Backend.MonsterOverride> monsterOverride;
     
     // ===== Exclusions =====
     private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon;
@@ -148,7 +149,10 @@ public class TroopManagerApp extends JFrame {
         // ===== Actions =====
         btnGenerate.addActionListener(e -> {
             
-            java.util.List<Unit> units = Backend.getUnits(getSelectedPlayerName(), getSelectedExclusions(), getSelectedLayers());
+            java.util.List<Unit> units = Backend.getUnits(getSelectedPlayerName(), 
+                    getSelectedExclusions(), 
+                    getSelectedLayers(),
+                    (Backend.MonsterOverride) monsterOverride.getSelectedItem());
             units = limitUnits(units);
             int[] quantities = Backend.getUnitQuantity(getInformedHeadCount(), units);
 
@@ -400,6 +404,14 @@ public class TroopManagerApp extends JFrame {
         waveCombo = new JComboBox<>(new String[]{ "1", "2", "3", "4","5" });
         gc.gridx = 1; gc.gridy = 2; gc.weightx = 1.0; gc.fill = GridBagConstraints.HORIZONTAL;
         row.add(waveCombo, gc);
+
+        // Row 3: Monster Override
+        gc.gridx = 0; gc.gridy = 3; gc.weightx = 0; gc.fill = GridBagConstraints.NONE;
+        row.add(new JLabel("Monsters"), gc);
+
+        monsterOverride = new JComboBox<>(Backend.MonsterOverride.values());
+        gc.gridx = 1; gc.gridy = 3; gc.weightx = 1.0; gc.fill = GridBagConstraints.HORIZONTAL;
+        row.add(monsterOverride, gc);
 
         return row;
     }

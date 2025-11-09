@@ -1,27 +1,34 @@
 package org.palermo.totalbattle.player;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.stacking.Unit;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Slf4j
 public class Task {
 
     private static MyRobot robot = new MyRobot();
@@ -46,16 +53,44 @@ public class Task {
     public static void main(String[] args) {
         
         Player player = players.get("Elanin");
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MOUNTED, 439L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_RANGED, 882L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MELEE, 882L);
+
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MOUNTED, 786L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_RANGED, 1579L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MELEE, 1579L);
+
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MOUNTED, 1423L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_RANGED, 2853L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MELEE, 2856L);
+        //SharedData.INSTANCE.setTroopTarget(player, Unit.S1_SWORDSMAN, 2856L);
+        
+        /*
+        SharedData.INSTANCE.setTroopTarget(player, Unit.EMERALD_DRAGON, 29L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.WATER_ELEMENTAL, 73L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.STONE_GARGOYLE, 25L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.BATTLE_BOAR, 35L);
+        */
 
         WebDriver driver = null;
         try {
             driver = openBrowser(player);
             login(player);
-            //attackArena(Point.of(100, 100));
-            //collectChests();
-            //quests();
-            freeSale();
-            // helpClanMembers();
+            
+            //attackArena(Point.of(378, 452));
+            
+            // collectChests(); // Retrieve chests
+            
+            // quests(); // Retrieve open chests
+            
+            //summoningCircle();
+            
+            buildArmy(player);
+            
+            //freeSale(player);
+            
+            helpClanMembers();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
@@ -67,6 +102,340 @@ public class Task {
             }
         }
     }
+    
+    public static void summoningCircle() {
+        
+    }
+
+    public static void buildArmy(Player player) {
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage labelArmy = ImageUtil.loadResource("player/barracks/label_army.png");
+        Area labelArmyArea = Area.fromTwoPoints(927, 1018, 998, 1038);
+        Point labelQuestesPoint = ImageUtil.searchSurroundings(labelArmy, screen, labelArmyArea, 0.1, 20).orElse(null);
+
+        if (labelQuestesPoint == null) {
+            ImageUtil.write(ImageUtil.crop(screen, labelArmyArea), "error_screen.png");
+            ImageUtil.write(labelArmy, "error_image.png");
+            throw new RuntimeException("Couldn't find Army label!");
+        }
+
+        robot.leftClick(labelQuestesPoint.move(12, -30));
+        robot.sleep(1000);
+
+        screen = robot.captureScreen();
+        BufferedImage titleBarracks = ImageUtil.loadResource("player/barracks/title_barracks.png");
+        Area titleBarracksArea = Area.fromTwoPoints(920, 306, 1044, 338);
+        Point titleBarracksPoint = ImageUtil.searchSurroundings(titleBarracks, screen, titleBarracksArea, 0.1, 20).orElse(null);
+
+        if (titleBarracksPoint == null) {
+            ImageUtil.write(ImageUtil.crop(screen, titleBarracksArea), "error_screen.png");
+            ImageUtil.write(titleBarracks, "error_image.png");
+            throw new RuntimeException("Couldn't find Barracks title!");
+        }
+
+
+        BufferedImage iconHourglass = ImageUtil.loadResource("player/barracks/icon_hourglass.png");
+        Area iconHourglassArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397));
+        Point iconHourglassPoint = ImageUtil.searchSurroundings(iconHourglass, screen, iconHourglassArea, 0.1, 20).orElse(null);
+        
+        if (iconHourglassPoint == null) {
+            
+            BufferedImage buttonComplete = ImageUtil.loadResource("player/barracks/button_complete.png");
+            Area buttonCompleteArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
+            Point buttonCompletePoint = ImageUtil.search(buttonComplete, screen, buttonCompleteArea, 0.1).orElse(null);
+            
+            if (buttonCompletePoint != null) {  
+                robot.leftClick(buttonCompletePoint, buttonComplete);
+                robot.sleep(200);
+            }
+            
+            
+            chooseTroopToBuild(player, titleBarracksPoint);
+        }
+        else {
+            BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
+            timeLeft = ImageUtil.toGrayscale(timeLeft);
+            timeLeft = ImageUtil.invertGrayscale(timeLeft);
+            timeLeft = ImageUtil.linearNormalization(timeLeft);
+            String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.SINGLE_LINE_MODE);
+            System.out.println("Time Left: " + timeLeftAsText);
+            
+            LocalDateTime nextLocalDateTime = calculateNext(timeLeftAsText).orElse(null);
+            if (nextLocalDateTime == null) {
+                throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+            }
+            
+            // Click of the speed-up button
+            robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+            robot.sleep(350);
+        
+            speedUp(nextLocalDateTime);
+
+
+        }
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(150);
+    }
+    
+    
+    private static final List<SpeedUpBean> speedUps = new ArrayList<>();
+    static {
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/1m.png"))
+                .seconds(Duration.ofMinutes(1).getSeconds())
+                .label("1m")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/15m.png"))
+                .seconds(Duration.ofMinutes(15).getSeconds())
+                .label("15m")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/1h.png"))
+                .seconds(Duration.ofHours(1).getSeconds())
+                .label("1h")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/3h.png"))
+                .seconds(Duration.ofHours(3).getSeconds())
+                .label("3h")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/15h.png"))
+                .seconds(Duration.ofHours(15).getSeconds())
+                .label("15h")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/1d.png"))
+                .seconds(Duration.ofDays(1).getSeconds())
+                .label("1d")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/3d.png"))
+                .seconds(Duration.ofDays(3).getSeconds())
+                .label("3d")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/7d.png"))
+                .seconds(Duration.ofDays(7).getSeconds())
+                .label("7d")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/30d.png"))
+                .seconds(Duration.ofDays(30).getSeconds())
+                .label("30d")
+                .build());
+    }
+    
+    
+    private static void speedUp(LocalDateTime dateTime) {
+        
+        long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
+
+        SpeedUpBean bestSpeedUp = null;
+        
+        for (SpeedUpBean bean : speedUps) {
+            if (bean.getSeconds() < seconds) {
+                if (bestSpeedUp == null) {
+                    bestSpeedUp = bean;
+                }
+                else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
+                    bestSpeedUp = bean;
+                }
+            }
+        }
+        
+        if (bestSpeedUp == null) {
+            System.out.println("Shouldn't use speed ups!");
+            return;
+        }
+        
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
+        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, Area.fromTwoPoints(910, 337, 1066, 361), 0.1).orElse(null);
+        if (speedUpsTitlePoint == null) {
+            throw new RuntimeException("Could not find speed up title");
+        }
+        
+
+        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(782, 780));
+        BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
+
+        Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
+
+        for (int i = 0; i < 4; i++) {
+            screen = robot.captureScreen();
+            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.07).orElse(null);
+            if (speedUpPoint != null) {
+                Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
+                Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
+                if (buttonUsePoint == null) {
+                    log.info("Speed up {} not available", bestSpeedUp.getLabel());
+                    return;
+                }
+                log.info("Speed up {} is available!!", bestSpeedUp.getLabel());
+                robot.leftClick(buttonUsePoint, buttonUse);
+                robot.sleep(200);
+                break;
+
+            }
+            else {
+                robot.mouseDrag(scrollPoint, 0, 150);
+                robot.sleep(150);
+                scrollPoint = scrollPoint.move(0, 150);
+            }
+        }
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+    
+    
+    private static void chooseTroopToBuild(Player player, Point titleBarracksPoint) {
+
+        Map<Unit, Long> map = SharedData.INSTANCE.getTroopTarget(player);
+        
+        for (Map.Entry<Unit, Long> entry : map.entrySet()) {
+            long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
+            if (currentSize < entry.getValue().longValue()) {
+                train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+                break;
+            }
+        }
+    }
+
+    private static void train(Point titleBarracksPoint, Unit unit, long quantity) {
+
+        selectUnit(titleBarracksPoint, unit);
+
+        Point textPoint = null;
+        Area silverArea = null;
+        Area foodArea = null;
+        Point trainButtonPoint = null;
+        switch (unit) {
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
+                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719));
+                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783));
+                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 783 + 35));
+                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814));
+                break;
+            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
+                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
+                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35), Point.of(798 + 261, 783 + 35));
+                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 261, 814));
+                break;
+            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
+                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
+                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
+                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 522, 814));
+                break;
+        }
+
+        if (textPoint == null) {
+            throw new RuntimeException("Not implemented for " + unit.name());
+        }
+
+        robot.leftClick(textPoint);
+        robot.typeString(String.valueOf(quantity));
+        robot.sleep(250);
+        
+        BufferedImage screen = robot.captureScreen();
+        
+        BufferedImage colorOkImage = ImageUtil.loadResource("player/barracks/color_ok.png");
+
+        if (ImageUtil.search(colorOkImage, screen, silverArea, 0.1).isEmpty()) {
+            System.out.println("Not enough silver!");
+            return;
+        }
+
+        if (ImageUtil.search(colorOkImage, screen, foodArea, 0.1).isEmpty()) {
+            System.out.println("Not enough food!");
+            return; 
+        }
+
+        // Click on train button
+        robot.leftClick(trainButtonPoint);
+        robot.sleep(500);
+
+        // Click on help button
+        robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+        robot.sleep(350);
+    }
+    
+    private static void selectUnit(Point titleBarracksPoint, Unit unit) {
+        long tierPos;
+        Area area = null;
+
+        switch (unit) {
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
+                // Click on Guardsman left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                robot.sleep(200);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                robot.sleep(200);
+                break;
+            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+                // Click on Guardsman left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                robot.sleep(200);
+                break;
+            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+                // Click on Guardsman left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                robot.sleep(200);
+                break;
+        }
+    }
+
+    private static long getCurrentUnitNumber(Point titleBarracksPoint, Unit unit) {
+        Area area = null;
+
+        selectUnit(titleBarracksPoint, unit);
+        
+        switch (unit) {
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852, 677), Point.of(912, 699));
+                break;
+            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
+                break;
+            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
+                break;
+        }
+        
+        if (area == null) {
+            throw new RuntimeException("Not implemented for " + unit.name());
+        }
+        
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage quantityImage = ImageUtil.crop(screen, area);
+        quantityImage = ImageUtil.toGrayscale(quantityImage);
+        quantityImage = ImageUtil.invertGrayscale(quantityImage);
+        quantityImage = ImageUtil.linearNormalization(quantityImage);
+        
+        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
+        System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);        
+        
+        return Long.parseLong(quantityAsString);
+    }
+
 
     public static void quests() {
         BufferedImage screen = robot.captureScreen();
@@ -93,20 +462,20 @@ public class Task {
             ImageUtil.write(labelQuestes, "error_image.png");
             throw new RuntimeException("Couldn't find weekly reward label!");
         }
-        
-        
+
+
         Area claimArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
         BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
         Point buttonClaimPoint = ImageUtil.search(buttonClaim, screen, claimArea, 0.1).orElse(null);
-        
+
         if (buttonClaimPoint != null) {
             robot.leftClick(buttonClaimPoint, buttonClaim);
         }
-        
+
         // Daily Jobs Tab
         robot.leftClick(weeklyRewardPoint.move(-310, 65));
         robot.sleep(300);
-        
+
         screen = robot.captureScreen();
         BufferedImage refDailyJobs = ImageUtil.loadResource("player/ref_daily_jobs.png");
         Point refDailyJobsPoint = ImageUtil.searchSurroundings(refDailyJobs, screen, 0.1, 20).orElse(null);
@@ -127,7 +496,7 @@ public class Task {
             robot.sleep(500);
         }
 
-        screen =  robot.captureScreen();
+        screen = robot.captureScreen();
         BufferedImage speedUpButton = ImageUtil.loadResource("player/button_dj_speed_up.png");
         Point speedUpButtonPoint = ImageUtil.search(speedUpButton, screen, topButtonArea, 0.1).orElse(null);
         if (speedUpButtonPoint == null) {
@@ -147,10 +516,9 @@ public class Task {
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
-
     }
     
-    public static void freeSale() {
+    public static void freeSale(Player player) {
         BufferedImage screen = robot.captureScreen();
 
         BufferedImage logoTotalBattle = ImageUtil.loadResource("player/logo_total_battle.png");
@@ -187,20 +555,36 @@ public class Task {
         tabs.add(Point.of(78, 321));
         tabs.add(Point.of(78, 374));
         
-        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
+        // Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
+        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(347, 873), Point.of(455, 896));
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/button_bs_free.png");
+        BufferedImage iconHourglass = ImageUtil.loadResource("player/icon_bs_hourglass.png");
 
         for (Point move: tabs) {
             robot.leftClick(refBonusSalesPoint.move(move.getX(), move.getY()));
             robot.sleep(750);
 
             screen = robot.captureScreen();
+            
             Point buttonFreePoint = ImageUtil.search(buttonFree, screen, area, 0.1).orElse(null);
 
             if (buttonFreePoint != null) {
                 robot.leftClick(buttonFreePoint, buttonFree);
                 break;
+            }
+
+            Point iconHourglassPoint = ImageUtil.search(iconHourglass, screen, area, 0.1).orElse(null);
+            if (iconHourglassPoint != null) {
+                BufferedImage next = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 18, iconHourglassPoint.getY(), 100, 18));
+                next = ImageUtil.toGrayscale(next);
+                next = ImageUtil.invertGrayscale(next);
+                next = ImageUtil.linearNormalization(next);
+                String nextAsText = ImageUtil.ocr(next, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.LINE_OF_PRINTED_TEXT);
+                LocalDateTime nextLocalDateTime = calculateNext(nextAsText).orElse(null);
+                if (nextLocalDateTime != null) {
+                    SharedData.INSTANCE.setWait(player, Scenario.BONUS_SALES_FREE, nextLocalDateTime);
+                }
             }
         }
 
@@ -209,7 +593,42 @@ public class Task {
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
+    }
+    
+    private static Optional<LocalDateTime> calculateNext(String input) {
+        Pattern pattern = Pattern.compile("(\\d+)h[:]?([\\d+]+)m");
+        Matcher matcher = pattern.matcher(input.trim());
 
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+
+        if (matcher.matches()) {
+            hours = Integer.parseInt(matcher.group(1));
+            minutes = Integer.parseInt(matcher.group(2));
+        }
+        else {
+            pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)5");
+            matcher = pattern.matcher(input.trim());
+            if (!matcher.matches()) {
+                pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)s");
+                matcher = pattern.matcher(input.trim());
+                if (!matcher.matches()) {
+                    log.error("Impossible to parse: {}", input);
+                    return Optional.empty();
+                }
+            }
+            minutes = Integer.parseInt(matcher.group(1));
+            seconds = Integer.parseInt(matcher.group(2));
+        }
+
+        
+        LocalDateTime answer = LocalDateTime.now()
+                .plusHours(hours)
+                .plusMinutes(minutes)
+                .plusSeconds(seconds);
+        
+        return Optional.of(answer);
     }
     
     public static void collectChests() {
@@ -224,13 +643,13 @@ public class Task {
             ImageUtil.write(iconHelpAllies, "error_image.png");
             throw new RuntimeException("Couldn't find clan image!");
         }
-        
+
         // Click on the clan Icon
         robot.leftClick(iconHelpAlliesPoint.move(14, -30));
-        robot.sleep(1000);
+        robot.sleep(1250);
 
         screen = robot.captureScreen();
-        BufferedImage titleMyClan = ImageUtil.loadResource("player/title_my_clan.png");
+        BufferedImage titleMyClan = ImageUtil.loadResource("player/my_clan/title_my_clan.png");
         Point titleMyClanPoint = ImageUtil.searchSurroundings(titleMyClan, screen, 0.1, 20).orElse(null);
 
         if (titleMyClanPoint == null) {
@@ -239,15 +658,42 @@ public class Task {
             throw new RuntimeException("Couldn't My Clan title!");
         }
 
+        // Click on Gifts (left tab)
         robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(611, 497)));
-        robot.sleep(1000);
+        robot.sleep(500);
 
-        // Collect all
-        robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(1353, 861)));
+        
+        for (int i = 0; i < 2; i++ ) {
+            if (i == 0) {
+                // Click on Gifts  (top tab)
+                robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(833, 399)));
+                robot.sleep(750);
+            }
+            else {
+                // Click on Triumphal Gifts  (top tab)
+                robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(1074, 399)));
+                robot.sleep(750);
+            }
 
-        robot.sleep(1000);
+            // Click on open button while we have it
+            Area buttonOpenArea = Area.of(titleMyClanPoint, Point.of(963, 325), Point.of(1358, 485), Point.of(1409, 505));
+            BufferedImage buttonOpen = ImageUtil.loadResource("player/my_clan/button_open.png");
+            Point buttonOpenPoint;
+            do {
+                screen = robot.captureScreen();
+                buttonOpenPoint = ImageUtil.search(buttonOpen, screen,buttonOpenArea, 0.1).orElse(null);
+
+                if (buttonOpenPoint != null) {
+                    robot.leftClick(buttonOpenPoint, buttonOpen);
+                    robot.sleep(300);
+                }
+
+            } while(buttonOpenPoint != null);
+        }
+
+        robot.sleep(500);
         robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(1000);
+        robot.sleep(500);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
     }
@@ -325,12 +771,12 @@ public class Task {
                 Point buttonClosepoint = ImageUtil.searchSurroundings(buttonBonusSalesClose, screen, 0.1, 20).orElse(null);
                 if (buttonClosepoint != null) {
                     robot.leftClick(buttonClosepoint, buttonBonusSalesClose);
-                    robot.sleep(500);
+                    robot.sleep(750);
                 }
                 else {
                     System.out.println("Trying to hit scape to close initial pop-ups");
                     robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(500);
+                    robot.sleep(750);
                 }
             }
         } while (!found && (System.currentTimeMillis() - start) < 60000);
@@ -348,9 +794,10 @@ public class Task {
 
 
         // Turn music off
+        Area controlsArea = Area.fromTwoPoints(1797, 1046, 1917, 1079);
         BufferedImage iconMusicOn = ImageUtil.loadResource("player/icon_music_on.png");
         screen = robot.captureScreen();
-        Point iconMusicOnPoint = ImageUtil.searchSurroundings(iconMusicOn, screen, 0.1, 20).orElse(null);
+        Point iconMusicOnPoint = ImageUtil.searchSurroundings(iconMusicOn, screen, controlsArea, 0.1, 20).orElse(null);
         if (iconMusicOnPoint != null) {
             robot.leftClick(iconMusicOnPoint, iconMusicOn);
         }
@@ -358,7 +805,7 @@ public class Task {
         // Turn sound off            
         BufferedImage iconSoundOn = ImageUtil.loadResource("player/icon_sound_on.png");
         screen = robot.captureScreen();
-        Point iconSoundOnPoint = ImageUtil.searchSurroundings(iconSoundOn, screen, 0.1, 20).orElse(null);
+        Point iconSoundOnPoint = ImageUtil.searchSurroundings(iconSoundOn, screen, controlsArea, 0.1, 20).orElse(null);
         if (iconSoundOnPoint != null) {
             robot.leftClick(iconSoundOnPoint, iconSoundOn);
         }
@@ -402,7 +849,8 @@ public class Task {
         robot.sleep(1000);
 
         BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
-        Point labelArenaPoint = waitImage(labelArena, "Label rena", 3000).orElse(null);
+        Point labelArenaPoint = waitImage(labelArena, "Label Arena", 3000).orElse(null);
+        
         if (labelArenaPoint == null) {
             System.out.println("Arena doesn't exist anymore!");
             robot.type(KeyEvent.VK_ESCAPE);
@@ -412,7 +860,9 @@ public class Task {
 
         BufferedImage iconCheckmark = ImageUtil.loadResource("player/icon_checkmark.png");
         BufferedImage screen = robot.captureScreen();
-        Point iconCheckmarkPoint = ImageUtil.search(iconCheckmark, screen, Area.of(labelArenaPoint, Point.of(971, 322), Point.of(865, 705), Point.of(901, 739)), 0.1)
+        Area areaForCheckmark = Area.of(labelArenaPoint, Point.of(971, 322), Point.of(865, 705), Point.of(901, 739));
+        ImageUtil.showImageAndWait(ImageUtil.crop(screen, areaForCheckmark));
+        Point iconCheckmarkPoint = ImageUtil.search(iconCheckmark, screen, areaForCheckmark, 0.1)
                 .orElse(null);
 
         if (iconCheckmarkPoint == null) {

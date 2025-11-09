@@ -51,6 +51,7 @@ public class Area {
                 .height(Math.abs(y1 - y2))
                 .build();
     }
+    
     public static Area fromTwoPoints(Point p1, Point p2) {
         return fromTwoPoints(p1.getX(), p1.getY(), p2.getX(), p2.getY());
     }
