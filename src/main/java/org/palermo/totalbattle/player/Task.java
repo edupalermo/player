@@ -83,11 +83,11 @@ public class Task {
             
             // collectChests(); // Retrieve chests
             
-            // quests(player); // Retrieve open chests
+             quests(player); // Retrieve open chests
             
             // summoningCircle();
             
-            buildArmy(player);
+            //buildArmy(player);
             
             //freeSale(player);
             
@@ -732,16 +732,6 @@ public class Task {
         robot.leftClick(labelQuestesPoint.move(14, -30));
         robot.sleep(1000);
 
-        screen = robot.captureScreen();
-        BufferedImage weeklyReward = ImageUtil.loadResource("player/label_weekly_reward.png");
-        Point weeklyRewardPoint = ImageUtil.searchSurroundings(weeklyReward, screen, 0.1, 20).orElse(null);
-
-        if (weeklyRewardPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(labelQuestes, "error_image.png");
-            throw new RuntimeException("Couldn't find weekly reward label!");
-        }
-        
         // Tem que checar se tem ouro
         if (!SharedData.INSTANCE.shouldWait(player, Scenario.QUESTS_TRY_FULL_CHESTS))  {
 
@@ -752,14 +742,25 @@ public class Task {
             chests.add(Point.of(1144, 620));
             chests.add(Point.of(1220, 620));
             chests.add(Point.of(1304, 620));
-            
+
             for (Point point : chests) {
                 robot.leftClick(point);
                 robot.sleep(450);
             }
-            robot.sleep(1000); // Wait toast to disappear
+            robot.sleep(3500); // Wait toast to disappear
             SharedData.INSTANCE.setWait(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
-        }       
+        }
+
+        screen = robot.captureScreen();
+        BufferedImage weeklyReward = ImageUtil.loadResource("player/label_weekly_reward.png");
+        Area weeklyRewardArea = RegionSelector.selectArea("QUESTS_DAILY_QUESTS_WEEKLY_REWARD", screen);
+        Point weeklyRewardPoint = ImageUtil.searchSurroundings(weeklyReward, screen, weeklyRewardArea, 0.1, 20).orElse(null);
+
+        if (weeklyRewardPoint == null) {
+            ImageUtil.write(screen, "error_screen.png");
+            ImageUtil.write(labelQuestes, "error_image.png");
+            throw new RuntimeException("Couldn't find weekly reward label!");
+        }
 
         Area claimArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
         BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
