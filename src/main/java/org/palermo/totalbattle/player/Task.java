@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Elanin");
+        Player player = players.get("Mightshaper");
         
         WebDriver driver = null;
         try {
@@ -436,62 +436,73 @@ public class Task {
     private static void speedUp(LocalDateTime dateTime) {
         
         long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
-
-        SpeedUpBean bestSpeedUp = null;
-        
-        for (SpeedUpBean bean : speedUps) {
-            if (bean.getSeconds() < seconds) {
-                if (bestSpeedUp == null) {
-                    bestSpeedUp = bean;
-                }
-                else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
-                    bestSpeedUp = bean;
-                }
-            }
-        }
-        
-        if (bestSpeedUp == null) {
-            System.out.println("Shouldn't use speed ups!");
-            return;
-        }
         
         BufferedImage screen = robot.captureScreen();
         BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
         Area speedUpsTitleArea = Area.fromTwoPoints(910, 325, 1066, 361);
-        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, speedUpsTitleArea));
         Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, speedUpsTitleArea, 0.1).orElse(null);
         if (speedUpsTitlePoint == null) {
             throw new RuntimeException("Could not find speed up title");
         }
-        
 
-        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
-        BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
+        final int turns = 3;
 
-        Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
-
-        log.info("Searching for {}", bestSpeedUp.getLabel());
-
-        for (int i = 0; i < 4; i++) {
-            screen = robot.captureScreen();
-            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
-            if (speedUpPoint != null) {
-                Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
-                Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
-                if (buttonUsePoint == null) {
-                    log.info("Speed up {} not available", bestSpeedUp.getLabel());
-                    return;
-                }
-                log.info("Speed up {} is available!!", bestSpeedUp.getLabel());
-                robot.leftClick(buttonUsePoint, buttonUse);
-                robot.sleep(200);
-                break;
-
+        for (int r = 0; r < turns; r++) {
+            
+            if (r != 0) {
+                robot.mouseWheel(speedUpsTitlePoint.move(38, 304), - 500);
+                robot.sleep(500);
             }
-            else {
-                robot.mouseDrag(scrollPoint, 0, 150);
-                robot.sleep(150);
-                scrollPoint = scrollPoint.move(0, 150);
+            
+            SpeedUpBean bestSpeedUp = null;
+
+            for (SpeedUpBean bean : speedUps) {
+                if (bean.getSeconds() < seconds) {
+                    if (bestSpeedUp == null) {
+                        bestSpeedUp = bean;
+                    }
+                    else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
+                        bestSpeedUp = bean;
+                    }
+                }
+            }
+
+            if (bestSpeedUp == null) {
+                System.out.println("Shouldn't use speed ups!");
+                break;
+            }
+
+
+            Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
+            BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
+
+            Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
+
+            log.info("Searching for {}", bestSpeedUp.getLabel());
+
+            for (int i = 0; i < 4; i++) {
+                screen = robot.captureScreen();
+                Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
+                if (speedUpPoint != null) {
+                    Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
+                    Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
+                    if (buttonUsePoint == null) {
+                        log.info("Speed up {} not available", bestSpeedUp.getLabel());
+                        return;
+                    }
+                    log.info("Speed up {} is available!!", bestSpeedUp.getLabel());
+                    robot.leftClick(buttonUsePoint, buttonUse);
+                    robot.sleep(200);
+
+                    seconds = seconds - bestSpeedUp.getSeconds();
+                    break;
+
+                }
+                else {
+                    robot.mouseDrag(scrollPoint, 0, 150);
+                    robot.sleep(150);
+                    scrollPoint = scrollPoint.move(0, 150);
+                }
             }
         }
 
