@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.palermo.totalbattle.selenium.Clock;
+import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -170,11 +171,16 @@ public class ImageUtil {
      * @param x y width height area inside the screen to search
      */
     public static Optional<Point> search(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
-        Clock clock = Clock.start();
+        return realSearch(item, screen, x, y, width, height, limit).map(SearchResponse::getPoint);
+    }
+
+
+    public static Optional<SearchResponse> realSearch(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
+        // Clock clock = Clock.start();
 
         long difference = Long.MAX_VALUE;
         Point best = null;
-        
+
         long crc = crcImage(item);
         List<Point> past = history.computeIfAbsent(crc, key -> new ArrayList<>());
         if (!past.isEmpty()) {
@@ -205,7 +211,7 @@ public class ImageUtil {
 
         double percentage = (double) difference / (3 * 255 * (item.getWidth() * item.getHeight()));
         // System.out.println("Difference: " + difference + " Percentage: " + percentage);
-        
+
         if (percentage > limit) {
             // System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
             return Optional.empty();
@@ -215,13 +221,16 @@ public class ImageUtil {
             history.get(crc).add(best);
             IoUtil.serializeToFile(HISTORY_FILENAME, history);
         }
-        
+
         // System.out.println("Best " + best.getX() + " " + best.getY() + " "  + percentage + " search took " + clock.elapsedTime());
-        return Optional.of(best);
+        return Optional.of(SearchResponse
+                .builder()
+                .point(best)
+                .difference(percentage)
+                .build());
     }
-    
-    
-    
+
+
 
     /**
      * @param x y width height area inside the screen to search
@@ -723,5 +732,61 @@ public class ImageUtil {
                 throw new RuntimeException("Failed to show image", e);
             }
         }
+    }
+    
+    public static double compareHistograms(BufferedImage image1, BufferedImage image2) {
+        double[][] histogram1 = getHistogram(image1);
+        double[][] histogram2 = getHistogram(image2);
+        
+        double difference = 0;
+        long counter = 0;
+
+        for (int i = 0; i < histogram1.length; i++) {
+            for (int j = 0; j < histogram1[0].length; j++) {
+                difference = difference + Math.abs(histogram1[i][j] - histogram2[i][j]);
+                counter++;
+            }
+        }
+        return difference / counter;
+    }
+    
+    
+    private static double[][] getHistogram(BufferedImage image) {
+        int[][] rgb = new int[3][256];
+        
+        int counter = 0;
+        
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                
+                int argb = image.getRGB(x, y);
+
+                // Extract color components
+                int alpha = (argb >> 24) & 0xFF;
+                int r = (argb >> 16) & 0xFF;
+                int g = (argb >> 8) & 0xFF;
+                int b = argb & 0xFF;
+
+                if (alpha == 0) {
+                    continue;                    
+                }
+
+                rgb[0][r]++;
+                rgb[1][g]++;
+                rgb[2][b]++;
+                
+                counter++;
+            }
+        }
+
+        double[][] answer = new double[3][256];
+
+        for (int i = 0; i < rgb.length; i++) {
+            for (int j = 0; j < rgb[0].length; j++) {
+                answer[i][j] = (double) rgb[i][j] / (double) counter;                
+            }
+        }
+
+        return answer;
     }
 }

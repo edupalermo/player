@@ -1,13 +1,9 @@
 package org.palermo.totalbattle.player;
 
-import com.google.common.collect.ImmutableSet;
 import org.palermo.totalbattle.selenium.leadership.Point;
-import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
-import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
-import org.palermo.totalbattle.selenium.stacking.UnitType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -140,6 +136,7 @@ public enum SharedData {
         
         switch (name) {
             case PALERMO:
+                
                 units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
@@ -217,8 +214,7 @@ public enum SharedData {
             default:
                 throw new RuntimeException("Not Implemented for " + name);
         }
-        
-        return units;
+         return units;
     }
 
     private int computeWaves(int quantity, int wave) {

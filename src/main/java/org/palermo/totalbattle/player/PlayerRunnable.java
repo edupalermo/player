@@ -81,7 +81,7 @@ public class PlayerRunnable implements Runnable {
             if (!SharedData.INSTANCE.shouldWait(player, Scenario.BONUS_SALES_FREE)) {
                 Task.freeSale(player);
             }
-            Task.quests();
+            Task.quests(player);
             Task.collectChests();
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {

@@ -83,7 +83,7 @@ public class Task {
             
             // collectChests(); // Retrieve chests
             
-            //quests(); // Retrieve open chests
+            // quests(player); // Retrieve open chests
             
             // summoningCircle();
             
@@ -260,7 +260,7 @@ public class Task {
         BufferedImage buttonSummonCaptainOn = ImageUtil.loadResource("player/sc/button_summon_captain_on.png");
         Area buttonSummonCaptainOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_ON_BUTTON", screen);
         
-        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.1, 20).orElse(null);
+        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.03, 20).orElse(null);
         if (buttonSummonCaptainOnPoint != null) {
             robot.leftClick(buttonSummonCaptainOnPoint, buttonSummonCaptainOn);
             robot.sleep(5000);
@@ -279,7 +279,7 @@ public class Task {
 
         screen = robot.captureScreen();
         Area buttonSummonEliteOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_ON_BUTTON", screen);
-        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.1, 20).orElse(null);
+        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.03, 20).orElse(null);
         if (buttonSummonEliteOnPoint != null) {
             robot.leftClick(buttonSummonEliteOnPoint, buttonSummonCaptainOn);
             robot.sleep(5000);
@@ -689,28 +689,34 @@ public class Task {
                  DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
                 break;
+                /*
+            case MAGIC_DRAGON:
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(862 + 261, 677), Point.of(912 + 261, 699));
+                break;
+                 */
+            default:
+                throw new RuntimeException("Not Implemented!");
         }
         
         if (area == null) {
             throw new RuntimeException("Not implemented for " + unit.name());
         }
         
+        robot.sleep(200);
         BufferedImage screen = robot.captureScreen();
         BufferedImage quantityImage = ImageUtil.crop(screen, area);
         quantityImage = ImageUtil.toGrayscale(quantityImage);
         quantityImage = ImageUtil.invertGrayscale(quantityImage);
         quantityImage = ImageUtil.linearNormalization(quantityImage);
         
-        //ImageUtil.showImageAndWait(quantityImage);
-        
-        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.SINGLE_WORD_MODE);
         System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);        
         
         return Long.parseLong(quantityAsString);
     }
 
 
-    public static void quests() {
+    public static void quests(Player player) {
         BufferedImage screen = robot.captureScreen();
 
         BufferedImage labelQuestes = ImageUtil.loadResource("player/label_quests.png");
@@ -736,18 +742,24 @@ public class Task {
             throw new RuntimeException("Couldn't find weekly reward label!");
         }
         
-        /*
         // Tem que checar se tem ouro
-        BufferedImage openedChest = ImageUtil.loadResource("player/quests/icon_opened_chest.png");
-        Area openedChestArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(873, 582), Point.of(1274, 622));
-        List<Point> openedChestPoints = ImageUtil.searchMultiple(openedChest, screen, openedChestArea, 0.1);
-        
-        for (Point point : openedChestPoints) {
-            robot.leftClick(point.move(18, 28));
-            robot.sleep(300);
-        }
-        */
+        if (!SharedData.INSTANCE.shouldWait(player, Scenario.QUESTS_TRY_FULL_CHESTS))  {
 
+            List<Point> chests = new ArrayList<Point>();
+            chests.add(Point.of(910, 620));
+            chests.add(Point.of(990, 620));
+            chests.add(Point.of(1068, 620));
+            chests.add(Point.of(1144, 620));
+            chests.add(Point.of(1220, 620));
+            chests.add(Point.of(1304, 620));
+            
+            for (Point point : chests) {
+                robot.leftClick(point);
+                robot.sleep(450);
+            }
+            robot.sleep(1000); // Wait toast to disappear
+            SharedData.INSTANCE.setWait(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
+        }       
 
         Area claimArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
         BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
