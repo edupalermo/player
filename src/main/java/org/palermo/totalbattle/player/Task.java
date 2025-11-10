@@ -401,6 +401,11 @@ public class Task {
                 .label("3h")
                 .build());
         speedUps.add(SpeedUpBean.builder()
+                .image(ImageUtil.loadResource("player/speed_up/8h.png"))
+                .seconds(Duration.ofHours(8).getSeconds())
+                .label("8h")
+                .build());
+        speedUps.add(SpeedUpBean.builder()
                 .image(ImageUtil.loadResource("player/speed_up/15h.png"))
                 .seconds(Duration.ofHours(15).getSeconds())
                 .label("15h")
@@ -460,7 +465,7 @@ public class Task {
         }
         
 
-        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(782, 780));
+        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
         BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
 
         Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
@@ -469,8 +474,7 @@ public class Task {
 
         for (int i = 0; i < 4; i++) {
             screen = robot.captureScreen();
-            ImageUtil.showImageAndWait(screen, searchArea);
-            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.08).orElse(null);
+            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
             if (speedUpPoint != null) {
                 Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
                 Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
