@@ -29,6 +29,9 @@ public enum SharedData {
     // Prevent the user to be played automatically
     private final Set<String> lock = new HashSet<>();
 
+    // Prevent the user to be played automatically
+    private final Set<String> halt = new HashSet<>();
+
     // Store scenarios when the user needs to wait for the activity
     private final Map<String, Map<Scenario, LocalDateTime>> wait = new HashMap<>();
 
@@ -48,6 +51,18 @@ public enum SharedData {
 
     public void removeArena(Point point) {
         arenas.remove(point);
+    }
+
+    public void halt(Player player) {
+        halt.add(player.getName());
+    }
+
+    public boolean shouldHalt(Player player) {
+        return halt.contains(player.getName());
+    }
+
+    public boolean removeHalt(Player player) {
+        return halt.remove(player.getName());
     }
 
     public void lock(String playerName) {

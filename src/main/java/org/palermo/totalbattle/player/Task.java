@@ -2,7 +2,6 @@ package org.palermo.totalbattle.player;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.jcajce.provider.asymmetric.rsa.PSSSignatureSpi;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,6 +15,8 @@ import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
@@ -86,6 +87,8 @@ public class Task {
             //quests(player); // Retrieve open chests
             
             //summoningCircle();
+            
+            showPauseDialog("Waiting to continue...");
             
             buildArmy(player);
             
@@ -758,7 +761,7 @@ public class Task {
                 robot.leftClick(point);
                 robot.sleep(450);
             }
-            robot.sleep(2000); // Wait toast to disappear
+            robot.sleep(3500); // Wait toast to disappear
             SharedData.INSTANCE.setWait(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
         }
 
@@ -1353,5 +1356,40 @@ public class Task {
                                 .executeScript("return document.readyState")
                                 .equals("complete")
         );
+    }
+
+
+    /**
+     * Displays a blocking dialog with a single button.
+     * Execution will pause until the button is clicked.
+     *
+     * @param message the message to show in the dialog
+     */
+    public static void showPauseDialog(String message) {
+        // Use invokeAndWait to ensure dialog runs on the Event Dispatch Thread
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                createAndShowDialog(message);
+            } else {
+                SwingUtilities.invokeAndWait(() -> createAndShowDialog(message));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createAndShowDialog(String message) {
+        final JDialog dialog = new JDialog((Frame) null, "Paused", true); // true = modal (blocks)
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(new JLabel(message, SwingConstants.CENTER), BorderLayout.CENTER);
+
+        JButton continueButton = new JButton("Continue");
+        continueButton.addActionListener(e -> dialog.dispose());
+        dialog.add(continueButton, BorderLayout.SOUTH);
+
+        dialog.setSize(300, 150);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true); // this call blocks until the dialog is closed
     }
 }

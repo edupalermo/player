@@ -83,6 +83,12 @@ public class PlayerRunnable implements Runnable {
             }
             Task.quests(player);
             Task.collectChests();
+
+            if (SharedData.INSTANCE.shouldHalt(player)) {
+                Task.showPauseDialog("Click on the button to continue");
+                SharedData.INSTANCE.removeHalt(player);
+            }
+
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
                 Task.buildArmy(player);
