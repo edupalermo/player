@@ -83,11 +83,11 @@ public class PlayerRunnable implements Runnable {
             }
             Task.quests();
             Task.collectChests();
-            Task.helpClanMembers();
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
                 Task.buildArmy(player);
             }
+            Task.helpClanMembers();
             Task.summoningCircle();
 
         } catch (Exception e) {

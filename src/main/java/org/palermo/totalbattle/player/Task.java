@@ -1209,6 +1209,7 @@ public class Task {
         else {
             System.out.println("Clicked on help allies icon");
             robot.leftClick(point, iconHelpAllies);
+            robot.sleep(2500);
         }
     }
 
