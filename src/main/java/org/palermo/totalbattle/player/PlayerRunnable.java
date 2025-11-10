@@ -122,7 +122,7 @@ public class PlayerRunnable implements Runnable {
             Task.quests();
             Task.collectChests();
             Task.helpClanMembers();
-
+            Task.summoningCircle();
             if (SharedData.INSTANCE.hasTroopBuildPlan(player)) {
                 Task.buildArmy(player);
             }

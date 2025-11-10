@@ -20,13 +20,13 @@ import java.util.Set;
 
 public enum SharedData {
 
+    INSTANCE;
+
     private static final String PALERMO = "Palermo";
     private static final String PETER_II = "Peter II";
     private static final String MIGHTSHAPER = "Mightshaper";
     private static final String GRIRANA = "Grirana";
     private static final String ELANIN = "Elanin";
-
-    INSTANCE;
 
     private final List<Point> arenas = new ArrayList<Point>();
 
