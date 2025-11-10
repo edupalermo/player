@@ -450,7 +450,7 @@ public class Task {
         for (int r = 0; r < turns; r++) {
             
             if (r != 0) {
-                robot.mouseWheel(speedUpsTitlePoint.move(38, 304), - 500);
+                robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
                 robot.sleep(500);
             }
             
@@ -758,7 +758,7 @@ public class Task {
                 robot.leftClick(point);
                 robot.sleep(450);
             }
-            robot.sleep(1000); // Wait toast to disappear
+            robot.sleep(2000); // Wait toast to disappear
             SharedData.INSTANCE.setWait(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
         }
 
