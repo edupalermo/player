@@ -693,9 +693,12 @@ public class ImageUtil {
     }
 
     public static void showImageAndWait(BufferedImage image) {
-        showImageAndWait(image, null);
+        showImageAndWait(image, (String) null);
     }
 
+    public static void showImageAndWait(BufferedImage image, Area area) {
+        showImageAndWait(crop(image, area), (String) null);
+    }
 
     public static void showImageAndWait(BufferedImage image, String title) {
         Runnable ui = () -> {

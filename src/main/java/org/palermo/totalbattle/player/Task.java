@@ -246,10 +246,10 @@ public class Task {
         
         if (buttonFreePoint != null) {
             robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(5000);
+            robot.sleep(5500);
 
             screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 835, 932, 865);
+            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
             Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
 
             if (buttonReturnPoint == null) {
@@ -264,10 +264,10 @@ public class Task {
 
         if (buttonFreePoint != null) { // Button free is available
             robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(5000);
+            robot.sleep(5500);
 
             screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 835, 932, 865);
+            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
             Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
             
             if (buttonReturnPoint == null) {
@@ -836,7 +836,7 @@ public class Task {
         tabs.add(Point.of(78, 374));
         
         // Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
-        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(341, 873), Point.of(455, 896));
+        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(341, 873), Point.of(798, 896));
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/button_bs_free.png");
         BufferedImage iconHourglass = ImageUtil.loadResource("player/icon_bs_hourglass.png");
@@ -846,7 +846,7 @@ public class Task {
             robot.sleep(750);
 
             screen = robot.captureScreen();
-            
+
             Point buttonFreePoint = ImageUtil.search(buttonFree, screen, area, 0.1).orElse(null);
 
             if (buttonFreePoint != null) {
