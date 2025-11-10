@@ -72,28 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Palermo");
-        /*
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MOUNTED, 439L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_RANGED, 882L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MELEE, 882L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MOUNTED, 786L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_RANGED, 1579L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MELEE, 1579L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MOUNTED, 1423L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_RANGED, 2853L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MELEE, 2856L);
-         */
-        
-        SharedData.INSTANCE.setTroopTarget(player, Unit.S2_SWORDSMAN, 2856L);
-        //SharedData.INSTANCE.setTroopTarget(player, Unit.EMERALD_DRAGON, 29L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.WATER_ELEMENTAL, 73L);
-        //SharedData.INSTANCE.setTroopTarget(player, Unit.STONE_GARGOYLE, 25L);
-        //SharedData.INSTANCE.setTroopTarget(player, Unit.BATTLE_BOAR, 35L);
-
-        
+        Player player = players.get("Elanin");
         
         WebDriver driver = null;
         try {
@@ -508,12 +487,19 @@ public class Task {
 
         Map<Unit, Long> map = SharedData.INSTANCE.getTroopTarget(player);
         
+        boolean trainedSomething = false;
+        
         for (Map.Entry<Unit, Long> entry : map.entrySet()) {
             long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
             if (currentSize < entry.getValue().longValue()) {
                 train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+                trainedSomething = true;
                 break;
             }
+        }
+        
+        if (!trainedSomething) {
+            SharedData.INSTANCE.setWait(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
         }
     }
     
@@ -577,7 +563,7 @@ public class Task {
 
         // Click on train button
         robot.leftClick(trainButtonPoint);
-        robot.sleep(500);
+        robot.sleep(1500);
 
         // Click on help button
         robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
@@ -587,26 +573,28 @@ public class Task {
     private static void selectUnit(Point titleBarracksPoint, Unit unit) {
         long tierPos;
 
+        long wait = 350;
+        
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(200);
+                robot.sleep(wait);
 
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(200);
+                robot.sleep(wait);
 
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
                 // Click on Guardsman left tab
@@ -615,51 +603,51 @@ public class Task {
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
 
             case G5_GRIFFIN:
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(200);
+                robot.sleep(wait);
 
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
                 
             case S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN:
                 // Click on Specialists left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(200);
+                robot.sleep(wait);
 
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
 
             case EMERALD_DRAGON, MAGIC_DRAGON, DESERT_VANQUISER:
                 // Click on Dragons left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
 
             case WATER_ELEMENTAL, ICE_PHOENIX, FLAMING_CENTAUR:
                 // Click on Elementals left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
 
             case STONE_GARGOYLE, MANY_ARMED_GUARDIAN, ETTIN:  
                 // Click on Giants left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
                 
             case BATTLE_BOAR, GORGON_MEDUSA, FEARSOME_MANTICORE: 
                 // Click on Beats left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
-                robot.sleep(200);
+                robot.sleep(wait);
                 break;
             default:
                 throw new RuntimeException("Not implemented!");
