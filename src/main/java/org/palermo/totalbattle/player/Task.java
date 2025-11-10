@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Elanin");
+        Player player = players.get("Palermo");
         
         WebDriver driver = null;
         try {
@@ -324,42 +324,52 @@ public class Task {
         }
 
 
-        BufferedImage iconHourglass = ImageUtil.loadResource("player/barracks/icon_hourglass.png");
-        Area iconHourglassArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397));
-        Point iconHourglassPoint = ImageUtil.searchSurroundings(iconHourglass, screen, iconHourglassArea, 0.1, 20).orElse(null);
-        
-        if (iconHourglassPoint == null) {
-            
-            BufferedImage buttonComplete = ImageUtil.loadResource("player/barracks/button_complete.png");
-            Area buttonCompleteArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
-            Point buttonCompletePoint = ImageUtil.search(buttonComplete, screen, buttonCompleteArea, 0.1).orElse(null);
-            
-            if (buttonCompletePoint != null) {  
-                robot.leftClick(buttonCompletePoint, buttonComplete);
-                robot.sleep(200);
-            }
-            
-            chooseTroopToBuild(player, titleBarracksPoint);
+        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
+
+        BufferedImage buttonHelp = ImageUtil.loadResource("player/barracks/button_help.png");
+        Point buttonHelpPoint = ImageUtil.search(buttonHelp, screen, buttonArea, 0.1).orElse(null);
+        if (buttonHelpPoint != null) {
+            robot.leftClick(buttonHelpPoint, buttonHelp);
+            robot.sleep(200);
         }
         else {
-            BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
-            timeLeft = ImageUtil.toGrayscale(timeLeft);
-            timeLeft = ImageUtil.invertGrayscale(timeLeft);
-            timeLeft = ImageUtil.linearNormalization(timeLeft);
-            String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.SINGLE_LINE_MODE);
-            System.out.println("Time Left: " + timeLeftAsText);
-            
-            LocalDateTime nextLocalDateTime = calculateNext(timeLeftAsText).orElse(null);
-            if (nextLocalDateTime == null) {
-                throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+            BufferedImage iconHourglass = ImageUtil.loadResource("player/barracks/icon_hourglass.png");
+            Area iconHourglassArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397));
+            Point iconHourglassPoint = ImageUtil.searchSurroundings(iconHourglass, screen, iconHourglassArea, 0.1, 20).orElse(null);
+
+            if (iconHourglassPoint != null) {
+                BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
+                timeLeft = ImageUtil.toGrayscale(timeLeft);
+                timeLeft = ImageUtil.invertGrayscale(timeLeft);
+                timeLeft = ImageUtil.linearNormalization(timeLeft);
+                String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.SINGLE_LINE_MODE);
+                System.out.println("Time Left: " + timeLeftAsText);
+
+                LocalDateTime nextLocalDateTime = calculateNext(timeLeftAsText).orElse(null);
+                if (nextLocalDateTime == null) {
+                    throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+                }
+
+                // Click of the speed-up button
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+                robot.sleep(350);
+
+                speedUp(nextLocalDateTime);
             }
-            
-            // Click of the speed-up button
-            robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
-            robot.sleep(350);
-        
-            speedUp(nextLocalDateTime);
+            else { // No Hourglass and No Help button
+                BufferedImage buttonComplete = ImageUtil.loadResource("player/barracks/button_complete.png");
+                Point buttonCompletePoint = ImageUtil.search(buttonComplete, screen, buttonArea, 0.1).orElse(null);
+
+                if (buttonCompletePoint != null) {
+                    robot.leftClick(buttonCompletePoint, buttonComplete);
+                    robot.sleep(200);
+                }
+
+                chooseTroopToBuild(player, titleBarracksPoint);
+            }
         }
+
+
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
@@ -868,31 +878,55 @@ public class Task {
         Pattern pattern = Pattern.compile("(\\d+)h[:]?([\\d+]+)m");
         Matcher matcher = pattern.matcher(input.trim());
 
+        int days = 0;
         int hours = 0;
         int minutes = 0;
         int seconds = 0;
+        
+        boolean parsed = false;
 
         if (matcher.matches()) {
             hours = Integer.parseInt(matcher.group(1));
             minutes = Integer.parseInt(matcher.group(2));
+            parsed = true;
         }
-        else {
+        
+        if (!parsed) {
             pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)5");
             matcher = pattern.matcher(input.trim());
-            if (!matcher.matches()) {
-                pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)s");
-                matcher = pattern.matcher(input.trim());
-                if (!matcher.matches()) {
-                    log.error("Impossible to parse: {}", input);
-                    return Optional.empty();
-                }
+            if (matcher.matches()) {
+                minutes = Integer.parseInt(matcher.group(1));
+                seconds = Integer.parseInt(matcher.group(2));
+                parsed = true;
             }
-            minutes = Integer.parseInt(matcher.group(1));
-            seconds = Integer.parseInt(matcher.group(2));
         }
 
+        if (!parsed) {
+            pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)s");
+            matcher = pattern.matcher(input.trim());
+            if (matcher.matches()) {
+                minutes = Integer.parseInt(matcher.group(1));
+                seconds = Integer.parseInt(matcher.group(2));
+                parsed = true;
+            }
+        }
+
+        if (!parsed) {
+            pattern = Pattern.compile("(\\d+)d[:]?([\\d+]+)h");
+            matcher = pattern.matcher(input.trim());
+            if (matcher.matches()) {
+                days = Integer.parseInt(matcher.group(1));
+                hours = Integer.parseInt(matcher.group(2));
+                parsed = true;
+            }
+        }
+        
+        if (!parsed) {
+            throw new RuntimeException("Impossible to parse " + input);
+        }
         
         LocalDateTime answer = LocalDateTime.now()
+                .plusDays(days)
                 .plusHours(hours)
                 .plusMinutes(minutes)
                 .plusSeconds(seconds);

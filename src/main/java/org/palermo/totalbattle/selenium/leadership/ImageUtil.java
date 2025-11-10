@@ -27,7 +27,7 @@ public class ImageUtil {
 
     private static final int GRAY_THRESHOLD = 255;
 
-    public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:hms";
+    public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH = "0123456789,/";
     public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
