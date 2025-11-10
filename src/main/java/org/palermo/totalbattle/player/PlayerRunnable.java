@@ -12,7 +12,7 @@ public class PlayerRunnable implements Runnable {
 
     private static List<Player> players = new ArrayList<>();
     static {
-        players.put("Palermo", Player.builder()
+        players.add(Player.builder()
                 .name("Palermo")
                 .profileFolder("chrome-profiles/palermo")
                 .username("fp2268@gmail.com")
