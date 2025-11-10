@@ -465,9 +465,12 @@ public class Task {
 
         Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
 
+        log.info("Searching for {}", bestSpeedUp.getLabel());
+
         for (int i = 0; i < 4; i++) {
             screen = robot.captureScreen();
-            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.07).orElse(null);
+            ImageUtil.showImageAndWait(screen, searchArea);
+            Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.08).orElse(null);
             if (speedUpPoint != null) {
                 Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
                 Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
