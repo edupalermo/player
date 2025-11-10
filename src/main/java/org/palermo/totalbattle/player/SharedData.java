@@ -130,7 +130,7 @@ public enum SharedData {
         int[] qtds = builder.build().resolve();
 
         for (int i = 0; i < qtds.length; i++) {
-            setTroopTarget(player, units.get(i), (long) computeWaves(qtds[i], 3));
+            setTroopTarget(player, units.get(i), (long) computeWaves(qtds[i], waves));
         }
     }
     
