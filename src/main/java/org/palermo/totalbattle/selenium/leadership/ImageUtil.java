@@ -118,7 +118,7 @@ public class ImageUtil {
         long crc = crcImage(item);
         Point past = searchSurroundingsHistory.get(crc);
         Point actual = null;
-        if (past != null) {
+        if (past != null && area.contain(past)) {
             int x = Math.max(0, past.getX() - variation);
             int y = Math.max(0, past.getY() - variation);
             int width = Math.min(screen.getWidth() - x, item.getWidth() + (2 * variation));
@@ -207,7 +207,7 @@ public class ImageUtil {
         // System.out.println("Difference: " + difference + " Percentage: " + percentage);
         
         if (percentage > limit) {
-            System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
+            // System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
             return Optional.empty();
         }
 
@@ -216,7 +216,7 @@ public class ImageUtil {
             IoUtil.serializeToFile(HISTORY_FILENAME, history);
         }
         
-        System.out.println("Best " + best.getX() + " " + best.getY() + " "  + percentage + " search took " + clock.elapsedTime());
+        // System.out.println("Best " + best.getX() + " " + best.getY() + " "  + percentage + " search took " + clock.elapsedTime());
         return Optional.of(best);
     }
     

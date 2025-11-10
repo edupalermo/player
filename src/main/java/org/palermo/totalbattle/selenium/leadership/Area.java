@@ -1,5 +1,7 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,6 +9,7 @@ import java.awt.*;
 
 @Getter
 @Builder
+@JsonDeserialize(builder = Area.AreaBuilder.class)
 public class Area {
 
     private final int x;
@@ -15,6 +18,8 @@ public class Area {
     private final int width;
     private final int height;
 
+    @JsonPOJOBuilder(withPrefix = "") // Lombok builder uses methods x(..), y(..) not setX(..)
+    public static class AreaBuilder {}
 
     public static Area of(Point real, Point reference, Point start, Point finish) {
         return Area.builder()
@@ -43,6 +48,10 @@ public class Area {
                 .build();
     }
 
+    public static Area of(double x, double y, double width, double height) {
+        return Area.of((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+    }
+
     public static Area fromTwoPoints(int x1, int y1, int x2, int y2) {
         return Area.builder()
                 .x(Math.min(x1, x2))
@@ -54,6 +63,13 @@ public class Area {
     
     public static Area fromTwoPoints(Point p1, Point p2) {
         return fromTwoPoints(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+    }
+    
+    public boolean contain(Point point) {
+        return this.x <= point.getX() 
+                && this.y <= point.getY()
+                && this.x + this.width > point.getX()
+                && this.y + this.height > point.getY();
     }
 
     public Rectangle toRectangle() {

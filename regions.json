@@ -1,0 +1,26 @@
+{
+  "SUMMON_CIRCLE_COMMON_1_RETRIEVED_RETURN_BUTTON" : {
+    "x" : 724,
+    "y" : 823,
+    "width" : 261,
+    "height" : 56
+  },
+  "SUMMON_CIRCLE_COMMON_1_ON_BUTTON" : {
+    "x" : 479,
+    "y" : 768,
+    "width" : 290,
+    "height" : 55
+  },
+  "SUMMON_CIRCLE_ELITE_1_ON_BUTTON" : {
+    "x" : 1030,
+    "y" : 772,
+    "width" : 261,
+    "height" : 46
+  },
+  "SUMMON_CIRCLE_ELITE_1_RETRIEVED_RETURN_BUTTON" : {
+    "x" : 769,
+    "y" : 825,
+    "width" : 190,
+    "height" : 51
+  }
+}

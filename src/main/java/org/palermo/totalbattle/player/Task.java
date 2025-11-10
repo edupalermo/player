@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.PSSSignatureSpi;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -41,18 +42,38 @@ public class Task {
                 .username("fp2268@gmail.com")
                 .password("Alemanha79")
                 .build());
+        players.put("Peter II", Player.builder()
+                .name("Peter II")
+                .profileFolder("chrome-profiles/peter_ii")
+                .username("edupalermo@gmail.com")
+                .password("Alemanha79")
+                .build());
+        players.put("Mightshaper", Player.builder()
+                .name("Mightshaper")
+                .profileFolder("chrome-profiles/mightshaper")
+                .username("edupalermo+01@gmail.com")
+                .password("Alemanha79")
+                .build());
+        players.put("Grirana", Player.builder()
+                .name("Grirana")
+                .profileFolder("chrome-profiles/grirana")
+                .username("edupalermo+02@gmail.com")
+                .password("Alemanha79")
+                .build());
         players.put("Elanin", Player.builder()
                 .name("Elanin")
-                .profileFolder("chrome-profiles/edupalermo_03@gmail.com")
+                .profileFolder("chrome-profiles/elanin")
                 .username("edupalermo+03@gmail.com")
                 .password("Alemanha79")
                 .build());
+        
     }
 
 
     public static void main(String[] args) {
         
-        Player player = players.get("Elanin");
+        Player player = players.get("Palermo");
+        /*
         SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MOUNTED, 439L);
         SharedData.INSTANCE.setTroopTarget(player, Unit.G3_RANGED, 882L);
         SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MELEE, 882L);
@@ -64,33 +85,34 @@ public class Task {
         SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MOUNTED, 1423L);
         SharedData.INSTANCE.setTroopTarget(player, Unit.G1_RANGED, 2853L);
         SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MELEE, 2856L);
-        //SharedData.INSTANCE.setTroopTarget(player, Unit.S1_SWORDSMAN, 2856L);
+         */
         
-        /*
-        SharedData.INSTANCE.setTroopTarget(player, Unit.EMERALD_DRAGON, 29L);
+        SharedData.INSTANCE.setTroopTarget(player, Unit.S2_SWORDSMAN, 2856L);
+        //SharedData.INSTANCE.setTroopTarget(player, Unit.EMERALD_DRAGON, 29L);
         SharedData.INSTANCE.setTroopTarget(player, Unit.WATER_ELEMENTAL, 73L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.STONE_GARGOYLE, 25L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.BATTLE_BOAR, 35L);
-        */
+        //SharedData.INSTANCE.setTroopTarget(player, Unit.STONE_GARGOYLE, 25L);
+        //SharedData.INSTANCE.setTroopTarget(player, Unit.BATTLE_BOAR, 35L);
 
+        
+        
         WebDriver driver = null;
         try {
             driver = openBrowser(player);
             login(player);
             
-            //attackArena(Point.of(378, 452));
+            // attackArena(Point.of(351, 447));
             
             // collectChests(); // Retrieve chests
             
-            // quests(); // Retrieve open chests
+            //quests(); // Retrieve open chests
             
-            //summoningCircle();
+            // summoningCircle();
             
             buildArmy(player);
             
             //freeSale(player);
             
-            helpClanMembers();
+            //helpClanMembers();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
@@ -104,6 +126,195 @@ public class Task {
     }
     
     public static void summoningCircle() {
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(150);
+
+
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage labelCity = ImageUtil.loadResource("player/label_city.png");
+        Area labelCityArea = Area.fromTwoPoints(664, 1059, 716, 1075);
+        Point labelCityPoint = ImageUtil.searchSurroundings(labelCity, screen, labelCityArea, 0.1, 20).orElse(null);
+        
+        if (labelCityPoint != null) {
+            robot.leftClick(labelCityPoint.move(10, -30));
+            robot.sleep(2500);
+        }
+
+
+        screen = robot.captureScreen();
+        BufferedImage iconZoomMinus = ImageUtil.loadResource("player/icon_zoom_minus.png");
+        Area iconZoomMinusArea = Area.fromTwoPoints(1791, 1003, 1836, 1044);
+        Point iconZoomMinusPoint = ImageUtil.searchSurroundings(iconZoomMinus, screen, iconZoomMinusArea, 0.1, 20).orElse(null);
+        
+        if (iconZoomMinusPoint == null) {
+            throw new RuntimeException("Icon zoom minus not found!");
+        }
+
+        for (int i = 0; i < 4; i++) {
+            robot.leftClick(iconZoomMinusPoint, iconZoomMinus);
+            robot.sleep(250);
+        }
+        
+        robot.mouseDrag(Point.of(1350, 446), -340, 150);
+        robot.sleep(250);
+
+        screen = robot.captureScreen();
+        BufferedImage scIcon = ImageUtil.loadResource("player/sc/sc_ground.png");
+        Area scIconArea = Area.fromTwoPoints(878, 391, 1040, 463);
+        Point scIconPoint = ImageUtil.searchSurroundings(scIcon, screen, scIconArea, 0.1, 20).orElse(null);
+
+        if (scIconPoint == null) {
+            throw new RuntimeException("Summoning circle icon ground not found!");
+        }
+        robot.leftClick(scIconPoint, scIcon);
+        robot.sleep(1000);
+
+        screen = robot.captureScreen();
+        BufferedImage iconCaptainSummon = ImageUtil.loadResource("player/sc/icon_captain_summon.png");
+        Area iconCaptainSummonArea = Area.fromTwoPoints(931, 450, 1003, 530);
+        Point iconCaptainSummonPoint = ImageUtil.searchSurroundings(iconCaptainSummon, screen, iconCaptainSummonArea, 0.1, 20).orElse(null);
+
+        if (iconCaptainSummonPoint == null) {
+            throw new RuntimeException("Captain summon icon not found!");
+        }
+        robot.leftClick(iconCaptainSummonPoint, iconCaptainSummon);
+        robot.sleep(1000);
+
+        captainSummon();
+        
+        artifactSummon();
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(150);
+    }
+    
+    private static void artifactSummon() {
+
+        BufferedImage screen = robot.captureScreen();
+
+        BufferedImage iconArtifact = ImageUtil.loadResource("player/sc/icon_artifact.png");
+        Area iconArtifactArea = Area.fromTwoPoints(1692, 225, 1833, 312);
+
+        ImageUtil.write(ImageUtil.crop(screen, iconArtifactArea), "error_screen.png");
+        ImageUtil.write(iconArtifact, "error_image.png");
+
+        Point iconArtifactPoint = ImageUtil.searchSurroundings(iconArtifact, screen, iconArtifactArea, 0.1, 20).orElse(null);
+        
+        if (iconArtifactPoint == null) {
+            System.out.println("User doesn't have Artifact collection");
+            // TODO Delay scenario for 24 hours?
+            return;
+        }
+        robot.leftClick(iconArtifactPoint, iconArtifact);
+        robot.sleep(750);
+
+        screen = robot.captureScreen();
+        BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
+        Area buttonFreeArea = Area.fromTwoPoints(795, 779, 936, 807);
+        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonFreeArea));
+        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+
+        if (buttonFreePoint != null) {
+            robot.leftClick(buttonFreePoint, buttonFree);
+            robot.sleep(7500);
+
+            screen = robot.captureScreen();
+            BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
+            Area buttonReturnArea = Area.fromTwoPoints(684, 835, 1032, 865);
+            //ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonReturnArea));
+            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+
+            if (buttonReturnPoint == null) {
+                throw new RuntimeException("Button return icon not found!");
+            }
+            robot.leftClick(buttonReturnPoint, buttonReturn);
+            robot.sleep(500);
+        }
+    }
+    
+    private static void captainSummon() {
+        BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
+
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
+        Area buttonFreeArea = Area.fromTwoPoints(568, 771, 726, 811);
+        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+        
+        if (buttonFreePoint != null) {
+            robot.leftClick(buttonFreePoint, buttonFree);
+            robot.sleep(5000);
+
+            screen = robot.captureScreen();
+            Area buttonReturnArea = Area.fromTwoPoints(784, 835, 932, 865);
+            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+
+            if (buttonReturnPoint == null) {
+                throw new RuntimeException("Button return icon not found!");
+            }
+            robot.leftClick(buttonReturnPoint, buttonReturn);
+            robot.sleep(500);
+        }
+        
+        buttonFreeArea = Area.fromTwoPoints(1084, 771, 1247, 811);
+        buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+
+        if (buttonFreePoint != null) { // Button free is available
+            robot.leftClick(buttonFreePoint, buttonFree);
+            robot.sleep(5000);
+
+            screen = robot.captureScreen();
+            Area buttonReturnArea = Area.fromTwoPoints(784, 835, 932, 865);
+            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+            
+            if (buttonReturnPoint == null) {
+                throw new RuntimeException("Button return icon not found!");
+            }
+            robot.leftClick(buttonReturnPoint, buttonReturn);
+            robot.sleep(500);
+        }
+
+        screen = robot.captureScreen();
+        BufferedImage buttonSummonCaptainOn = ImageUtil.loadResource("player/sc/button_summon_captain_on.png");
+        Area buttonSummonCaptainOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_ON_BUTTON", screen);
+        
+        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.1, 20).orElse(null);
+        if (buttonSummonCaptainOnPoint != null) {
+            robot.leftClick(buttonSummonCaptainOnPoint, buttonSummonCaptainOn);
+            robot.sleep(5000);
+
+            screen = robot.captureScreen();
+            Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_RETRIEVED_RETURN_BUTTON", screen);
+            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+
+            if (buttonReturnPoint == null) {
+                throw new RuntimeException("Button return icon not found!");
+            }
+            robot.leftClick(buttonReturnPoint, buttonReturn);
+            robot.sleep(500);
+        }
+
+
+        screen = robot.captureScreen();
+        Area buttonSummonEliteOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_ON_BUTTON", screen);
+        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.1, 20).orElse(null);
+        if (buttonSummonEliteOnPoint != null) {
+            robot.leftClick(buttonSummonEliteOnPoint, buttonSummonCaptainOn);
+            robot.sleep(5000);
+
+            screen = robot.captureScreen();
+            Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_RETRIEVED_RETURN_BUTTON", screen);
+            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+
+            if (buttonReturnPoint == null) {
+                throw new RuntimeException("Button return icon not found!");
+            }
+            robot.leftClick(buttonReturnPoint, buttonReturn);
+            robot.sleep(500);
+        }
         
     }
 
@@ -149,7 +360,6 @@ public class Task {
                 robot.sleep(200);
             }
             
-            
             chooseTroopToBuild(player, titleBarracksPoint);
         }
         else {
@@ -170,8 +380,6 @@ public class Task {
             robot.sleep(350);
         
             speedUp(nextLocalDateTime);
-
-
         }
 
         robot.type(KeyEvent.VK_ESCAPE);
@@ -308,7 +516,7 @@ public class Task {
             }
         }
     }
-
+    
     private static void train(Point titleBarracksPoint, Unit unit, long quantity) {
 
         selectUnit(titleBarracksPoint, unit);
@@ -317,25 +525,32 @@ public class Task {
         Area silverArea = null;
         Area foodArea = null;
         Point trainButtonPoint = null;
+        
         switch (unit) {
-            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, G5_GRIFFIN,
+                 EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814));
                 break;
-            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
+                 MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35), Point.of(798 + 261, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 261, 814));
                 break;
-            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
+                 DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 522, 814));
                 break;
+                
+            default:
+                throw new RuntimeException("Not implemented for unit " + unit.name());
         }
 
         if (textPoint == null) {
@@ -371,7 +586,6 @@ public class Task {
     
     private static void selectUnit(Point titleBarracksPoint, Unit unit) {
         long tierPos;
-        Area area = null;
 
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
@@ -387,6 +601,7 @@ public class Task {
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                robot.sleep(200);
 
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
@@ -402,6 +617,52 @@ public class Task {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
                 robot.sleep(200);
                 break;
+
+            case G5_GRIFFIN:
+                // Click on Guardsman left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                robot.sleep(200);
+
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                robot.sleep(200);
+                break;
+                
+            case S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN:
+                // Click on Specialists left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                robot.sleep(200);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                robot.sleep(200);
+                break;
+
+            case EMERALD_DRAGON, MAGIC_DRAGON, DESERT_VANQUISER:
+                // Click on Dragons left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
+                robot.sleep(200);
+                break;
+
+            case WATER_ELEMENTAL, ICE_PHOENIX, FLAMING_CENTAUR:
+                // Click on Elementals left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
+                robot.sleep(200);
+                break;
+
+            case STONE_GARGOYLE, MANY_ARMED_GUARDIAN, ETTIN:  
+                // Click on Giants left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
+                robot.sleep(200);
+                break;
+                
+            case BATTLE_BOAR, GORGON_MEDUSA, FEARSOME_MANTICORE: 
+                // Click on Beats left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
+                robot.sleep(200);
+                break;
+            default:
+                throw new RuntimeException("Not implemented!");
         }
     }
 
@@ -411,13 +672,16 @@ public class Task {
         selectUnit(titleBarracksPoint, unit);
         
         switch (unit) {
-            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED :
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN,
+                 EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852, 677), Point.of(912, 699));
                 break;
-            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
+                 MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
-            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED, 
+                 DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
                 break;
         }
@@ -431,6 +695,8 @@ public class Task {
         quantityImage = ImageUtil.toGrayscale(quantityImage);
         quantityImage = ImageUtil.invertGrayscale(quantityImage);
         quantityImage = ImageUtil.linearNormalization(quantityImage);
+        
+        //ImageUtil.showImageAndWait(quantityImage);
         
         String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
         System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);        
@@ -451,7 +717,7 @@ public class Task {
             throw new RuntimeException("Couldn't find quests label!");
         }
 
-        // Click on the clan Icon
+        // Click on the Quests icon
         robot.leftClick(labelQuestesPoint.move(14, -30));
         robot.sleep(1000);
 
@@ -464,6 +730,18 @@ public class Task {
             ImageUtil.write(labelQuestes, "error_image.png");
             throw new RuntimeException("Couldn't find weekly reward label!");
         }
+        
+        /*
+        // Tem que checar se tem ouro
+        BufferedImage openedChest = ImageUtil.loadResource("player/quests/icon_opened_chest.png");
+        Area openedChestArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(873, 582), Point.of(1274, 622));
+        List<Point> openedChestPoints = ImageUtil.searchMultiple(openedChest, screen, openedChestArea, 0.1);
+        
+        for (Point point : openedChestPoints) {
+            robot.leftClick(point.move(18, 28));
+            robot.sleep(300);
+        }
+        */
 
 
         Area claimArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
@@ -748,8 +1026,9 @@ public class Task {
     
     public static void login(Player player) {
         BufferedImage linkLoginImage = ImageUtil.loadResource("player/link_login.png");
+        Area linkLoginImageArea = Area.fromTwoPoints(347, 459, 591, 548);
         BufferedImage screen = robot.captureScreen();
-        Point linkLoginPoint = ImageUtil.searchSurroundings(linkLoginImage, screen, 0.1, 20).orElse(null);
+        Point linkLoginPoint = ImageUtil.searchSurroundings(linkLoginImage, screen, linkLoginImageArea,0.1, 20).orElse(null);
 
         if (linkLoginPoint != null) {
             System.out.println("Login link found");
@@ -765,7 +1044,8 @@ public class Task {
         boolean found = false;
         do {
             screen = robot.captureScreen();
-            Point point = ImageUtil.searchSurroundings(labelClan, screen, 0.12, 20).orElse(null);
+            Area labelClanArea = Area.fromTwoPoints(Point.of(989, 1012), Point.of(1074, 1035));
+            Point point = ImageUtil.searchSurroundings(labelClan, screen, labelClanArea, 0.12, 20).orElse(null);
             if (point != null) {
                 found = true;
             }
@@ -848,15 +1128,14 @@ public class Task {
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(1000);
 
-
-
-
         // robot.leftClick(Point.of(959, 563)); // Click in the center Should depend on the zoom level
         robot.leftClick(Point.of(965, 563)); // Click in the center Should depend on the zoom level
         robot.sleep(1000);
 
+        BufferedImage screen = robot.captureScreen();
         BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
-        Point labelArenaPoint = waitImage(labelArena, "Label Arena", 3000).orElse(null);
+        Area labelArenaArea = Area.fromTwoPoints(896, 305, 1034, 338);
+        Point labelArenaPoint = ImageUtil.search(labelArena, screen, labelArenaArea, 0.1).orElse(null);
         
         if (labelArenaPoint == null) {
             System.out.println("Arena doesn't exist anymore!");
@@ -865,8 +1144,8 @@ public class Task {
             return false;
         }
 
+        screen = robot.captureScreen();
         BufferedImage iconCheckmark = ImageUtil.loadResource("player/icon_checkmark.png");
-        BufferedImage screen = robot.captureScreen();
         Area areaForCheckmark = Area.of(labelArenaPoint, Point.of(971, 322), Point.of(865, 705), Point.of(901, 739));
         // ImageUtil.showImageAndWait(ImageUtil.crop(screen, areaForCheckmark));
         Point iconCheckmarkPoint = ImageUtil.search(iconCheckmark, screen, areaForCheckmark, 0.1)
