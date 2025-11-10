@@ -99,10 +99,10 @@ public enum SharedData {
     }
 
     {
-        setArmy(PALERMO, 3, 25828, 6457, 12914);
-        setArmy(PETER_II, 3, 13158, 3353, 6706);
-        setArmy(MIGHTSHAPER, 3, 12258, 3073, 6125);
-        setArmy(GRIRANA, 3, 2625, 636, 1260);
+        setArmy(PALERMO, 3, 15526, 3932, 7865);
+        setArmy(PETER_II, 3, 7234, 1781, 3628);
+        setArmy(MIGHTSHAPER, 3, 7552, 1843, 3749);
+        setArmy(GRIRANA, 3, 2875, 717, 1420);
         setArmy(ELANIN, 3, 2725, 670, 1340);
     }
     

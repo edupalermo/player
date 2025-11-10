@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Palermo");
+        Player player = players.get("Elanin");
         
         WebDriver driver = null;
         try {
@@ -83,11 +83,11 @@ public class Task {
             
             // collectChests(); // Retrieve chests
             
-             quests(player); // Retrieve open chests
+            //quests(player); // Retrieve open chests
             
-            // summoningCircle();
+            //summoningCircle();
             
-            //buildArmy(player);
+            buildArmy(player);
             
             //freeSale(player);
             
@@ -260,7 +260,7 @@ public class Task {
         BufferedImage buttonSummonCaptainOn = ImageUtil.loadResource("player/sc/button_summon_captain_on.png");
         Area buttonSummonCaptainOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_ON_BUTTON", screen);
         
-        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.03, 20).orElse(null);
+        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.04, 20).orElse(null);
         if (buttonSummonCaptainOnPoint != null) {
             robot.leftClick(buttonSummonCaptainOnPoint, buttonSummonCaptainOn);
             robot.sleep(5000);
@@ -279,7 +279,7 @@ public class Task {
 
         screen = robot.captureScreen();
         Area buttonSummonEliteOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_ON_BUTTON", screen);
-        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.03, 20).orElse(null);
+        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.04, 20).orElse(null);
         if (buttonSummonEliteOnPoint != null) {
             robot.leftClick(buttonSummonEliteOnPoint, buttonSummonCaptainOn);
             robot.sleep(5000);
@@ -747,7 +747,7 @@ public class Task {
                 robot.leftClick(point);
                 robot.sleep(450);
             }
-            robot.sleep(3500); // Wait toast to disappear
+            robot.sleep(1000); // Wait toast to disappear
             SharedData.INSTANCE.setWait(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
         }
 
