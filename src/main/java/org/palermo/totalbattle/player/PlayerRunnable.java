@@ -12,14 +12,12 @@ public class PlayerRunnable implements Runnable {
 
     private static List<Player> players = new ArrayList<>();
     static {
-        /*
         players.put("Palermo", Player.builder()
                 .name("Palermo")
                 .profileFolder("chrome-profiles/palermo")
                 .username("fp2268@gmail.com")
                 .password("Alemanha79")
                 .build());
-         */
         players.add(Player.builder()
                 .name("Peter II")
                 .profileFolder("chrome-profiles/peter_ii")
@@ -44,42 +42,6 @@ public class PlayerRunnable implements Runnable {
                 .username("edupalermo+03@gmail.com")
                 .password("Alemanha79")
                 .build());
-
-
-
-
-        Player player = players.stream()
-                .filter((p) -> p.getName().equals("Grirana"))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Could not find player"));
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MOUNTED, 522L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_RANGED, 1047L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MELEE, 1047L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MOUNTED, 933L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_RANGED, 1875L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MELEE, 1875L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MOUNTED, 1690L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_RANGED, 3384L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MELEE, 3384L);
-
-        player = players.stream()
-                .filter((p) -> p.getName().equals("Elanin"))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Could not find player"));
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MOUNTED, 439L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_RANGED, 882L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G3_MELEE, 882L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MOUNTED, 786L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_RANGED, 1579L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G2_MELEE, 1579L);
-
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MOUNTED, 1423L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_RANGED, 2853L);
-        SharedData.INSTANCE.setTroopTarget(player, Unit.G1_MELEE, 2856L);
-
     }
 
 
