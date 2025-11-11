@@ -28,5 +28,17 @@
     "y" : 327,
     "width" : 369,
     "height" : 47
+  },
+  "TOP_UP_SILVER_SILVER_ICON" : {
+    "x" : 707,
+    "y" : 358,
+    "width" : 132,
+    "height" : 89
+  },
+  "TOP_UP_SILVER_FIRST_USE_BUTTON" : {
+    "x" : 976,
+    "y" : 511,
+    "width" : 225,
+    "height" : 58
   }
 }

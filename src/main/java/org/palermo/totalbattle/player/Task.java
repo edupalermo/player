@@ -18,6 +18,7 @@ import org.palermo.totalbattle.selenium.stacking.Unit;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -73,7 +74,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Mightshaper");
+        Player player = players.get("Palermo");
         
         WebDriver driver = null;
         try {
@@ -87,8 +88,6 @@ public class Task {
             //quests(player); // Retrieve open chests
             
             //summoningCircle();
-            
-            showPauseDialog("Waiting to continue...");
             
             buildArmy(player);
             
@@ -550,6 +549,10 @@ public class Task {
         Area foodArea = null;
         Point trainButtonPoint = null;
         
+        Point silverPoint = null;
+        Point foodPoint = null;
+
+
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, G5_GRIFFIN,
                  EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR:
@@ -557,6 +560,7 @@ public class Task {
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814));
+                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
@@ -564,6 +568,7 @@ public class Task {
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35), Point.of(798 + 261, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 261, 814));
+                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 780));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
@@ -571,6 +576,7 @@ public class Task {
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 522, 814));
+                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1268, 780));
                 break;
                 
             default:
@@ -590,7 +596,7 @@ public class Task {
         BufferedImage colorOkImage = ImageUtil.loadResource("player/barracks/color_ok.png");
 
         if (ImageUtil.search(colorOkImage, screen, silverArea, 0.1).isEmpty()) {
-            System.out.println("Not enough silver!");
+            fillSilver(silverPoint);
             return;
         }
 
@@ -606,6 +612,40 @@ public class Task {
         // Click on help button
         robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
         robot.sleep(350);
+    }
+    
+    private static void fillSilver(Point point) {
+        robot.leftClick(point);
+        robot.sleep(500);
+        
+        BufferedImage screen = robot.captureScreen();
+        Area iconSilverArea = RegionSelector.selectArea("TOP_UP_SILVER_SILVER_ICON", screen);
+        BufferedImage iconSilver = ImageUtil.loadResource("player/icon_silver.png");
+        Point iconSilverPoint = ImageUtil.searchSurroundings(iconSilver, screen, iconSilverArea, 0.1, 20).orElse(null);
+        
+        if (iconSilverPoint == null) {
+            throw new RuntimeException("Icon silver not found!");
+        }
+
+        boolean stillHasSavedResources;
+        
+        do {
+            screen = robot.captureScreen();
+            Area buttonUseArea = RegionSelector.selectArea("TOP_UP_SILVER_FIRST_USE_BUTTON", screen);
+            BufferedImage buttonUse = ImageUtil.loadResource("player/button_use.png");
+            Point buttonUsePoint = ImageUtil.searchSurroundings(buttonUse, screen, buttonUseArea, 0.1, 20).orElse(null);
+            
+            if (buttonUsePoint != null) {
+                robot.leftClick(buttonUsePoint, buttonUse);
+                robot.sleep(300);
+            }
+
+            stillHasSavedResources = buttonUsePoint != null;
+            
+        } while(stillHasSavedResources);
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
     }
     
     private static void selectUnit(Point titleBarracksPoint, Unit unit) {

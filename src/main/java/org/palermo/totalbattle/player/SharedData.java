@@ -183,15 +183,15 @@ public enum SharedData {
         
         switch (player.getName()) {
             case PALERMO:
-                output = increase(output, Unit.G5_MOUNTED, 1000);
-                output = increase(output, Unit.G5_RANGED, 2000);
-                output = increase(output, Unit.G5_MELEE, 2000);
-                output = increase(output, Unit.G5_GRIFFIN, 100);
+                output = increase(output, Unit.G5_MOUNTED, 2000);
+                output = increase(output, Unit.G5_RANGED, 4000);
+                output = increase(output, Unit.G5_MELEE, 4000);
+                output = increase(output, Unit.G5_GRIFFIN, 200);
                 break;
             case PETER_II, MIGHTSHAPER:
-                output = increase(output, Unit.G4_MOUNTED, 1000);
-                output = increase(output, Unit.G4_RANGED, 2000);
-                output = increase(output, Unit.G4_MELEE, 2000);
+                output = increase(output, Unit.G4_MOUNTED, 2000);
+                output = increase(output, Unit.G4_RANGED, 4000);
+                output = increase(output, Unit.G4_MELEE, 4000);
                 break;
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.G3_MOUNTED, 1000);
