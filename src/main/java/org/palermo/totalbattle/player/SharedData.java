@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.player;
 
+import org.palermo.totalbattle.player.bean.UnitQuantity;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
@@ -114,11 +115,11 @@ public enum SharedData {
     }
 
     {
-        setArmy(PALERMO, 3, 15526, 3932, 7865);
-        setArmy(PETER_II, 3, 7234, 1781, 3628);
-        setArmy(MIGHTSHAPER, 3, 7552, 1843, 3749);
-        setArmy(GRIRANA, 3, 2875, 717, 1420);
-        setArmy(ELANIN, 3, 2725, 670, 1340);
+        setArmy(PALERMO, 3, 16054, 4050, 8100);
+        setArmy(PETER_II, 3, 7535, 1847, 3782);
+        setArmy(MIGHTSHAPER, 3, 7222, 1757, 3580);
+        setArmy(GRIRANA, 3, 3200, 797, 1580);
+        setArmy(ELANIN, 3, 3125, 770, 1540);
     }
     
     private void setArmy(String name, int waves, int leadership, int dominance, int authority) {
@@ -137,14 +138,97 @@ public enum SharedData {
         for (Unit unit: units) {
             builder.addUnit(unit);
         }
-
+        
         int[] qtds = builder.build().resolve();
 
+        List<UnitQuantity> unitQuantities = new ArrayList();
         for (int i = 0; i < qtds.length; i++) {
-            setTroopTarget(player, units.get(i), (long) computeWaves(qtds[i], waves));
+            unitQuantities.add(UnitQuantity.builder()
+                    .unit(units.get(i))
+                    .quantity(computeWaves(qtds[i], waves))
+                    .build());
+        }
+
+        unitQuantities = addMiners(unitQuantities);
+
+        for (UnitQuantity unitQuantity: unitQuantities) {
+            setTroopTarget(player, unitQuantity.getUnit(), unitQuantity.getQuantity());
         }
     }
     
+    private List<UnitQuantity> addMiners(List<UnitQuantity> input) {
+        List<UnitQuantity> output = new ArrayList<>();
+        boolean found = false;
+        for (UnitQuantity unitQuantity: input) {
+            if (unitQuantity.getUnit() == Unit.G1_MELEE) {
+                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + 3500));
+                found = true;
+            }
+            else {
+                output.add(unitQuantity);
+            }
+        }
+        
+        if (!found) {
+            output.add(UnitQuantity.builder()
+                    .unit(Unit.G1_MELEE)
+                    .quantity(3500).build());
+        }
+        return output;
+    }
+
+    private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, Player player) {
+        
+        List<UnitQuantity> output = input;
+        
+        switch (player.getName()) {
+            case PALERMO:
+                output = increase(output, Unit.G5_MOUNTED, 1000);
+                output = increase(output, Unit.G5_RANGED, 2000);
+                output = increase(output, Unit.G5_MELEE, 2000);
+                output = increase(output, Unit.G5_GRIFFIN, 100);
+                break;
+            case PETER_II, MIGHTSHAPER:
+                output = increase(output, Unit.G4_MOUNTED, 1000);
+                output = increase(output, Unit.G4_RANGED, 2000);
+                output = increase(output, Unit.G4_MELEE, 2000);
+                break;
+            case GRIRANA, ELANIN:
+                output = increase(output, Unit.G3_MOUNTED, 1000);
+                output = increase(output, Unit.G3_RANGED, 2000);
+                output = increase(output, Unit.G3_MELEE, 2000);
+                break;
+
+            default:
+                throw new RuntimeException("Not Implemented");
+        }
+        
+        return output; 
+    }
+    
+    private List<UnitQuantity> increase(List<UnitQuantity> input, Unit unit, int qtd) {
+        List<UnitQuantity> output = new ArrayList<>();
+        boolean found = false;
+        for (UnitQuantity unitQuantity: input) {
+            if (unitQuantity.getUnit() == unit) {
+                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + qtd));
+                found = true;
+            }
+            else {
+                output.add(unitQuantity);
+            }
+        }
+
+        if (!found) {
+            output.add(UnitQuantity.builder()
+                    .unit(unit)
+                    .quantity(qtd).build());
+        }
+        return output;
+
+    }
+
+
     private List<Unit> getUnits(String name) {
         
         List<Unit> units = new ArrayList<>();
@@ -229,7 +313,7 @@ public enum SharedData {
             default:
                 throw new RuntimeException("Not Implemented for " + name);
         }
-         return units;
+        return units;
     }
 
     private int computeWaves(int quantity, int wave) {
