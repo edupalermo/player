@@ -521,9 +521,16 @@ public class Task {
         boolean trainedSomething = false;
         
         for (Map.Entry<Unit, Long> entry : map.entrySet()) {
-            long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
-            if (currentSize < entry.getValue().longValue()) {
-                train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+            try {
+                long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
+                if (currentSize < entry.getValue().longValue()) {
+                    train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+                    trainedSomething = true;
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                train(titleBarracksPoint, entry.getKey(), 1);
                 trainedSomething = true;
                 break;
             }
@@ -722,11 +729,19 @@ public class Task {
         quantityImage = ImageUtil.toGrayscale(quantityImage);
         quantityImage = ImageUtil.invertGrayscale(quantityImage);
         quantityImage = ImageUtil.linearNormalization(quantityImage);
-        
-        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.SINGLE_WORD_MODE);
-        System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);        
-        
-        return Long.parseLong(quantityAsString);
+
+        long quantity = 0;
+        try {
+            String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.SINGLE_WORD_MODE);
+            System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
+
+            quantity = Long.parseLong(quantityAsString);
+        } catch (NumberFormatException e) {
+            ImageUtil.showImageFor5Seconds(quantityImage, "Fail to get numbers from it");
+            throw new RuntimeException(e);
+        }
+
+        return quantity;
     }
 
 
@@ -1392,4 +1407,6 @@ public class Task {
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true); // this call blocks until the dialog is closed
     }
+    
+    
 }

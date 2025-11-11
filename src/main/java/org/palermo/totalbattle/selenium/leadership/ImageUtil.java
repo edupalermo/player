@@ -709,6 +709,30 @@ public class ImageUtil {
         showImageAndWait(crop(image, area), (String) null);
     }
 
+    public static void showImageFor5Seconds(BufferedImage image, String title) {
+        if (image == null) {
+            throw new IllegalArgumentException("Image cannot be null");
+        }
+
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                JFrame frame = new JFrame(title);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                JLabel label = new JLabel(new ImageIcon(image));
+                frame.getContentPane().add(label, BorderLayout.CENTER);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+
+                // Create a timer to close the window after 5 seconds
+                new Timer(5000, e -> frame.dispose()).start();
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }    
+
     public static void showImageAndWait(BufferedImage image, String title) {
         Runnable ui = () -> {
             JDialog dialog = new JDialog((Frame) null, title != null ? title : "Image", true); // modal
