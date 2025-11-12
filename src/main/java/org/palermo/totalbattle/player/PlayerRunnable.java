@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
+import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
@@ -94,7 +95,7 @@ public class PlayerRunnable implements Runnable {
                 Task.buildArmy(player);
             }
             Task.helpClanMembers();
-            Task.summoningCircle();
+            (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

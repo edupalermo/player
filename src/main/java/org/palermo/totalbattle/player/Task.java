@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
+import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -18,7 +19,6 @@ import org.palermo.totalbattle.selenium.stacking.Unit;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.RectangularShape;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class Task {
 
-    private static MyRobot robot = new MyRobot();
+    private static MyRobot robot = SharedData.INSTANCE.robot;
     
     private static Map<String, Player> players = new HashMap<>();
     static {
@@ -86,10 +86,10 @@ public class Task {
             // collectChests(); // Retrieve chests
             
             //quests(player); // Retrieve open chests
+
+            (new SummoningCircle(robot, player)).evaluate();
             
-            //summoningCircle();
-            
-            buildArmy(player);
+            // buildArmy(player);
             
             //freeSale(player);
             
@@ -106,198 +106,6 @@ public class Task {
         }
     }
     
-    public static void summoningCircle() {
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(150);
-
-
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage labelCity = ImageUtil.loadResource("player/label_city.png");
-        Area labelCityArea = Area.fromTwoPoints(664, 1059, 716, 1075);
-        Point labelCityPoint = ImageUtil.searchSurroundings(labelCity, screen, labelCityArea, 0.1, 20).orElse(null);
-        
-        if (labelCityPoint != null) {
-            robot.leftClick(labelCityPoint.move(10, -30));
-            robot.sleep(2500);
-        }
-
-
-        screen = robot.captureScreen();
-        BufferedImage iconZoomMinus = ImageUtil.loadResource("player/icon_zoom_minus.png");
-        Area iconZoomMinusArea = Area.fromTwoPoints(1791, 1003, 1836, 1044);
-        Point iconZoomMinusPoint = ImageUtil.searchSurroundings(iconZoomMinus, screen, iconZoomMinusArea, 0.1, 20).orElse(null);
-        
-        if (iconZoomMinusPoint == null) {
-            throw new RuntimeException("Icon zoom minus not found!");
-        }
-
-        for (int i = 0; i < 4; i++) {
-            robot.leftClick(iconZoomMinusPoint, iconZoomMinus);
-            robot.sleep(250);
-        }
-        
-        robot.mouseDrag(Point.of(1350, 446), -340, 150);
-        robot.sleep(250);
-
-        screen = robot.captureScreen();
-        BufferedImage scIcon = ImageUtil.loadResource("player/sc/sc_ground.png");
-        Area scIconArea = Area.fromTwoPoints(878, 391, 1040, 463);
-        Point scIconPoint = ImageUtil.searchSurroundings(scIcon, screen, scIconArea, 0.1, 20).orElse(null);
-
-        if (scIconPoint == null) {
-            throw new RuntimeException("Summoning circle icon ground not found!");
-        }
-        robot.leftClick(scIconPoint, scIcon);
-        robot.sleep(1000);
-
-        screen = robot.captureScreen();
-        BufferedImage iconCaptainSummon = ImageUtil.loadResource("player/sc/icon_captain_summon.png");
-        Area iconCaptainSummonArea = Area.fromTwoPoints(931, 450, 1003, 530);
-        Point iconCaptainSummonPoint = ImageUtil.searchSurroundings(iconCaptainSummon, screen, iconCaptainSummonArea, 0.1, 20).orElse(null);
-
-        if (iconCaptainSummonPoint == null) {
-            throw new RuntimeException("Captain summon icon not found!");
-        }
-        robot.leftClick(iconCaptainSummonPoint, iconCaptainSummon);
-        robot.sleep(1000);
-
-        captainSummon();
-        
-        artifactSummon();
-
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(150);
-    }
-    
-    private static void artifactSummon() {
-
-        BufferedImage screen = robot.captureScreen();
-
-        BufferedImage iconArtifact = ImageUtil.loadResource("player/sc/icon_artifact.png");
-        Area iconArtifactArea = Area.fromTwoPoints(1692, 225, 1833, 312);
-
-        ImageUtil.write(ImageUtil.crop(screen, iconArtifactArea), "error_screen.png");
-        ImageUtil.write(iconArtifact, "error_image.png");
-
-        Point iconArtifactPoint = ImageUtil.searchSurroundings(iconArtifact, screen, iconArtifactArea, 0.1, 20).orElse(null);
-        
-        if (iconArtifactPoint == null) {
-            System.out.println("User doesn't have Artifact collection");
-            // TODO Delay scenario for 24 hours?
-            return;
-        }
-        robot.leftClick(iconArtifactPoint, iconArtifact);
-        robot.sleep(750);
-
-        screen = robot.captureScreen();
-        BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
-        Area buttonFreeArea = Area.fromTwoPoints(795, 779, 936, 807);
-        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonFreeArea));
-        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
-
-        if (buttonFreePoint != null) {
-            robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(7500);
-
-            screen = robot.captureScreen();
-            BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-            Area buttonReturnArea = Area.fromTwoPoints(684, 835, 1032, 865);
-            //ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonReturnArea));
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
-            robot.sleep(500);
-        }
-    }
-    
-    private static void captainSummon() {
-        BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
-        Area buttonFreeArea = Area.fromTwoPoints(568, 771, 726, 811);
-        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
-        
-        if (buttonFreePoint != null) {
-            robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(5500);
-
-            screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
-            robot.sleep(500);
-        }
-        
-        buttonFreeArea = Area.fromTwoPoints(1084, 771, 1247, 811);
-        buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
-
-        if (buttonFreePoint != null) { // Button free is available
-            robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(5500);
-
-            screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-            
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
-            robot.sleep(500);
-        }
-
-        screen = robot.captureScreen();
-        BufferedImage buttonSummonCaptainOn = ImageUtil.loadResource("player/sc/button_summon_captain_on.png");
-        Area buttonSummonCaptainOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_ON_BUTTON", screen);
-        
-        Point buttonSummonCaptainOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonCaptainOnArea, 0.04, 20).orElse(null);
-        if (buttonSummonCaptainOnPoint != null) {
-            robot.leftClick(buttonSummonCaptainOnPoint, buttonSummonCaptainOn);
-            robot.sleep(5000);
-
-            screen = robot.captureScreen();
-            Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_1_RETRIEVED_RETURN_BUTTON", screen);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
-            robot.sleep(500);
-        }
-
-
-        screen = robot.captureScreen();
-        Area buttonSummonEliteOnArea = RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_ON_BUTTON", screen);
-        Point buttonSummonEliteOnPoint = ImageUtil.searchSurroundings(buttonSummonCaptainOn, screen, buttonSummonEliteOnArea, 0.04, 20).orElse(null);
-        if (buttonSummonEliteOnPoint != null) {
-            robot.leftClick(buttonSummonEliteOnPoint, buttonSummonCaptainOn);
-            robot.sleep(5000);
-
-            screen = robot.captureScreen();
-            Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_1_RETRIEVED_RETURN_BUTTON", screen);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
-            robot.sleep(500);
-        }
-        
-    }
 
     public static void buildArmy(Player player) {
         BufferedImage screen = robot.captureScreen();
@@ -1393,7 +1201,7 @@ public class Task {
         while (true) {
             try {
                 driver.getTitle(); // check if window is still open
-                Thread.sleep(500); // wait 1 second
+                Thread.sleep(1000); // wait 1 second
             } catch (org.openqa.selenium.NoSuchSessionException e) {
                 System.out.println("Browser closed by user. Exiting program.");
                 break;

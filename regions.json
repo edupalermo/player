@@ -40,5 +40,53 @@
     "y" : 511,
     "width" : 225,
     "height" : 58
+  },
+  "SUMMON_CIRCLE_TOP_FRAGMENT" : {
+    "x" : 805,
+    "y" : 144,
+    "width" : 158,
+    "height" : 69
+  },
+  "SUMMON_CIRCLE_COMMON_ARTIFACT_HOURGLASS" : {
+    "x" : 500,
+    "y" : 827,
+    "width" : 176,
+    "height" : 50
+  },
+  "SUMMON_CIRCLE_ELITE_ARTIFACT_QUESTION_MARK" : {
+    "x" : 1052,
+    "y" : 687,
+    "width" : 192,
+    "height" : 77
+  },
+  "SUMMON_CIRCLE_ELITE_RETRIEVED_RETURN_BUTTON" : {
+    "x" : 694,
+    "y" : 773,
+    "width" : 253,
+    "height" : 101
+  },
+  "SUMMON_CIRCLE_ELITE_ARTIFACT_HOURGLASS" : {
+    "x" : 1045,
+    "y" : 826,
+    "width" : 154,
+    "height" : 57
+  },
+  "SUMMON_CIRCLE_COMMON_CAPTAIN_HOURGLASS" : {
+    "x" : 545,
+    "y" : 823,
+    "width" : 117,
+    "height" : 53
+  },
+  "SUMMON_CIRCLE_ELITE_CAPTAIN_QUESTION_MARK" : {
+    "x" : 1123,
+    "y" : 688,
+    "width" : 115,
+    "height" : 77
+  },
+  "SUMMON_CIRCLE_ARTIFACT_CHEST_KEY" : {
+    "x" : 904,
+    "y" : 158,
+    "width" : 94,
+    "height" : 57
   }
 }

@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player;
 
 import org.palermo.totalbattle.player.bean.UnitQuantity;
+import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
@@ -19,12 +20,6 @@ public enum SharedData {
 
     INSTANCE;
 
-    private static final String PALERMO = "Palermo";
-    private static final String PETER_II = "Peter II";
-    private static final String MIGHTSHAPER = "Mightshaper";
-    private static final String GRIRANA = "Grirana";
-    private static final String ELANIN = "Elanin";
-
     private final List<Point> arenas = new ArrayList<Point>();
 
     // Prevent the user to be played automatically
@@ -38,6 +33,8 @@ public enum SharedData {
 
     // Troop training target
     private final Map<String, Map<Unit, Long>> troopTarget = new HashMap<>();
+    
+    public final MyRobot robot = new MyRobot(); 
 
     public void addArena(Point point) {
         this.arenas.add(point);
@@ -101,6 +98,14 @@ public enum SharedData {
         return LocalDateTime.now().isBefore(waitUntil);
     }
 
+    public boolean shouldWaitForSummoningCircle(Player player) {
+        return shouldWait(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
+                shouldWait(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
+                shouldWait(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
+    }
+
+
+
     public Map<Unit, Long> getTroopTarget(Player player) {
         return troopTarget.get(player.getName());
     }
@@ -115,11 +120,11 @@ public enum SharedData {
     }
 
     {
-        setArmy(PALERMO, 3, 16054, 4050, 8100);
-        setArmy(PETER_II, 3, 7535, 1847, 3782);
-        setArmy(MIGHTSHAPER, 3, 7222, 1757, 3580);
-        setArmy(GRIRANA, 3, 3200, 797, 1580);
-        setArmy(ELANIN, 3, 3125, 770, 1540);
+        setArmy(Player.PALERMO, 3, 16054, 4050, 8100);
+        setArmy(Player.PETER_II, 3, 7535, 1847, 3782);
+        setArmy(Player.MIGHTSHAPER, 3, 7222, 1757, 3580);
+        setArmy(Player.GRIRANA, 3, 3200, 797, 1580);
+        setArmy(Player.ELANIN, 3, 3125, 770, 1540);
     }
     
     private void setArmy(String name, int waves, int leadership, int dominance, int authority) {
@@ -182,18 +187,18 @@ public enum SharedData {
         List<UnitQuantity> output = input;
         
         switch (player.getName()) {
-            case PALERMO:
+            case Player.PALERMO:
                 output = increase(output, Unit.G5_MOUNTED, 2000);
                 output = increase(output, Unit.G5_RANGED, 4000);
                 output = increase(output, Unit.G5_MELEE, 4000);
                 output = increase(output, Unit.G5_GRIFFIN, 200);
                 break;
-            case PETER_II, MIGHTSHAPER:
+            case Player.PETER_II, Player.MIGHTSHAPER:
                 output = increase(output, Unit.G4_MOUNTED, 2000);
                 output = increase(output, Unit.G4_RANGED, 4000);
                 output = increase(output, Unit.G4_MELEE, 4000);
                 break;
-            case GRIRANA, ELANIN:
+            case Player.GRIRANA, Player.ELANIN:
                 output = increase(output, Unit.G3_MOUNTED, 1000);
                 output = increase(output, Unit.G3_RANGED, 2000);
                 output = increase(output, Unit.G3_MELEE, 2000);
@@ -234,7 +239,7 @@ public enum SharedData {
         List<Unit> units = new ArrayList<>();
         
         switch (name) {
-            case PALERMO:
+            case Player.PALERMO:
                 
                 units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
@@ -267,7 +272,7 @@ public enum SharedData {
                 units.add(Unit.FEARSOME_MANTICORE);
                 break;
 
-            case PETER_II, MIGHTSHAPER:
+            case Player.PETER_II, Player.MIGHTSHAPER:
                 units.add(Unit.S2_SWORDSMAN);
                 units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);
@@ -291,7 +296,7 @@ public enum SharedData {
                 units.add(Unit.MANY_ARMED_GUARDIAN);
                 units.add(Unit.GORGON_MEDUSA);
                 break;
-            case GRIRANA, ELANIN:
+            case Player.GRIRANA, Player.ELANIN:
                 units.add(Unit.S1_SWORDSMAN);
                 units.add(Unit.G1_RANGED);
                 units.add(Unit.G1_MELEE);
@@ -325,5 +330,4 @@ public enum SharedData {
 
         return (int) Math.round(quantity * factor);
     }
-    
 }
