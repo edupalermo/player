@@ -88,5 +88,17 @@
     "y" : 158,
     "width" : 94,
     "height" : 57
+  },
+  "SUMMON_CIRCLE_COMMON_ARTIFACT_QUESTION_MARK" : {
+    "x" : 505,
+    "y" : 682,
+    "width" : 98,
+    "height" : 72
+  },
+  "SUMMON_CIRCLE_ARTIFACT_HOURGLASS" : {
+    "x" : 745,
+    "y" : 806,
+    "width" : 145,
+    "height" : 61
   }
 }
