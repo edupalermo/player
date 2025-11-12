@@ -888,4 +888,17 @@ public class ImageUtil {
 
         return Optional.of(answer);
     }
+    
+    public static BufferedImage resize(BufferedImage input, int height) {
+        double scale = height / (double) input.getHeight();
+
+        int targetWidth = (int) (input.getWidth() * scale);
+        Image scaled = input.getScaledInstance(targetWidth, height, Image.SCALE_SMOOTH);
+        BufferedImage output = new BufferedImage(targetWidth, height, BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D g = output.createGraphics();
+        g.drawImage(scaled, 0, 0, null);
+        g.dispose();
+
+        return output;
+    }
 }

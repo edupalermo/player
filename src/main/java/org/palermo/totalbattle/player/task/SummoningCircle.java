@@ -164,7 +164,8 @@ public class SummoningCircle {
         BufferedImage image = ImageUtil.toGrayscale(input);
         image = ImageUtil.invertGrayscale(image);
         image = ImageUtil.linearNormalization(image);
-
+        image = ImageUtil.resize(image, 50);
+        
         String numberAsText = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
         return Integer.parseInt(numberAsText);
     }
