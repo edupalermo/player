@@ -120,11 +120,11 @@ public enum SharedData {
     }
 
     {
-        setArmy(Player.PALERMO, 3, 16054, 4050, 8100);
-        setArmy(Player.PETER_II, 3, 7535, 1847, 3782);
-        setArmy(Player.MIGHTSHAPER, 3, 7222, 1757, 3580);
-        setArmy(Player.GRIRANA, 3, 3200, 797, 1580);
-        setArmy(Player.ELANIN, 3, 3125, 770, 1540);
+        setArmy(Player.PALERMO, 3, 26180, 6539, 13031);
+        setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
+        setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
+        setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
+        setArmy(Player.ELANIN, 3, 3475, 850, 1700);
     }
     
     private void setArmy(String name, int waves, int leadership, int dominance, int authority) {
