@@ -1090,8 +1090,9 @@ public class Task {
     public static void helpClanMembers() {
         BufferedImage screen = robot.captureScreen();
         BufferedImage iconHelpAllies = ImageUtil.loadResource("player/icon_help_allies.png");
+        Area iconHelpAlliesArea = RegionSelector.selectArea("HELP_CLAN_SHAKING_HANDS", screen);
         
-        Point point = ImageUtil.searchSurroundings(iconHelpAllies, screen, 0.1, 20).orElse(null);
+        Point point = ImageUtil.searchSurroundings(iconHelpAllies, screen, iconHelpAlliesArea, 0.1, 20).orElse(null);
         
         if (point == null) {
             System.out.println("No help allies icon found");
