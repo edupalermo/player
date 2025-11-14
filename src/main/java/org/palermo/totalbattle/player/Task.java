@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Palermo");
+        Player player = players.get("Peter II");
         
         WebDriver driver = null;
         try {
@@ -90,6 +90,8 @@ public class Task {
             // (new BuildArmy(player)).buildArmy();
 
             (new Telescope(player)).evaluate();
+            
+            (new SummoningCircle(robot, player)).evaluate();
             
             //freeSale(player);
             

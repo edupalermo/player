@@ -36,6 +36,7 @@ public class Telescope {
                 .build();
         if (!activeTelescope.exist()) {
             System.out.println("Telescope is not activated");
+            return;
         }
         activeTelescope.leftClick();
 

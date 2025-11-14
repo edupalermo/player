@@ -37,9 +37,12 @@ public class ImageUtil {
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH = "0123456789,/";
     public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
     public static final String WHITELIST_FOR_NUMBERS = "0123456789,";
+    public static final int PSM_DEFAULT = 3;
     public static final int LINE_OF_PRINTED_TEXT = 6;
     public static final int SINGLE_LINE_MODE = 7;
     public static final int SINGLE_WORD_MODE = 8;
+    public static final int PSM_SINGLE_CHARACTER = 10;
+    public static final int PSM_SPARSE_TEXT = 11;
     
     public static final String LANGUAGE_TB = "tb";
 
@@ -632,7 +635,38 @@ public class ImageUtil {
     public static String ocr(BufferedImage image, String whitelist, int pageSegMode) {
         return ocr(image, whitelist, pageSegMode, null);
     }
-    
+
+    public static String ocrBestMethod(BufferedImage image, String whitelist) {
+        String result = ocr(image, whitelist, LINE_OF_PRINTED_TEXT, null);
+        
+        String temp = ocr(image, whitelist, SINGLE_LINE_MODE, null);
+        if (temp.length() > result.length()) {
+            result = temp;
+        }
+
+        temp = ocr(image, whitelist, SINGLE_WORD_MODE, null);
+        if (temp.length() > result.length()) {
+            result = temp;
+        }
+
+        temp = ocr(image, whitelist, PSM_SINGLE_CHARACTER, null);
+        if (temp.length() > result.length()) {
+            result = temp;
+        }
+
+        temp = ocr(image, whitelist, PSM_SPARSE_TEXT, null);
+        if (temp.length() > result.length()) {
+            result = temp;
+        }
+
+        temp = ocr(image, whitelist, PSM_DEFAULT, null);
+        if (temp.length() > result.length()) {
+            result = temp;
+        }
+
+        return result;
+    }
+
     public static String ocr(BufferedImage image, String whitelist, int pageSegMode, String language) {
         Tesseract tesseract = new Tesseract();
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
@@ -647,9 +681,9 @@ public class ImageUtil {
         }
         tesseract.setTessVariable("tessedit_char_whitelist", whitelist);
         tesseract.setPageSegMode(pageSegMode); // single line mode
-
+        tesseract.setOcrEngineMode(1); // 1 = LSTM only
         try {
-            return tesseract.doOCR(scaleUp(image, 3)).trim(); // Using BufferedImage directly
+            return tesseract.doOCR(image).trim(); // Using BufferedImage directly
         } catch (TesseractException e) {
             throw new RuntimeException(e);
         }
