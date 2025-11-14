@@ -9,6 +9,7 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -120,16 +121,12 @@ public class SummoningCircle {
             robot.leftClick(buttonFreePoint, buttonFree);
             robot.sleep(7500);
 
-            screen = robot.captureScreen();
-            BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-            Area buttonReturnArea = Area.fromTwoPoints(684, 835, 1032, 865);
-            //ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonReturnArea));
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
+            Navigate.builder()
+                    .resourceName("player/sc/button_return.png")
+                    .area(Area.fromTwoPoints(684, 835, 1032, 865))
+                    .waitLimit(10000L)
+                    .build()
+                    .leftClick();
             robot.sleep(500);
         }
 

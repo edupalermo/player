@@ -160,5 +160,11 @@
     "y" : 1006,
     "width" : 140,
     "height" : 73
+  },
+  "SUMMON_CIRCLE_ELITE_CAPTAIN_HOURGLASS" : {
+    "x" : 1078,
+    "y" : 797,
+    "width" : 158,
+    "height" : 102
   }
 }

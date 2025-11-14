@@ -74,7 +74,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Palermo");
+        Player player = players.get("Mightshaper");
         
         WebDriver driver = null;
         try {
@@ -90,13 +90,13 @@ public class Task {
 
             // (new BuildArmy(player)).buildArmy();
 
-            (new Telescope(player)).evaluate();
+            // (new Telescope(player)).evaluate();
 
             if (SharedData.INSTANCE.getArena().isPresent()) {
-                attackArena(SharedData.INSTANCE.getArena().get());
+                // attackArena(SharedData.INSTANCE.getArena().get());
             }
 
-            // (new SummoningCircle(robot, player)).evaluate();
+            (new SummoningCircle(robot, player)).evaluate();
             
             //freeSale(player);
             
