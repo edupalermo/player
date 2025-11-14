@@ -156,6 +156,8 @@ public enum SharedData {
 
         unitQuantities = addMiners(unitQuantities);
 
+        unitQuantities = incrementLastLayer(unitQuantities, player);
+
         for (UnitQuantity unitQuantity: unitQuantities) {
             setTroopTarget(player, unitQuantity.getUnit(), unitQuantity.getQuantity());
         }

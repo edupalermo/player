@@ -150,10 +150,10 @@
     "height" : 104
   },
   "SUMMON_CIRCLE_ELITE_CAPTAIN_HOURGLASS" : {
-    "x" : 1081,
-    "y" : 794,
-    "width" : 125,
-    "height" : 81
+    "x" : 1078,
+    "y" : 797,
+    "width" : 158,
+    "height" : 102
   },
   "BOTTOM_MENU_MAP_LABEL" : {
     "x" : 608,
@@ -161,10 +161,10 @@
     "width" : 140,
     "height" : 73
   },
-  "SUMMON_CIRCLE_ELITE_CAPTAIN_HOURGLASS" : {
-    "x" : 1078,
-    "y" : 797,
-    "width" : 158,
-    "height" : 102
+  "SUMMON_CIRCLE_COMMON_RETURN_BUTTON" : {
+    "x" : 706,
+    "y" : 756,
+    "width" : 267,
+    "height" : 135
   }
 }
