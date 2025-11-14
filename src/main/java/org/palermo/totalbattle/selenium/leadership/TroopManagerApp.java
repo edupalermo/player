@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class TroopManagerApp extends JFrame {
 
-    private static MyRobot robot = new MyRobot();
+    private static MyRobot robot = MyRobot.INSTANCE;
 
     // ===== Section: Player & attributes =====
     private JComboBox<String> playerCombo;

@@ -6,7 +6,7 @@ import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.selenium.leadership.ImageUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 
@@ -151,6 +151,8 @@ public class SummoningCircle {
             Area iconHourglassArea = RegionSelector.selectArea("SUMMON_CIRCLE_ARTIFACT_HOURGLASS", screen);
             Point iconHourglassPoint = ImageUtil.searchSurroundings(iconHourglass, screen, iconHourglassArea, 0.15, 20).orElse(null);
 
+            // ImageUtil.showImageAndWait(screen, iconHourglassArea);
+            
             if (iconHourglassPoint == null) {
                 throw new RuntimeException("No hourglass and no free button");
             }

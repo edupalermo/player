@@ -1,14 +1,14 @@
 package org.palermo.totalbattle.selenium.leadership;
 
-import javax.swing.*;
-import java.awt.*;
+import org.palermo.totalbattle.util.ImageUtil;
+
 import java.awt.image.BufferedImage;
 
 public class Working {
 
 
     public static void main(String[] args) {
-        MyRobot robot = new MyRobot();
+        MyRobot robot = MyRobot.INSTANCE;
 
         BufferedImage screen = robot.captureScreen();
 

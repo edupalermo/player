@@ -1,7 +1,7 @@
 package org.palermo.totalbattle.selenium;
 
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.selenium.leadership.ImageUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

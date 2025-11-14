@@ -6,6 +6,7 @@ import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Stacking;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.util.ImageUtil;
 
 import javax.swing.*;
 import java.awt.*;

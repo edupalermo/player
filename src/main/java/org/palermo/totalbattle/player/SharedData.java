@@ -34,7 +34,7 @@ public enum SharedData {
     // Troop training target
     private final Map<String, Map<Unit, Long>> troopTarget = new HashMap<>();
     
-    public final MyRobot robot = new MyRobot(); 
+    public final MyRobot robot = MyRobot.INSTANCE; 
 
     public void addArena(Point point) {
         this.arenas.add(point);

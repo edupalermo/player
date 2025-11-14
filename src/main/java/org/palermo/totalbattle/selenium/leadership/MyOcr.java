@@ -3,6 +3,7 @@ package org.palermo.totalbattle.selenium.leadership;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.With;
+import org.palermo.totalbattle.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

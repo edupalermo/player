@@ -36,13 +36,13 @@ public final class RegionSelector {
         }
     }
     
-    public static Area selectArea(String scenario, BufferedImage image) {
+    public static Area selectArea(String scenario, BufferedImage screen) {
         Area area =  regions.get(scenario);
         if (area != null) {
             return area;
         }
         
-        Rectangle rectangle = innerSelectArea(null, scenario, image);
+        Rectangle rectangle = innerSelectArea(null, scenario, screen);
         if (rectangle == null) {
             return null;
         }

@@ -7,12 +7,14 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class MyRobot {
+public enum MyRobot {
+    
+    INSTANCE;
     
     private final Robot robot;
     private final Rectangle screenBounds;
 
-    public MyRobot() {
+    private MyRobot() {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] screens = ge.getScreenDevices();
@@ -53,6 +55,10 @@ public class MyRobot {
 
     public void leftClick(Point point, BufferedImage image) {
         leftClick(point.getX() + (image.getWidth() / 2), point.getY() + (image.getHeight() / 2));
+    }
+    
+    public void leftClick(Point point, Area area) {
+        leftClick(point.getX() + (area.getWidth() / 2), point.getY() + (area.getHeight() / 2));
     }
 
     public void mouseMove(Point point) {
@@ -102,6 +108,10 @@ public class MyRobot {
         return robot.createScreenCapture(screenBounds);
     }
     
+    public Area getScreenArea() {
+        return Area.of(0, 0, screenBounds.getWidth(), screenBounds.getHeight());
+    }
+
     public BufferedImage captureScreen(Area area) {
         return robot.createScreenCapture(area.toRectangle());
     }

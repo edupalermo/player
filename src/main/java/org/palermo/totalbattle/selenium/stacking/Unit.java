@@ -2,7 +2,7 @@ package org.palermo.totalbattle.selenium.stacking;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
-import org.palermo.totalbattle.selenium.leadership.ImageUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
 import java.util.Set;

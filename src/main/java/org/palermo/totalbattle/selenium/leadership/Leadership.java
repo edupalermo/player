@@ -1,5 +1,7 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import org.palermo.totalbattle.util.ImageUtil;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;

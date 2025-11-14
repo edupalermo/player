@@ -5,7 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.selenium.leadership.ImageUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyOcr;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -22,7 +22,7 @@ import java.util.List;
 public class Player {
     
     private static WebDriver driver;
-    private static MyRobot robot = new MyRobot();
+    private static MyRobot robot = MyRobot.INSTANCE;
 
 
     public static void main2(String[] args) {

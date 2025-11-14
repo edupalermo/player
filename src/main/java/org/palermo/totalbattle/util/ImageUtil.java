@@ -1,9 +1,10 @@
-package org.palermo.totalbattle.selenium.leadership;
+package org.palermo.totalbattle.util;
 
 import lombok.Getter;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import org.palermo.totalbattle.selenium.Clock;
+import org.palermo.totalbattle.selenium.leadership.Area;
+import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
 
 import javax.imageio.ImageIO;
@@ -84,23 +85,23 @@ public class ImageUtil {
         }
     }
 
-    public static void write(BufferedImage image, Point offset, BufferedImage size, String filename) {
+    public static void write(BufferedImage image, org.palermo.totalbattle.selenium.leadership.Point offset, BufferedImage size, String filename) {
         write(image.getSubimage(offset.getX(), offset.getY(), size.getWidth(), size.getHeight()), filename);
     }
 
     /**
      * @param x y width height area inside the screen to search
      */
-    public static Point bestFit(BufferedImage item, BufferedImage screen, int x, int y, int width, int height) {
+    public static org.palermo.totalbattle.selenium.leadership.Point bestFit(BufferedImage item, BufferedImage screen, int x, int y, int width, int height) {
         long difference = Long.MAX_VALUE;
-        Point best = null;
+        org.palermo.totalbattle.selenium.leadership.Point best = null;
 
         for (int i = x; i < x + width - item.getWidth(); i++) {
             for (int j = y; j < y + height - item.getHeight(); j++) {
                 long currentDifference = compareWithBreak(item, screen, i, j, item.getWidth(), item.getHeight(), difference);
                 if (currentDifference < difference) {
                     difference = currentDifference;
-                    best = Point.of(i, j);
+                    best = org.palermo.totalbattle.selenium.leadership.Point.of(i, j);
                 }
             }
         }
@@ -112,16 +113,16 @@ public class ImageUtil {
     }
 
     private static final String SEARCH_SURROUNDINGS = "history_search_surroundings.dat";
-    private static Map<Long, Point> searchSurroundingsHistory = IoUtil.deserializeFromFile(SEARCH_SURROUNDINGS, Map.class)
+    private static Map<Long, org.palermo.totalbattle.selenium.leadership.Point> searchSurroundingsHistory = IoUtil.deserializeFromFile(SEARCH_SURROUNDINGS, Map.class)
             .orElseGet(() -> new HashMap<>());
-    public static Optional<Point> searchSurroundings(BufferedImage item, BufferedImage screen, double limit, int variation) {
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> searchSurroundings(BufferedImage item, BufferedImage screen, double limit, int variation) {
         return searchSurroundings(item, screen, Area.of(0,0,screen.getWidth(),screen.getHeight()), limit, variation);
     }
 
-    public static Optional<Point> searchSurroundings(BufferedImage item, BufferedImage screen, Area area, double limit, int variation) {
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> searchSurroundings(BufferedImage item, BufferedImage screen, Area area, double limit, int variation) {
         long crc = crcImage(item);
-        Point past = searchSurroundingsHistory.get(crc);
-        Point actual = null;
+        org.palermo.totalbattle.selenium.leadership.Point past = searchSurroundingsHistory.get(crc);
+        org.palermo.totalbattle.selenium.leadership.Point actual = null;
         if (past != null && area.contain(past)) {
             int x = Math.max(0, past.getX() - variation);
             int y = Math.max(0, past.getY() - variation);
@@ -139,11 +140,11 @@ public class ImageUtil {
         return Optional.ofNullable(actual);
     }
 
-    public static Optional<Point> search(BufferedImage item, BufferedImage screen, double limit) {
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> search(BufferedImage item, BufferedImage screen, double limit) {
         return search(item, screen, 0, 0, screen.getWidth(), screen.getHeight(), limit);
     }
 
-    public static Optional<Point> search(BufferedImage item, BufferedImage screen, Area area, double limit) {
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> search(BufferedImage item, BufferedImage screen, Area area, double limit) {
         if (area.getWidth() < item.getWidth() || area.getHeight() < item.getHeight()) { 
             throw new RuntimeException("Cannot search in a area smaller than the image");
         }
@@ -158,37 +159,56 @@ public class ImageUtil {
         return search(item, screen, area.getX(), area.getY(), area.getWidth(), area.getHeight(), limit);
     }
 
-    public static List<Point> searchMultiple(BufferedImage item, BufferedImage screen, Area area, double limit) {
+    public static List<org.palermo.totalbattle.selenium.leadership.Point> searchMultiple(BufferedImage item, BufferedImage screen, Area area, double limit) {
         return searchMultiple(item, screen, area.getX(), area.getY(), area.getWidth(), area.getHeight(), limit);
     }
 
-    public static List<Point> searchMultiple(BufferedImage item, BufferedImage screen, double limit) {
+    public static List<org.palermo.totalbattle.selenium.leadership.Point> searchMultiple(BufferedImage item, BufferedImage screen, double limit) {
         return searchMultiple(item, screen, 0, 0, screen.getWidth(), screen.getHeight(), limit);
     }
 
     private static final String HISTORY_FILENAME = "history.dat";
-    private static Map<Long, List<Point>> history = IoUtil.deserializeFromFile(HISTORY_FILENAME, Map.class)
+    private static Map<Long, List<org.palermo.totalbattle.selenium.leadership.Point>> history = IoUtil.deserializeFromFile(HISTORY_FILENAME, Map.class)
             .orElseGet(() -> new HashMap<>());
     
     /**
      * @param x y width height area inside the screen to search
      */
-    public static Optional<Point> search(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> search(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
         return realSearch(item, screen, x, y, width, height, limit).map(SearchResponse::getPoint);
     }
+
+    public static Point searchBestFit(BufferedImage[] items, BufferedImage screen, Area area) {
+        Point answer = null;
+        double best = Double.MAX_VALUE;
+        
+        for (BufferedImage item : items) {
+            SearchResponse response = realSearch(item, screen, area.getX(), area.getY(), area.getWidth(), area.getHeight(), 1)
+                    .orElse(null);
+            if (response != null) {
+                if (response.getDifference() < best) {
+                    best = response.getDifference();
+                    answer = response.getPoint();
+                }
+            }
+        }
+        
+        return answer;
+    }
+
 
 
     public static Optional<SearchResponse> realSearch(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
         // Clock clock = Clock.start();
 
         long difference = Long.MAX_VALUE;
-        Point best = null;
+        org.palermo.totalbattle.selenium.leadership.Point best = null;
 
         long crc = crcImage(item);
-        List<Point> past = history.computeIfAbsent(crc, key -> new ArrayList<>());
+        List<org.palermo.totalbattle.selenium.leadership.Point> past = history.computeIfAbsent(crc, key -> new ArrayList<>());
         if (!past.isEmpty()) {
             Area area = Area.of(x, y, width, height);
-            for (Point point : past) {
+            for (org.palermo.totalbattle.selenium.leadership.Point point : past) {
                 if (area.toRectangle().contains(point.getX(), point.getY())) {
                     long currentDifference = compareWithBreak(item, screen, point.getX(), point.getY(), item.getWidth(), item.getHeight(), difference);
                     if (currentDifference < difference) {
@@ -207,7 +227,7 @@ public class ImageUtil {
                 long currentDifference = compareWithBreak(item, screen, i, j, item.getWidth(), item.getHeight(), difference);
                 if (currentDifference < difference) {
                     difference = currentDifference;
-                    best = Point.of(i, j);
+                    best = org.palermo.totalbattle.selenium.leadership.Point.of(i, j);
                 }
             }
         }
@@ -238,8 +258,8 @@ public class ImageUtil {
     /**
      * @param x y width height area inside the screen to search
      */
-    public static List<Point> searchMultiple(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
-        List<Point> result = new ArrayList<>();
+    public static List<org.palermo.totalbattle.selenium.leadership.Point> searchMultiple(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
+        List<org.palermo.totalbattle.selenium.leadership.Point> result = new ArrayList<>();
         long cutOff = Math.round(limit * 3 * 255 * item.getWidth() * item.getHeight());
         for (int i = x; i <= x + width - item.getWidth(); i++) {
             for (int j = y; j <= y + height - item.getHeight(); j++) {
@@ -249,15 +269,15 @@ public class ImageUtil {
                 }
                 if (currentDifference < cutOff) {
                     //System.out.println(String.format("Diff / cutoff %d %d", currentDifference, cutOff));
-                    result.add(Point.of(i, j));
+                    result.add(org.palermo.totalbattle.selenium.leadership.Point.of(i, j));
                 }
             }
         }
         return result;
     }
 
-    public static List<Point> normalizedSearch(BufferedImage item, BufferedImage screen, double limit) {
-        List<Point> result = new ArrayList<>();
+    public static List<org.palermo.totalbattle.selenium.leadership.Point> normalizedSearch(BufferedImage item, BufferedImage screen, double limit) {
+        List<org.palermo.totalbattle.selenium.leadership.Point> result = new ArrayList<>();
         for (int i = 0; i <= screen.getWidth() - item.getWidth(); i++) {
             for (int j = 0; j <= screen.getHeight() - item.getHeight(); j++) {
                 
@@ -823,10 +843,38 @@ public class ImageUtil {
             timeLeft = ImageUtil.invertGrayscale(timeLeft);
         }
         timeLeft = ImageUtil.linearNormalization(timeLeft);
-        String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.SINGLE_LINE_MODE);
+        
+        if (timeLeft.getHeight() < 50) {
+            timeLeft = ImageUtil.resize(timeLeft, 50);
+        }
+        
+        String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.LINE_OF_PRINTED_TEXT);
         System.out.println("Time Left: " + timeLeftAsText);
 
-        return calculateNext(timeLeftAsText).orElse(null);
+        LocalDateTime localDateTime = null;
+        try {
+            localDateTime = calculateNext(timeLeftAsText).orElse(null);
+        } catch (Exception e) {
+            showImageFor5Seconds(image, "Fail to parse timer");
+            throw e;
+        }
+
+        return localDateTime;
+    }
+
+    public static int ocrNumber(BufferedImage image, boolean invert) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(image);
+        if (invert) {
+            timeLeft = ImageUtil.invertGrayscale(timeLeft);
+        }
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+
+        if (timeLeft.getHeight() < 50) {
+            timeLeft = ImageUtil.resize(timeLeft, 50);
+        }
+
+        String numberAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
+        return Integer.parseInt(numberAsText);
     }
 
     private static Optional<LocalDateTime> calculateNext(String input) {

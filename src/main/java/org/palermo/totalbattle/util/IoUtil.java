@@ -1,4 +1,4 @@
-package org.palermo.totalbattle.selenium.leadership;
+package org.palermo.totalbattle.util;
 
 import java.io.File;
 import java.io.FileInputStream;

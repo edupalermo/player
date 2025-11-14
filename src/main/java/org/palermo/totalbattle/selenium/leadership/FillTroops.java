@@ -6,6 +6,7 @@ import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.util.ImageUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -183,7 +184,7 @@ public class FillTroops {
     
 
     public static void fillTroops() {
-        MyRobot robot = new MyRobot();
+        MyRobot robot = MyRobot.INSTANCE;
 
         BufferedImage screen = robot.captureScreen();
 

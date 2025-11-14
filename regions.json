@@ -96,9 +96,51 @@
     "height" : 72
   },
   "SUMMON_CIRCLE_ARTIFACT_HOURGLASS" : {
-    "x" : 745,
+    "x" : 763,
     "y" : 806,
-    "width" : 145,
-    "height" : 61
+    "width" : 152,
+    "height" : 96
+  },
+  "TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON" : {
+    "x" : 952,
+    "y" : 726,
+    "width" : 175,
+    "height" : 74
+  },
+  "ACTIVE_TELESCOPE" : {
+    "x" : 645,
+    "y" : 912,
+    "width" : 132,
+    "height" : 113
+  },
+  "WATCHTOWER_TITLE" : {
+    "x" : 778,
+    "y" : 254,
+    "width" : 355,
+    "height" : 121
+  },
+  "WATCHTOWER_LEFT_TAB_CRYPTS_AND_ARENAS_LABEL" : {
+    "x" : 585,
+    "y" : 446,
+    "width" : 238,
+    "height" : 198
+  },
+  "WATCHTOWER_CRYPTS_AND_ARENAS_TOP_BUTTONS" : {
+    "x" : 745,
+    "y" : 377,
+    "width" : 604,
+    "height" : 118
+  },
+  "MAP_CENTER_" : {
+    "x" : 898,
+    "y" : 545,
+    "width" : 159,
+    "height" : 112
+  },
+  "MAP_COORDINATES" : {
+    "x" : 29,
+    "y" : 1033,
+    "width" : 208,
+    "height" : 42
   }
 }

@@ -1,7 +1,9 @@
 package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
+import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.SummoningCircle;
+import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
@@ -90,9 +92,11 @@ public class PlayerRunnable implements Runnable {
                 SharedData.INSTANCE.removeHalt(player);
             }
 
+            (new Telescope(player)).evaluate();
+
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
-                Task.buildArmy(player);
+                (new BuildArmy(player)).buildArmy();
             }
             Task.helpClanMembers();
             (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
