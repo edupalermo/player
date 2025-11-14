@@ -163,13 +163,20 @@ public class SummoningCircle {
     }
 
     private static int getArtifactQuantity(BufferedImage input) {
-        BufferedImage image = ImageUtil.toGrayscale(input);
-        image = ImageUtil.invertGrayscale(image);
-        image = ImageUtil.linearNormalization(image);
-        image = ImageUtil.resize(image, 50);
-        
-        String numberAsText = ImageUtil.ocrBestMethod(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS);
-        return Integer.parseInt(numberAsText);
+        int qtd = 0;
+        try {
+            BufferedImage image = ImageUtil.toGrayscale(input);
+            image = ImageUtil.invertGrayscale(image);
+            image = ImageUtil.linearNormalization(image);
+            image = ImageUtil.resize(image, 50);
+
+            String numberAsText = ImageUtil.ocrBestMethod(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS);
+            qtd = Integer.parseInt(numberAsText);
+        } catch (NumberFormatException e) {
+            ImageUtil.showImageFor5Seconds(input, "Fail to parse artifact quantity!");
+            throw e;
+        }
+        return qtd;
     }
 
     private void collectCaptainFragments() {

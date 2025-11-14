@@ -96,7 +96,7 @@
     "height" : 72
   },
   "SUMMON_CIRCLE_ARTIFACT_HOURGLASS" : {
-    "x" : 763,
+    "x" : 745,
     "y" : 806,
     "width" : 152,
     "height" : 96
@@ -142,6 +142,18 @@
     "y" : 1033,
     "width" : 208,
     "height" : 42
+  },
+  "HELP_CLAN_SHAKING_HANDS" : {
+    "x" : 1241,
+    "y" : 927,
+    "width" : 116,
+    "height" : 104
+  },
+  "SUMMON_CIRCLE_ELITE_CAPTAIN_HOURGLASS" : {
+    "x" : 1081,
+    "y" : 794,
+    "width" : 125,
+    "height" : 81
   },
   "BOTTOM_MENU_MAP_LABEL" : {
     "x" : 608,

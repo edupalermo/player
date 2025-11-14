@@ -1,7 +1,7 @@
 chrome-profiles
 history.dat
 history_search_surroundings.dat
-app.log
+*.log
 error_*.*
 
 

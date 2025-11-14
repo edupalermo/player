@@ -296,7 +296,7 @@ public class Task {
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
     }
-    
+
     public static void collectChests() {
 
         BufferedImage screen = robot.captureScreen();
@@ -371,7 +371,6 @@ public class Task {
         options.addArguments("--start-maximized");
         options.addArguments("--user-data-dir=" + new java.io.File(player.getProfileFolder()).getAbsolutePath());
         options.addArguments("--profile-directory=Default"); // Default profile in that dir
-        //options.addArguments("--kiosk");
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         options.setExperimentalOption("useAutomationExtension", false);
 
@@ -382,7 +381,6 @@ public class Task {
 
         System.out.println("Page has loaded");
 
-        robot.sleep(2000);
         return driver;
     }
     
