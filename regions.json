@@ -142,5 +142,11 @@
     "y" : 1033,
     "width" : 208,
     "height" : 42
+  },
+  "BOTTOM_MENU_MAP_LABEL" : {
+    "x" : 608,
+    "y" : 1006,
+    "width" : 140,
+    "height" : 73
   }
 }

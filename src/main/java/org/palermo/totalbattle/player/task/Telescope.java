@@ -107,17 +107,11 @@ public class Telescope {
             iconZoomMinus.leftClick();
         }
 
-        BufferedImage[] arenas = new BufferedImage[2];
-        arenas[0] = ImageUtil.loadResource("player/arena/arena_type_i.png");
-        arenas[1] = ImageUtil.loadResource("player/arena/arena_type_ii.png");
+        BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
+        Point arenaPoint = ArenaUtil.identifyCenterArena();
+        robot.mouseMove(arenaPoint.move(arena.getWidth() / 2, arena.getHeight() / 2));
 
         BufferedImage screen = robot.captureScreen();
-        Area arenaArea = RegionSelector.selectArea("MAP_CENTER_", screen);
-        Point arenaPoint = ImageUtil.searchBestFit(arenas, screen, arenaArea);
-        robot.mouseMove(arenaPoint.move(arenas[0].getWidth() / 2, arenas[0].getHeight() / 2));
-
-
-        screen = robot.captureScreen();
         Area coordinatesArea = RegionSelector.selectArea("MAP_COORDINATES", screen);
 
         

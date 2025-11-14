@@ -75,6 +75,7 @@ public class Navigate {
         robot.leftClick(point, searchImage);
         robot.sleep(500);
     }
+
     public void clickIfExists() {
         if (point == null) {
             point = search().orElse(null);

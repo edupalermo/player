@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.palermo.totalbattle.player.task.ArenaUtil;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
@@ -15,6 +16,7 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.util.Navigate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,14 +74,13 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Peter II");
+        Player player = players.get("Palermo");
         
         WebDriver driver = null;
         try {
             driver = openBrowser(player);
             login(player);
             
-            // attackArena(Point.of(351, 447));
             
             // collectChests(); // Retrieve chests
             
@@ -90,8 +91,12 @@ public class Task {
             // (new BuildArmy(player)).buildArmy();
 
             (new Telescope(player)).evaluate();
-            
-            (new SummoningCircle(robot, player)).evaluate();
+
+            if (SharedData.INSTANCE.getArena().isPresent()) {
+                attackArena(SharedData.INSTANCE.getArena().get());
+            }
+
+            // (new SummoningCircle(robot, player)).evaluate();
             
             //freeSale(player);
             
@@ -477,14 +482,29 @@ public class Task {
     }
     
     public static boolean attackArena(Point arenaLocation) {
-        BufferedImage labelMap = ImageUtil.loadResource("player/label_map.png");
-        Point labelMapPoint = waitMandatoryImage(labelMap, "Map label", 5000);
-        robot.leftClick(labelMapPoint.move(12, -31));
-        robot.sleep(2000);
+        Navigate labelMap = Navigate.builder()
+                .resourceName("player/label_map.png")
+                .areaName("BOTTOM_MENU_MAP_LABEL")
+                .waitLimit(4000L)
+                .build();
+        if (labelMap.exist()) {
+            robot.leftClick(labelMap.search().get().move(12, -31));
+            robot.sleep(2000);
+        }
 
         // When we switch to map, the Bonus Sales appear again
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(2000);
+
+        // Zoom in
+
+        Navigate iconZoomMinus = Navigate.builder()
+                .resourceName("player/icon_zoom_minus.png")
+                .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
+                .build();
+        for (int i = 0; i < 4; i++) {
+            iconZoomMinus.leftClick();
+        }
 
         // Click on the magnifier icon
         BufferedImage iconMagnifier = ImageUtil.loadResource("player/icon_magnifier.png");
@@ -508,8 +528,10 @@ public class Task {
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(1000);
 
-        // robot.leftClick(Point.of(959, 563)); // Click in the center Should depend on the zoom level
-        robot.leftClick(Point.of(965, 563)); // Click in the center Should depend on the zoom level
+        // Try to click in the arena in the center of the screen
+        BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
+        Point arenaPoint = ArenaUtil.identifyCenterArena();
+        robot.leftClick(arenaPoint, arena);
         robot.sleep(1000);
 
         BufferedImage screen = robot.captureScreen();

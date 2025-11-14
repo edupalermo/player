@@ -507,7 +507,7 @@ public class BuildArmy {
 
         long quantity = 0;
         try {
-            String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.SINGLE_WORD_MODE);
+            String quantityAsString = ImageUtil.ocrBestMethod(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS);
             System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
 
             quantity = Long.parseLong(quantityAsString);
