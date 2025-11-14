@@ -98,8 +98,13 @@ public class PlayerRunnable implements Runnable {
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
                 (new BuildArmy(player)).buildArmy();
             }
+            
+            
             Task.helpClanMembers();
-            (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
+            
+            if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
+                (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
