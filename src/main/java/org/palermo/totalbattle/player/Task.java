@@ -127,6 +127,11 @@ public class Task {
         if (!SharedData.INSTANCE.shouldWait(player, Scenario.QUESTS_TRY_FULL_CHESTS))  {
 
             List<Point> chests = new ArrayList<Point>();
+
+            chests.add(Point.of(958, 455));
+            chests.add(Point.of(1088, 620));
+            chests.add(Point.of(1222, 620));
+            
             chests.add(Point.of(910, 620));
             chests.add(Point.of(990, 620));
             chests.add(Point.of(1068, 620));
