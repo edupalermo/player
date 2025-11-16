@@ -113,7 +113,7 @@ public class SummoningCircle {
 
         screen = robot.captureScreen();
         BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
-        Area buttonFreeArea = Area.fromTwoPoints(795, 779, 936, 807);
+        Area buttonFreeArea = Area.fromTwoPoints(795, 759, 936, 807);
         // ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonFreeArea));
         Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
 
@@ -123,7 +123,7 @@ public class SummoningCircle {
 
             Navigate.builder()
                     .resourceName("player/sc/button_return.png")
-                    .area(Area.fromTwoPoints(684, 835, 1032, 865))
+                    .area(Area.fromTwoPoints(684, 815, 1032, 865))
                     .waitLimit(10000L)
                     .build()
                     .leftClick();
