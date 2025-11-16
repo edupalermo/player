@@ -76,6 +76,11 @@ public enum SharedData {
     }
     
     public boolean isLocked(Player player) {
+        Map<Scenario, LocalDateTime> map = this.wait.get(player.getName());
+        if (map != null) {
+            // Make the captain to be set again
+            map.remove(Scenario.SET_DEFAULT_CAPTAINS);
+        }
         return lock.contains(player.getName());        
     }
 
@@ -118,13 +123,22 @@ public enum SharedData {
         Map<Unit, Long> map = troopTarget.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
         map.put(unit, quantity);
     }
-
+    
     {
+        // The Hero
+        setArmy(Player.PALERMO, 3, 35689, 8922, 17844);
+        setArmy(Player.PETER_II, 3, 13893, 3460, 6961);
+        setArmy(Player.MIGHTSHAPER, 3, 12532, 3116, 6191);
+        setArmy(Player.GRIRANA, 3, 5477, 1353, 2680);
+        setArmy(Player.ELANIN, 3, 4700, 1140, 2280);
+        
+        /* One Captain
         setArmy(Player.PALERMO, 3, 26532, 6621, 13148);
         setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
         setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
         setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
         setArmy(Player.ELANIN, 3, 3475, 850, 1700);
+         */
     }
     
     private void setArmy(String name, int waves, int leadership, int dominance, int authority) {
