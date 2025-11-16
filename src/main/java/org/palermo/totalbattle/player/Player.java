@@ -16,4 +16,5 @@ public class Player {
     private String profileFolder;
     private String username;
     private String password;
+    private boolean hasHelen = false;
 }

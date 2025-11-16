@@ -60,6 +60,10 @@ public enum MyRobot {
     public void leftClick(Point point, Area area) {
         leftClick(point.getX() + (area.getWidth() / 2), point.getY() + (area.getHeight() / 2));
     }
+    
+    public void leftClick(Area area) {
+        leftClick(area.getX() + (area.getWidth() / 2), area.getY() + (area.getHeight() / 2));
+    }
 
     public void mouseMove(Point point) {
         try {

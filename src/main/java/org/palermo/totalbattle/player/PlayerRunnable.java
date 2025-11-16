@@ -2,12 +2,14 @@ package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
 import org.palermo.totalbattle.player.task.BuildArmy;
+import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class PlayerRunnable implements Runnable {
                 .profileFolder("chrome-profiles/palermo")
                 .username("fp2268@gmail.com")
                 .password("Alemanha79")
+                .hasHelen(true)
                 .build());
         players.add(Player.builder()
                 .name("Peter II")
@@ -75,6 +78,13 @@ public class PlayerRunnable implements Runnable {
         try {
             driver = Task.openBrowser(player);
             Task.login(player);
+            
+            if (SharedData.INSTANCE.shouldWait(player, Scenario.SET_DEFAULT_CAPTAINS)) {
+                (new CaptainSelector(player)).select(CaptainSelector.CARTER);
+                (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
+                (new CaptainSelector(player)).select(CaptainSelector.STROR);
+                SharedData.INSTANCE.setWait(player, Scenario.SET_DEFAULT_CAPTAINS, LocalDateTime.now().plusHours(1L));
+            }
             
             Point arenaLocation = SharedData.INSTANCE.getArena().orElse(null);
             if (arenaLocation != null) {

@@ -41,6 +41,7 @@ public class Task {
                 .profileFolder("chrome-profiles/fp2268@gmail.com")
                 .username("fp2268@gmail.com")
                 .password("Alemanha79")
+                .hasHelen(true)
                 .build());
         players.put("Peter II", Player.builder()
                 .name("Peter II")
@@ -85,7 +86,9 @@ public class Task {
 
             // (new SummoningCircle(robot, player)).evaluate();
 
-            (new CaptainSelector(player)).select();
+            (new CaptainSelector(player)).select(CaptainSelector.CARTER);
+            (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
+            (new CaptainSelector(player)).select(CaptainSelector.STROR);
             
             // (new BuildArmy(player)).buildArmy();
 
