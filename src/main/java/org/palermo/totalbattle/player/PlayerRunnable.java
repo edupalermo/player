@@ -7,6 +7,7 @@ import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,6 +113,16 @@ public class PlayerRunnable implements Runnable {
         finally {
             if (driver != null) {
                 driver.quit();
+
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")) {
+                    try {
+                        new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                // new ProcessBuilder("pkill", "chrome").start();
             }
         }
 

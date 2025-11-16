@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -107,6 +108,16 @@ public class Task {
         finally {
             if (driver != null) {
                 driver.quit();
+
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")) {
+                    try {
+                        new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                // new ProcessBuilder("pkill", "chrome").start();
             }
         }
     }
