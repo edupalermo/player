@@ -8,10 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.palermo.totalbattle.player.task.ArenaUtil;
-import org.palermo.totalbattle.player.task.BuildArmy;
-import org.palermo.totalbattle.player.task.SummoningCircle;
-import org.palermo.totalbattle.player.task.Telescope;
+import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -74,7 +71,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Mightshaper");
+        Player player = players.get("Peter II");
         
         WebDriver driver = null;
         try {
@@ -88,15 +85,17 @@ public class Task {
 
             // (new SummoningCircle(robot, player)).evaluate();
 
+            (new CaptainSelector(player)).select();
+            
             // (new BuildArmy(player)).buildArmy();
 
             // (new Telescope(player)).evaluate();
 
-            if (SharedData.INSTANCE.getArena().isPresent()) {
+            //if (SharedData.INSTANCE.getArena().isPresent()) {
                 // attackArena(SharedData.INSTANCE.getArena().get());
-            }
+            //}
 
-            (new SummoningCircle(robot, player)).evaluate();
+            //(new SummoningCircle(robot, player)).evaluate();
             
             //freeSale(player);
             

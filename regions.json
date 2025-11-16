@@ -166,5 +166,17 @@
     "y" : 756,
     "width" : 267,
     "height" : 135
+  },
+  "MAIN_HERO_PICTURE" : {
+    "x" : 566,
+    "y" : 128,
+    "width" : 186,
+    "height" : 146
+  },
+  "CAPTAIN_MANAGEMENT_HERO" : {
+    "x" : 539,
+    "y" : 807,
+    "width" : 146,
+    "height" : 143
   }
 }

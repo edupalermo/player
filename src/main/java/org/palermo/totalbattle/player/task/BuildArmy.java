@@ -70,10 +70,7 @@ public class BuildArmy {
 
             if (iconHourglassPoint != null) {
                 BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
-                timeLeft = ImageUtil.toGrayscale(timeLeft);
-                timeLeft = ImageUtil.invertGrayscale(timeLeft);
-                timeLeft = ImageUtil.linearNormalization(timeLeft);
-                String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.SINGLE_LINE_MODE);
+                String timeLeftAsText = treatTimeLeft(timeLeft);
                 System.out.println("Time Left: " + timeLeftAsText);
 
                 LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
@@ -106,6 +103,17 @@ public class BuildArmy {
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(150);
+    }
+    
+    private String treatTimeLeft(BufferedImage input) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input);
+        timeLeft = ImageUtil.invertGrayscale(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        if (timeLeft.getHeight() < 50) {
+            timeLeft = ImageUtil.resize(timeLeft, 50);
+        }
+        
+        return ImageUtil.ocrBestMethod(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN);
     }
 
 

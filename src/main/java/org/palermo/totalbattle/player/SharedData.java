@@ -120,7 +120,7 @@ public enum SharedData {
     }
 
     {
-        setArmy(Player.PALERMO, 3, 26180, 6539, 13031);
+        setArmy(Player.PALERMO, 3, 26532, 6621, 13148);
         setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
         setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
         setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
