@@ -79,7 +79,7 @@ public class PlayerRunnable implements Runnable {
             driver = Task.openBrowser(player);
             Task.login(player);
             
-            if (SharedData.INSTANCE.shouldWait(player, Scenario.SET_DEFAULT_CAPTAINS)) {
+            if (!SharedData.INSTANCE.shouldWait(player, Scenario.SET_DEFAULT_CAPTAINS)) {
                 (new CaptainSelector(player)).select(CaptainSelector.CARTER);
                 (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
                 (new CaptainSelector(player)).select(CaptainSelector.STROR);
