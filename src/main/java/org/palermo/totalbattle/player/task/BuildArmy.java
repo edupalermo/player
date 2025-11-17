@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.*;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.selenium.leadership.Area;
+import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -255,20 +256,25 @@ public class BuildArmy {
         Map<Unit, Long> map = SharedData.INSTANCE.getTroopTarget(player);
 
         boolean trainedSomething = false;
-
-        for (Map.Entry<Unit, Long> entry : map.entrySet()) {
-            try {
-                long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
-                if (currentSize < entry.getValue().longValue()) {
-                    train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+        
+        for (Pool poll : new Pool[]{Pool.LEADERSHIP, Pool.DOMINANCE}) {
+            for (Map.Entry<Unit, Long> entry : map.entrySet()) {
+                if (entry.getKey().getPool() != poll) {
+                    continue;
+                }
+                try {
+                    long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
+                    if (currentSize < entry.getValue().longValue()) {
+                        train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
+                        trainedSomething = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    train(titleBarracksPoint, entry.getKey(), 1);
                     trainedSomething = true;
                     break;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                train(titleBarracksPoint, entry.getKey(), 1);
-                trainedSomething = true;
-                break;
             }
         }
 
