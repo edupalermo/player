@@ -304,6 +304,7 @@ public class BuildArmy {
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814));
                 silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780));
+                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                     MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
@@ -312,6 +313,7 @@ public class BuildArmy {
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35), Point.of(798 + 261, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 261, 814));
                 silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 780));
+                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 814));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                     DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
@@ -320,6 +322,7 @@ public class BuildArmy {
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 522, 814));
                 silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1268, 780));
+                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1268, 814));
                 break;
 
             default:
@@ -344,7 +347,13 @@ public class BuildArmy {
         }
 
         if (ImageUtil.search(colorOkImage, screen, foodArea, 0.1).isEmpty()) {
-            System.out.println("Not enough food!");
+            if (unit.getPool() == Pool.LEADERSHIP) {
+                fillFood(foodPoint);
+            }
+            else {
+                System.out.println("Not enough dragon coins!");
+
+            }
             return;
         }
 
@@ -356,6 +365,47 @@ public class BuildArmy {
         robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
         robot.sleep(350);
     }
+
+    private void fillFood(Point point) {
+        robot.leftClick(point);
+        robot.sleep(500);
+
+        BufferedImage screen = robot.captureScreen();
+        Area iconFoodArea = RegionSelector.selectArea("TOP_UP_SILVER_SILVER_ICON", screen);
+        BufferedImage iconFood = ImageUtil.loadResource("player/icon_food.png");
+        Point iconFoodPoint = ImageUtil.searchSurroundings(iconFood, screen, iconFoodArea, 0.1, 20).orElse(null);
+
+        if (iconFoodPoint == null) {
+            throw new RuntimeException("Icon silver not found!");
+        }
+
+        boolean stillHasSavedResources;
+
+        do {
+            screen = robot.captureScreen();
+            Area buttonUseArea = RegionSelector.selectArea("TOP_UP_SILVER_FIRST_USE_BUTTON", screen);
+            BufferedImage buttonUse = ImageUtil.loadResource("player/button_use.png");
+            Point buttonUsePoint = ImageUtil.searchSurroundings(buttonUse, screen, buttonUseArea, 0.1, 20).orElse(null);
+
+            if (buttonUsePoint != null) {
+                robot.leftClick(buttonUsePoint, buttonUse);
+                robot.sleep(300);
+            }
+
+            Navigate.builder()
+                    .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
+                    .resourceName("player/button_use.png")
+                    .build()
+                    .leftClick();
+
+            stillHasSavedResources = buttonUsePoint != null;
+
+        } while(stillHasSavedResources);
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+
 
     private void fillSilver(Point point) {
         robot.leftClick(point);

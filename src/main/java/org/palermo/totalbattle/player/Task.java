@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Palermo");
+        Player player = players.get(Player.MIGHTSHAPER);
         
         WebDriver driver = null;
         try {
@@ -92,7 +92,7 @@ public class Task {
             (new CaptainSelector(player)).select(CaptainSelector.STROR);
              */
             
-            // (new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
 
             // (new Telescope(player)).evaluate();
 
@@ -106,7 +106,7 @@ public class Task {
             
             //helpClanMembers();
 
-            (new Telescope(player)).findSilverMines();
+            //(new Telescope(player)).findSilverMines();
             
             
             waitUntilWindowIsClosed(driver);
