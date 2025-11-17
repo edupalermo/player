@@ -95,6 +95,7 @@ public class PlayerRunnable implements Runnable {
                 Task.freeSale(player);
             }
             Task.quests(player);
+            Task.helpClanMembers();
             Task.collectChests();
 
             if (SharedData.INSTANCE.shouldHalt(player)) {
@@ -108,9 +109,6 @@ public class PlayerRunnable implements Runnable {
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
                 (new BuildArmy(player)).buildArmy();
             }
-            
-            
-            Task.helpClanMembers();
             
             if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
