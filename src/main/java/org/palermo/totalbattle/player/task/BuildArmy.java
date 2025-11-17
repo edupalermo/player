@@ -257,7 +257,7 @@ public class BuildArmy {
 
         boolean trainedSomething = false;
         
-        for (Pool poll : new Pool[]{Pool.LEADERSHIP, Pool.DOMINANCE}) {
+        outer: for (Pool poll : new Pool[]{Pool.LEADERSHIP, Pool.DOMINANCE}) {
             for (Map.Entry<Unit, Long> entry : map.entrySet()) {
                 if (entry.getKey().getPool() != poll) {
                     continue;
@@ -267,13 +267,13 @@ public class BuildArmy {
                     if (currentSize < entry.getValue().longValue()) {
                         train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
                         trainedSomething = true;
-                        break;
+                        break outer;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     train(titleBarracksPoint, entry.getKey(), 1);
                     trainedSomething = true;
-                    break;
+                    break outer;
                 }
             }
         }
