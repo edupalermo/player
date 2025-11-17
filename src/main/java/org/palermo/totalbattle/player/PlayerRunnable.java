@@ -77,6 +77,11 @@ public class PlayerRunnable implements Runnable {
         try {
             driver = Task.openBrowser(player);
             Task.login(player);
+
+            if (SharedData.INSTANCE.shouldHalt(player)) {
+                Task.showPauseDialog("Click on the button to continue");
+                SharedData.INSTANCE.removeHalt(player);
+            }
             
             if (!SharedData.INSTANCE.shouldWait(player, Scenario.SET_DEFAULT_CAPTAINS)) {
                 (new CaptainSelector(player)).select(CaptainSelector.CARTER);
@@ -97,11 +102,6 @@ public class PlayerRunnable implements Runnable {
             Task.quests(player);
             Task.helpClanMembers();
             Task.collectChests();
-
-            if (SharedData.INSTANCE.shouldHalt(player)) {
-                Task.showPauseDialog("Click on the button to continue");
-                SharedData.INSTANCE.removeHalt(player);
-            }
 
             (new Telescope(player)).findArena();
 
