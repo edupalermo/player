@@ -77,10 +77,6 @@ public enum SharedData {
     
     public boolean isLocked(Player player) {
         Map<Scenario, LocalDateTime> map = this.wait.get(player.getName());
-        if (map != null) {
-            // Make the captain to be set again
-            map.remove(Scenario.SET_DEFAULT_CAPTAINS);
-        }
         return lock.contains(player.getName());        
     }
 
