@@ -13,7 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Telescope {
 
@@ -24,7 +26,7 @@ public class Telescope {
         this.player = player;
     }
     
-    public void evaluate() {
+    public void findArena() {
         if (SharedData.INSTANCE.getArena().isPresent()) {
             System.out.println("No need to look for arenas");
             return;
@@ -136,5 +138,112 @@ public class Telescope {
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
+    }
+    
+    public void findSilverMines() {
+
+        Point titleWatchtowerPoint = openWatchtower().orElse(null);
+        
+        if (titleWatchtowerPoint == null) {
+            System.out.println("Telescope is not activated");
+            return;
+        }
+
+        
+        // Click on Mines let tab
+        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 613)));
+        robot.sleep(500);
+        
+        Area resourcesArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(831, 420), Point.of(1337, 461));
+
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_wood_on.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_iron_on.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_stone_on.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_food_on.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_silver_off.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_gold_on.png"), resourcesArea);
+        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_tar_on.png"), resourcesArea);
+
+
+        Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
+
+        BufferedImage buttonGo = ImageUtil.loadResource("player/watchtower/button_go.png");
+
+        
+        for (int i = 0; i < 3; i++) {
+            
+            BufferedImage screen = robot.captureScreen();
+            List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
+            System.out.println("Found: " + buttons.size());
+
+            for (int j = 0; j < buttons.size(); j++) {
+                
+                robot.leftClick(buttons.get(j));
+                robot.sleep(1000);
+
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(300);
+                
+                // Clicar no centro! fudeu!
+
+                screen = robot.captureScreen();
+                Area centerArea = RegionSelector.selectArea("MAP_CENTER", screen);
+                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
+                Point minePoint = ImageUtil.searchBestFit(new BufferedImage[] {mine}, screen, centerArea);
+                
+                robot.leftClick(minePoint, mine);
+                robot.sleep(300);
+                
+                Navigate.builder()
+                        .resourceName("player/watchtower/title_village.png")
+                        .areaName("TELESCOPE_VILLAGE_TITLE")
+                        .build();
+                
+            }
+            
+            
+        }
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+    
+    private void clickIfFindIt(BufferedImage item, Area area) {
+        
+        Point point = Navigate.builder()
+                .area(area)
+                .searchImage(item)
+                .build().search().orElse(null);
+        
+        if (point != null) {
+            robot.leftClick(point, item);
+            robot.sleep(300);
+        }
+    }
+    
+    private Optional<Point> openWatchtower() {
+        Navigate activeTelescope = Navigate.builder()
+                .areaName("ACTIVE_TELESCOPE")
+                .resourceName("player/icon_telescope.png")
+                .build();
+        if (!activeTelescope.exist()) {
+            System.out.println("Telescope is not activated");
+            return Optional.empty();
+        }
+        activeTelescope.leftClick();
+
+        Navigate titleWatchtower = Navigate.builder()
+                .areaName("WATCHTOWER_TITLE")
+                .resourceName("player/watchtower/title_watchtower.png")
+                .waitLimit(Duration.ofSeconds(3).toMillis())
+                .build();
+        Point titleWatchtowerPoint = titleWatchtower.search().orElse(null);
+
+        if (!titleWatchtower.exist()) {
+            throw new RuntimeException("Could not find watchtower title");
+        }
+        return Optional.ofNullable(titleWatchtowerPoint);
     }
 }

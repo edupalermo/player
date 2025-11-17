@@ -24,7 +24,12 @@ public class Navigate {
     private Point point = null;
 
     @Builder
-    public Navigate(Area area, String areaName, String resourceName, Long waitLimit, Double comparationLimit) {
+    public Navigate(Area area, 
+                    String areaName, 
+                    String resourceName,
+                    BufferedImage searchImage,
+                    Long waitLimit, 
+                    Double comparationLimit) {
         lastScreen = robot.captureScreen();
         if (areaName != null) {
             this.area = RegionSelector.selectArea(areaName, lastScreen);
@@ -37,7 +42,12 @@ public class Navigate {
                 this.area = Area.of(0, 0, lastScreen.getWidth(), lastScreen.getHeight());
             }
         }
-        searchImage = ImageUtil.loadResource(resourceName);
+        if (resourceName != null) {
+            this.searchImage = ImageUtil.loadResource(resourceName);
+        }
+        else {
+            this.searchImage = searchImage;
+        }
         this.waitLimit = ObjectUtils.firstNonNull(waitLimit, 0L);
         this.comparationLimit = ObjectUtils.firstNonNull(comparationLimit, 0.1);
     }

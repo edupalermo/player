@@ -18,7 +18,7 @@ public class ArenaUtil {
         arenas[1] = ImageUtil.loadResource("player/arena/arena_type_ii.png");
 
         BufferedImage screen = robot.captureScreen();
-        Area arenaArea = RegionSelector.selectArea("MAP_CENTER_", screen);
+        Area arenaArea = RegionSelector.selectArea("MAP_CENTER", screen);
         return ImageUtil.searchBestFit(arenas, screen, arenaArea);
     }
 }

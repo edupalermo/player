@@ -72,7 +72,7 @@ public class Task {
 
     public static void main(String[] args) {
         
-        Player player = players.get("Peter II");
+        Player player = players.get("Palermo");
         
         WebDriver driver = null;
         try {
@@ -86,9 +86,11 @@ public class Task {
 
             // (new SummoningCircle(robot, player)).evaluate();
 
+            /*
             (new CaptainSelector(player)).select(CaptainSelector.CARTER);
             (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
             (new CaptainSelector(player)).select(CaptainSelector.STROR);
+             */
             
             // (new BuildArmy(player)).buildArmy();
 
@@ -103,6 +105,9 @@ public class Task {
             //freeSale(player);
             
             //helpClanMembers();
+
+            (new Telescope(player)).findSilverMines();
+            
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {

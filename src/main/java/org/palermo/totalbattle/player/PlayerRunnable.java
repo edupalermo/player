@@ -6,7 +6,6 @@ import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
-import org.palermo.totalbattle.selenium.stacking.Unit;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -103,7 +102,7 @@ public class PlayerRunnable implements Runnable {
                 SharedData.INSTANCE.removeHalt(player);
             }
 
-            (new Telescope(player)).evaluate();
+            (new Telescope(player)).findArena();
 
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
