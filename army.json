@@ -1,0 +1,9 @@
+{
+  "Palermo" : {
+    "playerName" : "Palermo",
+    "waves" : 1,
+    "leadership" : 10,
+    "dominance" : 10,
+    "authority" : 10
+  }
+}

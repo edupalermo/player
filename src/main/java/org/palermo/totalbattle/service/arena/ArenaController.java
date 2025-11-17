@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.service.arena;
 
+import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.springframework.web.bind.annotation.PostMapping;

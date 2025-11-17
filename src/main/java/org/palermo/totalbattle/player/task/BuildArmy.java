@@ -373,9 +373,9 @@ public class BuildArmy {
         BufferedImage screen = robot.captureScreen();
         Area iconFoodArea = RegionSelector.selectArea("TOP_UP_SILVER_SILVER_ICON", screen);
         BufferedImage iconFood = ImageUtil.loadResource("player/icon_food.png");
-        Point iconFoodPoint = ImageUtil.searchSurroundings(iconFood, screen, iconFoodArea, 0.1, 20).orElse(null);
+        Point iconSilverPoint = ImageUtil.searchSurroundings(iconFood, screen, iconFoodArea, 0.1, 20).orElse(null);
 
-        if (iconFoodPoint == null) {
+        if (iconSilverPoint == null) {
             throw new RuntimeException("Icon silver not found!");
         }
 

@@ -9,10 +9,9 @@ public class ConfigurationBuilder {
     private int dominance;
     private int authority;
     private List<UnitWrapper> units = new ArrayList<>();
-    private int wave = 1;
 
     public Configuration build() {
-        return new Configuration(leadership, dominance, authority, units, wave);
+        return new Configuration(leadership, dominance, authority, units);
     }
 
     public ConfigurationBuilder leadership(int leadership) {
@@ -32,11 +31,6 @@ public class ConfigurationBuilder {
 
     public ConfigurationBuilder addUnit(Unit unit) {
         units.add(UnitWrapper.builder().unit(unit).build());
-        return this;
-    }
-    
-    public ConfigurationBuilder wave(int wave) {
-        this.wave = wave;
         return this;
     }
 }

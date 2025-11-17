@@ -477,8 +477,7 @@ public class FillTroops {
         ConfigurationBuilder configurationBuilder = Configuration.builder()
                 .leadership(leadership)
                 .dominance(dominance)
-                .authority(authority)
-                .wave(1);
+                .authority(authority);
 
         List<TroopQuantity> outputList = new ArrayList<>();
 

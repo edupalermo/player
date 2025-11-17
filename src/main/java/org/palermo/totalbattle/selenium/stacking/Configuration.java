@@ -1,6 +1,8 @@
 package org.palermo.totalbattle.selenium.stacking;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Configuration {
 
@@ -8,14 +10,12 @@ public class Configuration {
     private final int dominance;
     private final int authority;
     private final List<UnitWrapper> units;
-    private final int wave;
     
-    Configuration(int leadership, int dominance, int authority, List<UnitWrapper> units, int wave) {
+    Configuration(int leadership, int dominance, int authority, List<UnitWrapper> units) {
         this.leadership = leadership;
         this.dominance = dominance;
         this.authority = authority;
         this.units = units;
-        this.wave = wave;
     }
     
     
@@ -47,7 +47,7 @@ public class Configuration {
         for (int i = 0; i < units.size(); i++) {
             Unit unit = units.get(i).getUnit();
             if (unit.getPool() == Pool.LEADERSHIP) {
-                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]) +" \t" +  computeWave(answer[i]));
+                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]));
             }
         }
         
@@ -74,7 +74,7 @@ public class Configuration {
         for (int i = 0; i < units.size(); i++) {
             Unit unit = units.get(i).getUnit();
             if (unit.getPool() == Pool.DOMINANCE) {
-                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]) + "\t" + computeWave(answer[i]));
+                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]));
             }
         }
         
@@ -100,7 +100,7 @@ public class Configuration {
         for (int i = 0; i < units.size(); i++) {
             Unit unit = units.get(i).getUnit();
             if (unit.getPool() == Pool.AUTHORITY) {
-                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]) + "\t" + computeWave(answer[i]));
+                System.out.println(unit.name() + "\t" + answer[i] + "\t" + (units.get(i).getHealth() * answer[i]));
             }
         }
 
@@ -108,6 +108,7 @@ public class Configuration {
         return answer;
     }
     
+    /*
     private int computeWave(int quantity) {
         
         double factor = 0; 
@@ -118,6 +119,7 @@ public class Configuration {
         
         return (int) Math.round(quantity * factor);
     }
+     */
 
     public int getLowerHealth(int[] troops, Pool pool) {
         int lower = Integer.MAX_VALUE;

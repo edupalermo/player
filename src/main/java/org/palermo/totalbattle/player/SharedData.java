@@ -1,12 +1,18 @@
 package org.palermo.totalbattle.player;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.bean.UnitQuantity;
+import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +40,29 @@ public enum SharedData {
     // Troop training target
     private final Map<String, Map<Unit, Long>> troopTarget = new HashMap<>();
     
-    public final MyRobot robot = MyRobot.INSTANCE; 
+    public final MyRobot robot = MyRobot.INSTANCE;
+    private ObjectMapper mapper = new ObjectMapper();
 
+
+    private final File file = new File("army.json");
+    private Map<String, ArmyBean> armies;
+
+    SharedData() {
+        if (file.exists()) {
+            try {
+                armies = mapper.readValue(file, new TypeReference<Map<String, ArmyBean>>() {});
+                for (Map.Entry<String, ArmyBean> entry : armies.entrySet()) {
+                    setArmy(entry.getValue());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            armies = new HashMap<>();
+        }
+    }
+    
     public void addArena(Point point) {
         this.arenas.add(point);
     }
@@ -76,13 +103,17 @@ public enum SharedData {
     }
     
     public boolean isLocked(Player player) {
-        Map<Scenario, LocalDateTime> map = this.wait.get(player.getName());
         return lock.contains(player.getName());        
     }
 
     public void setWait(Player player, Scenario scenario, LocalDateTime dateTime) {
         Map<Scenario, LocalDateTime> map = wait.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
         map.put(scenario, dateTime);
+    }
+    
+    public void clearWait(Player player, Scenario scenario) {
+        Map<Scenario, LocalDateTime> map = wait.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
+        map.remove(scenario);
     }
 
     public Optional<LocalDateTime> getWait(Player player, Scenario scenario) {
@@ -105,8 +136,6 @@ public enum SharedData {
                 shouldWait(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
     }
 
-
-
     public Map<Unit, Long> getTroopTarget(Player player) {
         return troopTarget.get(player.getName());
     }
@@ -122,11 +151,11 @@ public enum SharedData {
     
     {
         // The Hero
-        setArmy(Player.PALERMO, 3, 35689, 8922, 17844);
-        setArmy(Player.PETER_II, 3, 13893, 3460, 6961);
-        setArmy(Player.MIGHTSHAPER, 3, 12532, 3116, 6191);
-        setArmy(Player.GRIRANA, 3, 5477, 1353, 2680);
-        setArmy(Player.ELANIN, 3, 4700, 1140, 2280);
+        //setArmy(Player.PALERMO, 3, 35689, 8922, 17844);
+        //setArmy(Player.PETER_II, 3, 13893, 3460, 6961);
+        //setArmy(Player.MIGHTSHAPER, 3, 12532, 3116, 6191);
+        //setArmy(Player.GRIRANA, 3, 5477, 1353, 2680);
+        //setArmy(Player.ELANIN, 3, 4700, 1140, 2280);
         
         /* One Captain
         setArmy(Player.PALERMO, 3, 26532, 6621, 13148);
@@ -135,20 +164,37 @@ public enum SharedData {
         setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
         setArmy(Player.ELANIN, 3, 3475, 850, 1700);
          */
+        
+        /* Three Captains
+        setArmy(Player.PALERMO, 3, 26532, 6621, 13148); // Cleopatra  Aydae Ingrid
+        setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
+        setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
+        setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
+        setArmy(Player.ELANIN, 3, 3475, 850, 1700);
+         */
     }
     
-    private void setArmy(String name, int waves, int leadership, int dominance, int authority) {
+    public void setAndSaveArmy(ArmyBean armyBean) {
+        try {
+            setArmy(armyBean);
+            armies.put(armyBean.getPlayerName(), armyBean);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, armies);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private void setArmy(ArmyBean armyBean) {
         Player player = Player.builder()
-                .name(name)
+                .name(armyBean.getPlayerName())
                 .build();
 
-        List<Unit> units = getUnits(name);
+        List<Unit> units = getUnits(armyBean.getPlayerName());
 
         ConfigurationBuilder builder = Configuration.builder()
-                .leadership(leadership)
-                .dominance(dominance)
-                .authority(authority)
-                .wave(3);
+                .leadership(armyBean.getLeadership())
+                .dominance(armyBean.getDominance())
+                .authority(armyBean.getAuthority());
 
         for (Unit unit: units) {
             builder.addUnit(unit);
@@ -160,7 +206,7 @@ public enum SharedData {
         for (int i = 0; i < qtds.length; i++) {
             unitQuantities.add(UnitQuantity.builder()
                     .unit(units.get(i))
-                    .quantity(computeWaves(qtds[i], waves))
+                    .quantity(computeWaves(qtds[i], armyBean.getWaves()))
                     .build());
         }
 
@@ -171,6 +217,8 @@ public enum SharedData {
         for (UnitQuantity unitQuantity: unitQuantities) {
             setTroopTarget(player, unitQuantity.getUnit(), unitQuantity.getQuantity());
         }
+        
+        
     }
     
     private List<UnitQuantity> addMiners(List<UnitQuantity> input) {

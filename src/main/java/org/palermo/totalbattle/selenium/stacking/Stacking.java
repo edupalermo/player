@@ -81,7 +81,6 @@ public class Stacking {
                 .leadership(6961)
                 .dominance(1695)
                 .authority(3462)
-                .wave(3)
                 //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
@@ -129,8 +128,6 @@ public class Stacking {
     private static void palermo_citadel_15(int leadership, int wave) {
         Configuration configuration = Configuration.builder()
                 .leadership(leadership)
-                .wave(wave)
-                //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
                 //.addUnit(Unit.S1_SWORDSMAN)
@@ -194,8 +191,7 @@ public class Stacking {
         ConfigurationBuilder builder = Configuration.builder()
                 .leadership(leadership)
                 .authority(leadership)
-                .dominance(leadership)
-                .wave(1);
+                .dominance(leadership);
 
         for (Unit unit: units) {
             if (!unit.wasExcluded(exclusions)) {
@@ -280,8 +276,6 @@ public class Stacking {
                 .leadership(leadership)
                 .authority(leadership)
                 .dominance(leadership)
-                .wave(wave)
-                //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
                 //.addUnit(Unit.S1_SWORDSMAN)
@@ -334,7 +328,6 @@ public class Stacking {
                 .leadership(leadership)
                 .authority(leadership)
                 .dominance(leadership)
-                .wave(wave)
                 //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
@@ -362,8 +355,6 @@ public class Stacking {
     private static void mightshaper_citadel_10(int leadership, int wave) {
         Configuration configuration = Configuration.builder()
                 .leadership(leadership)
-                .wave(wave)
-                //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
                 //.addUnit(Unit.S1_SWORDSMAN)
@@ -393,7 +384,6 @@ public class Stacking {
     private static void supporter_citadel_10(int leadership, int wave) {
         Configuration configuration = Configuration.builder()
                 .leadership(leadership)
-                .wave(wave)
                 //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
@@ -423,7 +413,6 @@ public class Stacking {
                 .leadership(leadership)
                 .dominance(leadership)
                 .authority(leadership)
-                .wave(wave)
                 /*
                 .addUnit(Unit.G1_RANGED)
                 .addUnit(Unit.G1_MELEE)
@@ -464,8 +453,6 @@ public class Stacking {
                 .leadership(leadership)
                 .authority(leadership)
                 .dominance(leadership)
-                .wave(wave)
-                //.wave(3)
                 /*
                 .addUnit(Unit.G1_ENGINEER) // Less Important
                 //.addUnit(Unit.S1_SWORDSMAN)
@@ -509,7 +496,6 @@ public class Stacking {
                 .leadership(leadership)
                 .authority(leadership)
                 .dominance(leadership)
-                .wave(wave)
                 .addUnit(Unit.S1_SWORDSMAN)
                 .addUnit(Unit.G1_RANGED)
                 .addUnit(Unit.G1_MELEE)
@@ -536,7 +522,6 @@ public class Stacking {
                 .leadership(leadership)
                 .authority(leadership)
                 .dominance(leadership)
-                .wave(wave)
                 .addUnit(Unit.S1_SWORDSMAN)
                 .addUnit(Unit.G1_RANGED)
                 .addUnit(Unit.G1_MELEE)

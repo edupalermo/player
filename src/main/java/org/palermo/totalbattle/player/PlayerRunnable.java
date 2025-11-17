@@ -24,6 +24,7 @@ public class PlayerRunnable implements Runnable {
                 .password("Alemanha79")
                 .hasHelen(true)
                 .build());
+        /*
         players.add(Player.builder()
                 .name("Peter II")
                 .profileFolder("chrome-profiles/peter_ii")
@@ -48,6 +49,7 @@ public class PlayerRunnable implements Runnable {
                 .username("edupalermo+03@gmail.com")
                 .password("Alemanha79")
                 .build());
+         */
     }
 
 
