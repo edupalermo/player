@@ -368,7 +368,7 @@ public class Task {
 
                 if (buttonOpenPoint != null) {
                     robot.leftClick(buttonOpenPoint, buttonOpen);
-                    robot.sleep(300);
+                    robot.sleep(180);
                 }
 
             } while(buttonOpenPoint != null);
