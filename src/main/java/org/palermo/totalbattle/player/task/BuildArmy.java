@@ -220,7 +220,7 @@ public class BuildArmy {
 
             log.info("Searching for {}", bestSpeedUp.getLabel());
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 screen = robot.captureScreen();
                 Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
                 if (speedUpPoint != null) {
