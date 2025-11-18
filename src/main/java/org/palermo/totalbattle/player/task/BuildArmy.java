@@ -185,7 +185,7 @@ public class BuildArmy {
             throw new RuntimeException("Could not find speed up title");
         }
 
-        final int turns = 3;
+        final int turns = 4;
 
         for (int r = 0; r < turns; r++) {
 
@@ -220,7 +220,7 @@ public class BuildArmy {
 
             log.info("Searching for {}", bestSpeedUp.getLabel());
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 4; i++) {
                 screen = robot.captureScreen();
                 Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
                 if (speedUpPoint != null) {
