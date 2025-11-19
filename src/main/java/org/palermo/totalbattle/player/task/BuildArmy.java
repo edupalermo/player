@@ -186,7 +186,7 @@ public class BuildArmy {
             throw new RuntimeException("Could not find speed up title");
         }
 
-        final int turns = 4;
+        final int turns = 5;
 
         for (int r = 0; r < turns; r++) {
 
