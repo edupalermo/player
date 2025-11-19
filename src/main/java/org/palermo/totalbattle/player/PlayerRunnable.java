@@ -7,6 +7,7 @@ import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
 
+import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -110,6 +111,9 @@ public class PlayerRunnable implements Runnable {
             if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
                     (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
                 (new BuildArmy(player)).buildArmy();
+            }
+            else {
+                Toolkit.getDefaultToolkit().beep();
             }
             
             if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
