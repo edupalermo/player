@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Application:5005" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="org.palermo.totalbattle.Application" />
-    <module name="total_battle_selenium" />
-    <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Djava.awt.headless=false" />
+    <module name="TotalBattleSelenium" />
+    <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Djava.awt.headless=false" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

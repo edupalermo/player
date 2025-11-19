@@ -392,20 +392,30 @@ public class BuildArmy {
             if (buttonUsePoint != null) {
                 robot.leftClick(buttonUsePoint, buttonUse);
                 robot.sleep(300);
+
+                Navigate.builder()
+                        .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
+                        .resourceName("player/button_use.png")
+                        .build()
+                        .leftClick();
             }
 
-            Navigate.builder()
-                    .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
-                    .resourceName("player/button_use.png")
-                    .build()
-                    .leftClick();
 
             stillHasSavedResources = buttonUsePoint != null;
 
         } while(stillHasSavedResources);
 
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
+
+        Navigate navigateIconFood = Navigate.builder()
+                .areaName("TOP_UP_SILVER_SILVER_ICON")
+                .resourceName("player/icon_food.png")
+                .waitLimit(1000L)
+                .build();
+
+        if (navigateIconFood.exist()) {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
     }
 
 
@@ -433,20 +443,28 @@ public class BuildArmy {
             if (buttonUsePoint != null) {
                 robot.leftClick(buttonUsePoint, buttonUse);
                 robot.sleep(300);
-            }
 
-            Navigate.builder()
-                    .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
-                    .resourceName("player/button_use.png")
-                    .build()
-                    .leftClick();
+                Navigate.builder()
+                        .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
+                        .resourceName("player/button_use.png")
+                        .build()
+                        .leftClick();
+            }
 
             stillHasSavedResources = buttonUsePoint != null;
 
         } while(stillHasSavedResources);
 
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
+        Navigate silverIcon = Navigate.builder()
+                .areaName("TOP_UP_SILVER_SILVER_ICON")
+                .resourceName("player/icon_silver.png")
+                .waitLimit(1000L)
+                .build();
+
+        if (silverIcon.exist()) {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
     }
 
     private void selectUnit(Point titleBarracksPoint, Unit unit) {
