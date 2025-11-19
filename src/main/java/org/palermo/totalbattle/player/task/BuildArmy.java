@@ -11,6 +11,7 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.Navigate;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
@@ -280,6 +281,7 @@ public class BuildArmy {
 
         if (!trainedSomething) {
             SharedData.INSTANCE.setWait(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
+            Toolkit.getDefaultToolkit().beep();
         }
     }
 
