@@ -100,7 +100,20 @@ public class Telescope {
         robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
         robot.sleep(2000);
 
+        BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
+        Point arenaPoint = ArenaUtil.identifyCenterArena();
+        robot.mouseMove(arenaPoint.move(arena.getWidth() / 2, arena.getHeight() / 2));
 
+        Point arenaCoordinate = readCoordinate();
+        SharedData.INSTANCE.addArena(arenaCoordinate);
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+    
+    private Point readCoordinate() {
         Navigate iconZoomMinus = Navigate.builder()
                 .resourceName("player/icon_zoom_minus.png")
                 .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
@@ -109,14 +122,9 @@ public class Telescope {
             iconZoomMinus.leftClick();
         }
 
-        BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
-        Point arenaPoint = ArenaUtil.identifyCenterArena();
-        robot.mouseMove(arenaPoint.move(arena.getWidth() / 2, arena.getHeight() / 2));
-
         BufferedImage screen = robot.captureScreen();
         Area coordinatesArea = RegionSelector.selectArea("MAP_COORDINATES", screen);
 
-        
         Navigate yCoordinate = Navigate.builder()
                 .area(coordinatesArea)
                 .resourceName("player/label_y.png")
@@ -129,83 +137,105 @@ public class Telescope {
 
         Area xArea = Area.of(yPoint, Point.of(184, 1056), Point.of(150, 1054), Point.of(176, 1069));
         Area yArea = Area.of(yPoint, Point.of(184, 1056), Point.of(200, 1054), Point.of(228, 1069));
-        
-        Point arenaCoordinate = Point.of(ImageUtil.ocrNumber(ImageUtil.crop(screen, xArea), true),
-                ImageUtil.ocrNumber(ImageUtil.crop(screen, yArea), true));
-        SharedData.INSTANCE.addArena(arenaCoordinate);
 
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-    }
+        return Point.of(ImageUtil.ocrNumber(ImageUtil.crop(screen, xArea), true),
+                ImageUtil.ocrNumber(ImageUtil.crop(screen, yArea), true));
+    } 
     
     public void findSilverMines() {
 
-        Point titleWatchtowerPoint = openWatchtower().orElse(null);
-        
-        if (titleWatchtowerPoint == null) {
-            System.out.println("Telescope is not activated");
-            return;
-        }
+        Point minePoint = null;
 
-        
-        // Click on Mines let tab
-        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 613)));
-        robot.sleep(500);
-        
-        Area resourcesArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(831, 420), Point.of(1337, 461));
+        for (int i = 0; i < 10; i++) {
 
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_wood_on.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_iron_on.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_stone_on.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_food_on.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_silver_off.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_gold_on.png"), resourcesArea);
-        clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_tar_on.png"), resourcesArea);
+            Point titleWatchtowerPoint = openWatchtower().orElse(null);
+
+            if (titleWatchtowerPoint == null) {
+                System.out.println("Telescope is not activated");
+                return;
+            }
+
+            // Click on Mines let tab
+            robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 613)));
+            robot.sleep(500);
+
+            Area resourcesArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(831, 420), Point.of(1337, 461));
+
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_wood_on.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_iron_on.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_stone_on.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_food_on.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_silver_off.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_gold_on.png"), resourcesArea);
+            clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_tar_on.png"), resourcesArea);
 
 
-        Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
-
-        BufferedImage buttonGo = ImageUtil.loadResource("player/watchtower/button_go.png");
-
-        
-        for (int i = 0; i < 3; i++) {
-            
-            BufferedImage screen = robot.captureScreen();
-            List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
-            System.out.println("Found: " + buttons.size());
-
-            for (int j = 0; j < buttons.size(); j++) {
-                
-                robot.leftClick(buttons.get(j));
-                robot.sleep(1000);
-
-                robot.type(KeyEvent.VK_ESCAPE);
-                robot.sleep(300);
-                
-                // Clicar no centro! fudeu!
-
-                screen = robot.captureScreen();
-                Area centerArea = RegionSelector.selectArea("MAP_CENTER", screen);
-                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
-                Point minePoint = ImageUtil.searchBestFit(new BufferedImage[] {mine}, screen, centerArea);
-                
-                robot.leftClick(minePoint, mine);
-                robot.sleep(300);
-                
-                Navigate.builder()
-                        .resourceName("player/watchtower/title_village.png")
-                        .areaName("TELESCOPE_VILLAGE_TITLE")
-                        .build();
-                
+            int scroll = 10;
+            for (int s = 0; s < i / 3; s++) {
+                Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 523)); 
+                robot.mouseDrag(initialPoint, 0, 10 * (i / 3));
             }
             
-            
+            Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
+
+            BufferedImage buttonGo = ImageUtil.loadResource("player/watchtower/button_go.png");
+
+
+            BufferedImage screen = robot.captureScreen();
+            List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
+           
+                // Click on GO Button
+                robot.leftClick(buttons.get(i % 3)); // It seems that 4 buttons appear, but we use 3 
+                robot.sleep(1000);
+
+                Navigate.builder()
+                        .resourceName("player/label_city.png")
+                        .areaName("MAIN_LABEL_CITY")
+                        .waitLimit(7500)
+                        .pressEscapeWhileWaiting(true)
+                        .build()
+                        .ensureExistence();
+                robot.sleep(2000);
+
+                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
+                if (minePoint == null) {
+                    screen = robot.captureScreen();
+                    Area centerArea = RegionSelector.selectArea("MAP_CENTER", screen);
+                    minePoint = ImageUtil.searchBestFit(new BufferedImage[] {mine}, screen, centerArea);
+                }
+                
+                //ImageUtil.showImageAndWait(screen, Area.of(minePoint.getX(), minePoint.getY(), mine.getWidth(), mine.getHeight()));
+                
+                robot.mouseMove(minePoint.move(mine.getWidth() / 2, mine.getHeight() / 2));
+
+                Point arenaCoordinate = readCoordinate();
+
+                robot.leftClick(minePoint, mine);
+
+                Point titleVillagePoint = Navigate.builder()
+                        .resourceName("player/watchtower/title_village.png")
+                        .areaName("TELESCOPE_VILLAGE_TITLE")
+                        .waitLimit(10000)
+                        .build()
+                        .ensureExistence();
+                
+                Point buttonCapturePoint = Navigate.builder()
+                        .resourceName("player/watchtower/button_capture.png")
+                        .area(Area.of(titleVillagePoint, Point.of(969, 481), Point.of(933, 682), Point.of(1042, 724)))
+                        .build().search().orElse(null);
+                
+                if (buttonCapturePoint != null) {
+                    System.out.println("Mine can be captured! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+                }
+                else {
+                    System.out.println("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+                }
+
+                // Close pop up window
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(300);
         }
 
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
     }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.bean.UnitQuantity;
-import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
@@ -185,11 +184,9 @@ public enum SharedData {
     }
     
     private void setArmy(ArmyBean armyBean) {
-        Player player = Player.builder()
-                .name(armyBean.getPlayerName())
-                .build();
+        Player player = Player.getPlayerByName(armyBean.getPlayerName());
 
-        List<Unit> units = getUnits(armyBean.getPlayerName());
+        List<Unit> units = getUnits(player);
 
         ConfigurationBuilder builder = Configuration.builder()
                 .leadership(armyBean.getLeadership())
@@ -246,19 +243,19 @@ public enum SharedData {
         
         List<UnitQuantity> output = input;
         
-        switch (player.getName()) {
-            case Player.PALERMO:
+        switch (player) {
+            case PALERMO:
                 output = increase(output, Unit.G5_MOUNTED, 4000);
                 output = increase(output, Unit.G5_RANGED, 8000);
                 output = increase(output, Unit.G5_MELEE, 8000);
                 output = increase(output, Unit.G5_GRIFFIN, 400);
                 break;
-            case Player.PETER_II, Player.MIGHTSHAPER:
+            case PETER, MIGHTSHAPER:
                 output = increase(output, Unit.G4_MOUNTED, 4000);
                 output = increase(output, Unit.G4_RANGED, 8000);
                 output = increase(output, Unit.G4_MELEE, 8000);
                 break;
-            case Player.GRIRANA, Player.ELANIN:
+            case GRIRANA, ELANIN:
                 output = increase(output, Unit.G3_MOUNTED, 2000);
                 output = increase(output, Unit.G3_RANGED, 4000);
                 output = increase(output, Unit.G3_MELEE, 4000);
@@ -294,12 +291,12 @@ public enum SharedData {
     }
 
 
-    private List<Unit> getUnits(String name) {
+    private List<Unit> getUnits(Player player) {
         
         List<Unit> units = new ArrayList<>();
         
-        switch (name) {
-            case Player.PALERMO:
+        switch (player) {
+            case PALERMO:
                 
                 units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
@@ -332,7 +329,7 @@ public enum SharedData {
                 units.add(Unit.FEARSOME_MANTICORE);
                 break;
 
-            case Player.PETER_II, Player.MIGHTSHAPER:
+            case PETER, MIGHTSHAPER:
                 units.add(Unit.S2_SWORDSMAN);
                 units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);
@@ -356,7 +353,7 @@ public enum SharedData {
                 units.add(Unit.MANY_ARMED_GUARDIAN);
                 units.add(Unit.GORGON_MEDUSA);
                 break;
-            case Player.GRIRANA, Player.ELANIN:
+            case GRIRANA, ELANIN:
                 units.add(Unit.S1_SWORDSMAN);
                 units.add(Unit.G1_RANGED);
                 units.add(Unit.G1_MELEE);
@@ -376,7 +373,7 @@ public enum SharedData {
                 units.add(Unit.BATTLE_BOAR);
                 break;
             default:
-                throw new RuntimeException("Not Implemented for " + name);
+                throw new RuntimeException("Not Implemented for " + player.getName());
         }
         return units;
     }

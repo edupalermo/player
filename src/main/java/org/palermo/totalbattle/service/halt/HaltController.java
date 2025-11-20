@@ -13,6 +13,6 @@ public class HaltController {
 
     @PostMapping("/halt")
     public void record(@RequestBody String playerName) {
-        SharedData.INSTANCE.halt(Player.builder().name(playerName).build());
+        SharedData.INSTANCE.halt(Player.getPlayerByName(playerName));
     }
 }

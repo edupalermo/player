@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
@@ -34,51 +35,24 @@ public class Task {
 
     private static MyRobot robot = MyRobot.INSTANCE;
     
-    private static Map<String, Player> players = new HashMap<>();
-    static {
-        players.put("Palermo", Player.builder()
-                .name("Palermo")
-                .profileFolder("chrome-profiles/fp2268@gmail.com")
-                .username("fp2268@gmail.com")
-                .password("Alemanha79")
-                .hasHelen(true)
-                .build());
-        players.put("Peter II", Player.builder()
-                .name("Peter II")
-                .profileFolder("chrome-profiles/peter_ii")
-                .username("edupalermo@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.put("Mightshaper", Player.builder()
-                .name("Mightshaper")
-                .profileFolder("chrome-profiles/mightshaper")
-                .username("edupalermo+01@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.put("Grirana", Player.builder()
-                .name("Grirana")
-                .profileFolder("chrome-profiles/grirana")
-                .username("edupalermo+02@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.put("Elanin", Player.builder()
-                .name("Elanin")
-                .profileFolder("chrome-profiles/elanin")
-                .username("edupalermo+03@gmail.com")
-                .password("Alemanha79")
-                .build());
-    }
-
-
     public static void main(String[] args) {
         
-        Player player = players.get(Player.MIGHTSHAPER);
+        Player player = Player.PALERMO;
+        
+        SharedData.INSTANCE.setAndSaveArmy(ArmyBean.builder()
+            .playerName(player.getName())
+            .waves(2)
+            .leadership(61899)
+            .dominance(15508)
+            .authority(30876)
+            .build());
         
         WebDriver driver = null;
         try {
             driver = openBrowser(player);
             login(player);
-            
+
+            (new Announce()).playPlayerName(player);
             
             // collectChests(); // Retrieve chests
             
@@ -92,7 +66,6 @@ public class Task {
             (new CaptainSelector(player)).select(CaptainSelector.STROR);
              */
             
-            (new BuildArmy(player)).buildArmy();
 
             // (new Telescope(player)).evaluate();
 
@@ -106,8 +79,12 @@ public class Task {
             
             //helpClanMembers();
 
-            //(new Telescope(player)).findSilverMines();
+
+            // (new BuildArmy(player)).buildArmy();
+
+            // (new Telescope(player)).findArena();
             
+            (new Telescope(player)).findSilverMines();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
@@ -500,7 +477,7 @@ public class Task {
         Navigate labelMap = Navigate.builder()
                 .resourceName("player/label_map.png")
                 .areaName("BOTTOM_MENU_MAP_LABEL")
-                .waitLimit(4000L)
+                .waitLimit(4000)
                 .build();
         if (labelMap.exist()) {
             robot.leftClick(labelMap.search().get().move(12, -31));
@@ -658,7 +635,12 @@ public class Task {
 
     private static void login(Player player, BufferedImage linkLogin, Point linkLoginPoint) {
         // Search and click accept all cookies button
-        searchAndClick("player/button_accept_cookies.png");
+        Navigate.builder()
+                .resourceName("player/button_accept_cookies.png")
+                .areaName("ACCEPT_COOKIES")
+                .waitLimit(2000)
+                .build()
+                .clickIfExists();
 
         // Click on Login link
         robot.leftClick(linkLoginPoint, linkLogin);

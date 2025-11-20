@@ -112,8 +112,8 @@ public class BuildArmy {
         BufferedImage timeLeft = ImageUtil.toGrayscale(input);
         timeLeft = ImageUtil.invertGrayscale(timeLeft);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
-        if (timeLeft.getHeight() < 50) {
-            timeLeft = ImageUtil.resize(timeLeft, 50);
+        if (timeLeft.getHeight() < 100) {
+            timeLeft = ImageUtil.resize(timeLeft, 100);
         }
         
         return ImageUtil.ocrBestMethod(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN);
@@ -220,11 +220,11 @@ public class BuildArmy {
 
             Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
 
-            log.info("Searching for {}", bestSpeedUp.getLabel());
+            log.info("Searching for {} - remaining: {}", bestSpeedUp.getLabel(), seconds);
 
             for (int i = 0; i < 4; i++) {
                 screen = robot.captureScreen();
-                Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.05).orElse(null);
+                Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.03).orElse(null);
                 if (speedUpPoint != null) {
                     Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
                     Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
@@ -282,7 +282,7 @@ public class BuildArmy {
 
         if (!trainedSomething) {
             SharedData.INSTANCE.setWait(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
-            WhatsappUtil.send(player.getName() + "has finished building the army");
+            WhatsappUtil.send(player.getName() + " has finished building the army");
         }
     }
 
@@ -410,7 +410,7 @@ public class BuildArmy {
         Navigate navigateIconFood = Navigate.builder()
                 .areaName("TOP_UP_SILVER_SILVER_ICON")
                 .resourceName("player/icon_food.png")
-                .waitLimit(1000L)
+                .waitLimit(1000)
                 .build();
 
         if (navigateIconFood.exist()) {
@@ -459,7 +459,7 @@ public class BuildArmy {
         Navigate silverIcon = Navigate.builder()
                 .areaName("TOP_UP_SILVER_SILVER_ICON")
                 .resourceName("player/icon_silver.png")
-                .waitLimit(1000L)
+                .waitLimit(1000)
                 .build();
 
         if (silverIcon.exist()) {

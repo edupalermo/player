@@ -124,7 +124,7 @@ public class SummoningCircle {
             Navigate.builder()
                     .resourceName("player/sc/button_return.png")
                     .area(Area.fromTwoPoints(684, 815, 1032, 865))
-                    .waitLimit(10000L)
+                    .waitLimit(10000)
                     .build()
                     .leftClick();
             robot.sleep(500);

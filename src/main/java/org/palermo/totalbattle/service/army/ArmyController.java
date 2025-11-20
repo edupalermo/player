@@ -24,9 +24,7 @@ public class ArmyController {
                         .authority(armyBean.getAuthority())
                 .build();
         SharedData.INSTANCE.setAndSaveArmy(serviceArmyBean);
-        Player player = Player.builder()
-                .name(armyBean.getPlayerName())
-                .build();
+        Player player = Player.getPlayerByName(armyBean.getPlayerName());
         SharedData.INSTANCE.clearWait(player, Scenario.TRAIN_TROOPS);
     }
 }

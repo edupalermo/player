@@ -637,14 +637,9 @@ public class ImageUtil {
     }
 
     public static String ocrBestMethod(BufferedImage image, String whitelist) {
-        String result = ocr(image, whitelist, LINE_OF_PRINTED_TEXT, null);
-        
-        String temp = ocr(image, whitelist, SINGLE_LINE_MODE, null);
-        if (temp.length() > result.length()) {
-            result = temp;
-        }
+        String result = ocr(image, whitelist, SINGLE_LINE_MODE, null);
 
-        temp = ocr(image, whitelist, SINGLE_WORD_MODE, null);
+        String temp = ocr(image, whitelist, SINGLE_WORD_MODE, null);
         if (temp.length() > result.length()) {
             result = temp;
         }
@@ -653,17 +648,6 @@ public class ImageUtil {
         if (temp.length() > result.length()) {
             result = temp;
         }
-
-        temp = ocr(image, whitelist, PSM_SPARSE_TEXT, null);
-        if (temp.length() > result.length()) {
-            result = temp;
-        }
-
-        temp = ocr(image, whitelist, PSM_DEFAULT, null);
-        if (temp.length() > result.length()) {
-            result = temp;
-        }
-
         return result;
     }
 

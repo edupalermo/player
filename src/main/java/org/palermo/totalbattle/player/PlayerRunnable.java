@@ -15,42 +15,13 @@ import java.util.List;
 
 public class PlayerRunnable implements Runnable {
 
-
     private static List<Player> players = new ArrayList<>();
     static {
-        players.add(Player.builder()
-                .name("Palermo")
-                .profileFolder("chrome-profiles/palermo")
-                .username("fp2268@gmail.com")
-                .password("Alemanha79")
-                .hasHelen(true)
-                .build());
-        /*
-        players.add(Player.builder()
-                .name("Peter II")
-                .profileFolder("chrome-profiles/peter_ii")
-                .username("edupalermo@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.add(Player.builder()
-                .name("Mightshaper")
-                .profileFolder("chrome-profiles/mightshaper")
-                .username("edupalermo+01@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.add(Player.builder()
-                .name("Grirana")
-                .profileFolder("chrome-profiles/grirana")
-                .username("edupalermo+02@gmail.com")
-                .password("Alemanha79")
-                .build());
-        players.add(Player.builder()
-                .name("Elanin")
-                .profileFolder("chrome-profiles/elanin")
-                .username("edupalermo+03@gmail.com")
-                .password("Alemanha79")
-                .build());
-         */
+        players.add(Player.PALERMO);
+        players.add(Player.PETER);
+        players.add(Player.MIGHTSHAPER);
+        players.add(Player.GRIRANA);
+        players.add(Player.ELANIN);
     }
 
 

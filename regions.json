@@ -178,5 +178,23 @@
     "y" : 807,
     "width" : 146,
     "height" : 143
+  },
+  "ACCEPT_COOKIES" : {
+    "x" : 1166,
+    "y" : 940,
+    "width" : 346,
+    "height" : 139
+  },
+  "MAIN_LABEL_CITY" : {
+    "x" : 518,
+    "y" : 995,
+    "width" : 261,
+    "height" : 84
+  },
+  "TELESCOPE_VILLAGE_TITLE" : {
+    "x" : 828,
+    "y" : 311,
+    "width" : 231,
+    "height" : 214
   }
 }
