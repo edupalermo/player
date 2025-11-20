@@ -24,7 +24,6 @@ public class PlayerRunnable implements Runnable {
         players.add(Player.ELANIN);
     }
 
-
     @Override
     public void run() {
         System.out.println("Player Thread running");
