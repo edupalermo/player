@@ -13,6 +13,18 @@ public class Announce {
             case PALERMO:
                 play("player/audio/palermo.mp3");
                 break;
+            case PETER:
+                play("player/audio/peter.mp3");
+                break;
+            case MIGHTSHAPER:
+                play("player/audio/mightshaper.mp3");
+                break;
+            case GRIRANA:
+                play("player/audio/grirana.mp3");
+                break;
+            case ELANIN:
+                play("player/audio/elanin.mp3");
+                break;
             default:
                 System.out.println("Not implemented " + player.getName());
         }
