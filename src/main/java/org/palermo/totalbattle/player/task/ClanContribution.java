@@ -36,7 +36,6 @@ public class ClanContribution {
         }
         
         Area positiveFlagArea = Area.of(labelClanPoint, Point.of(1038, 1024), Point.of(1064, 976), Point.of(1072, 984));
-        ImageUtil.showImageAndWait(screen, positiveFlagArea);
 
         if (!Navigate.builder()
                 .area(positiveFlagArea)
