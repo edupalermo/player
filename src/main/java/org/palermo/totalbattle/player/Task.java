@@ -65,10 +65,10 @@ public class Task {
 
             // (new SummoningCircle(robot, player)).evaluate();
 
-            (new CaptainSelector(player)).updatePlayerState();
+            // (new CaptainSelector(player)).updatePlayerState();
 
-            new ClanContribution(player).helpClanMembers();
-            new ClanContribution(player).collectChests();
+            //new ClanContribution(player).helpClanMembers();
+            //new ClanContribution(player).collectChests();
 
             
             /*
@@ -84,7 +84,7 @@ public class Task {
                 // attackArena(SharedData.INSTANCE.getArena().get());
             //}
 
-            //(new SummoningCircle(robot, player)).evaluate();
+            (new SummoningCircle(robot, player)).evaluate();
 
             // (new FreeSale(player)).freeSale();
             

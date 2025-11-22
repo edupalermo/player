@@ -162,12 +162,15 @@ public class SummoningCircle {
     private static int getArtifactQuantity(BufferedImage input) {
         int qtd = 0;
         try {
-            BufferedImage image = ImageUtil.toGrayscale(input);
-            image = ImageUtil.invertGrayscale(image);
+            BufferedImage image = ImageUtil.toGrayscale(input, new String[] {"FFF7BF"});
             image = ImageUtil.linearNormalization(image);
-            image = ImageUtil.resize(image, 50);
+            image =ImageUtil.cropText(image);
+            image = ImageUtil.linearNormalization(image);
+            if (image.getHeight() < 70) {
+                image = ImageUtil.resize(image, 70);
+            }
 
-            String numberAsText = ImageUtil.ocrBestMethod(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS);
+            String numberAsText = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
             qtd = Integer.parseInt(numberAsText);
         } catch (NumberFormatException e) {
             ImageUtil.showImageFor5Seconds(input, "Fail to parse artifact quantity!");
