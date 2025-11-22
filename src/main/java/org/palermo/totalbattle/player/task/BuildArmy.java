@@ -195,6 +195,23 @@ public class BuildArmy {
                 .label("30d")
                 .build());
     }
+    
+    public void testSpeedUps() {
+        BufferedImage screen = robot.captureScreen();
+        BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
+        Area speedUpsTitleArea = Area.fromTwoPoints(910, 325, 1066, 361);
+        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, speedUpsTitleArea, 0.1).orElse(null);
+        if (speedUpsTitlePoint == null) {
+            throw new RuntimeException("Could not find speed up title");
+        }
+        
+        for (SpeedUpBean speedUpBean : speedUps) {
+            robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
+            robot.sleep(500);
+
+            clickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
+        }
+    }
 
 
     private void speedUp(LocalDateTime dateTime) {
@@ -214,6 +231,7 @@ public class BuildArmy {
         for (int r = 0; r < turns; r++) {
 
             if (r != 0) {
+                // Scroll up
                 robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
                 robot.sleep(500);
             }
@@ -236,44 +254,50 @@ public class BuildArmy {
                 break;
             }
 
-
-            Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
-            BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
-
-            Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
-
-            log.info("Searching for {} - remaining: {}", bestSpeedUp.getLabel(), seconds);
-
-            for (int i = 0; i < 4; i++) {
-                screen = robot.captureScreen();
-                Point speedUpPoint = ImageUtil.search(bestSpeedUp.getImage(), screen, searchArea, 0.03).orElse(null);
-                if (speedUpPoint != null) {
-                    Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
-                    Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
-                    if (buttonUsePoint == null) {
-                        log.info("Speed up {} not available", bestSpeedUp.getLabel());
-                        return;
-                    }
-                    log.info("Speed up {} is available!!", bestSpeedUp.getLabel());
-                    robot.leftClick(buttonUsePoint, buttonUse);
-                    robot.sleep(200);
-
-                    seconds = seconds - bestSpeedUp.getSeconds();
-                    break;
-
-                }
-                else {
-                    robot.mouseDrag(scrollPoint, 0, 150);
-                    robot.sleep(150);
-                    scrollPoint = scrollPoint.move(0, 150);
-                }
+            if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitlePoint)) {
+                break;
             }
+            seconds = seconds - bestSpeedUp.getSeconds();
+            
         }
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
     }
 
+    private boolean clickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
+        log.info("Searching for {}", speedUpBean.getLabel());
+        
+        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
+        BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
+
+        Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
+
+        for (int i = 0; i < 4; i++) {
+            BufferedImage screen = robot.captureScreen();
+            Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
+            if (speedUpPoint != null) {
+                Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
+                Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
+                if (buttonUsePoint == null) {
+                    log.info("Speed up {} not available", speedUpBean.getLabel());
+                    return false;
+                }
+                log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
+                // TODO Uncomment this
+                robot.mouseMove(buttonUsePoint);
+                //robot.leftClick(buttonUsePoint, buttonUse);
+                //robot.sleep(200);
+                return true;
+            }
+            else {
+                robot.mouseDrag(scrollPoint, 0, 150);
+                robot.sleep(150);
+                scrollPoint = scrollPoint.move(0, 150);
+            }
+        }
+        return false;
+    }
 
     private void chooseTroopToBuild(Point titleBarracksPoint) {
 

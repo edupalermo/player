@@ -84,13 +84,15 @@ public class Task {
                 // attackArena(SharedData.INSTANCE.getArena().get());
             //}
 
-            (new SummoningCircle(robot, player)).evaluate();
+            // (new SummoningCircle(robot, player)).evaluate();
 
             // (new FreeSale(player)).freeSale();
             
             //helpClanMembers();
 
             // (new BuildArmy(player)).buildArmy();
+            Task.showPauseDialog("Click on the button to continue");
+            (new BuildArmy(player)).testSpeedUps();
 
             // (new Telescope(player)).findArena();
             
