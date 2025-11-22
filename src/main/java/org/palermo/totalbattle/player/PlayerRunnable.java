@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
+import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -74,8 +75,8 @@ public class PlayerRunnable implements Runnable {
                 Task.freeSale(player);
             }
             Task.quests(player);
-            Task.helpClanMembers();
-            Task.collectChests();
+            (new ClanContribution(player)).helpClanMembers();
+            (new ClanContribution(player)).collectChests();
 
             (new Telescope(player)).findArena();
 

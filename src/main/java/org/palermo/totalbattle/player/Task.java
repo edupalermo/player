@@ -40,7 +40,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.PALERMO;
+        Player player = Player.PETER;
 
         /*
         armyService.setArmy(ArmyBean.builder()
@@ -59,8 +59,9 @@ public class Task {
             login(player);
 
             // (new Announce()).playPlayerName(player);
-            
-            // collectChests(); // Retrieve chests
+
+            new ClanContribution(player).helpClanMembers();
+            new ClanContribution(player).collectChests();
             
             //quests(player); // Retrieve open chests
 
@@ -85,7 +86,7 @@ public class Task {
             
             //helpClanMembers();
 
-            (new BuildArmy(player)).buildArmy();
+            // (new BuildArmy(player)).buildArmy();
 
             // (new Telescope(player)).findArena();
             
@@ -295,73 +296,6 @@ public class Task {
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
     }
-
-    public static void collectChests() {
-
-        BufferedImage screen = robot.captureScreen();
-        
-        BufferedImage iconHelpAllies = ImageUtil.loadResource("player/label_clan.png");
-        Point iconHelpAlliesPoint = ImageUtil.searchSurroundings(iconHelpAllies, screen, 0.1, 20).orElse(null);
-
-        if (iconHelpAlliesPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(iconHelpAllies, "error_image.png");
-            throw new RuntimeException("Couldn't find clan image!");
-        }
-
-        // Click on the clan Icon
-        robot.leftClick(iconHelpAlliesPoint.move(14, -30));
-        robot.sleep(1250);
-
-        screen = robot.captureScreen();
-        BufferedImage titleMyClan = ImageUtil.loadResource("player/my_clan/title_my_clan.png");
-        Point titleMyClanPoint = ImageUtil.searchSurroundings(titleMyClan, screen, 0.1, 20).orElse(null);
-
-        if (titleMyClanPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(iconHelpAllies, "error_image.png");
-            throw new RuntimeException("Couldn't My Clan title!");
-        }
-
-        // Click on Gifts (left tab)
-        robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(611, 497)));
-        robot.sleep(500);
-
-        
-        for (int i = 0; i < 2; i++ ) {
-            if (i == 0) {
-                // Click on Gifts  (top tab)
-                robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(833, 399)));
-                robot.sleep(750);
-            }
-            else {
-                // Click on Triumphal Gifts  (top tab)
-                robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(1074, 399)));
-                robot.sleep(750);
-            }
-
-            // Click on open button while we have it
-            Area buttonOpenArea = Area.of(titleMyClanPoint, Point.of(963, 325), Point.of(1358, 485), Point.of(1409, 505));
-            BufferedImage buttonOpen = ImageUtil.loadResource("player/my_clan/button_open.png");
-            Point buttonOpenPoint;
-            do {
-                screen = robot.captureScreen();
-                buttonOpenPoint = ImageUtil.search(buttonOpen, screen,buttonOpenArea, 0.1).orElse(null);
-
-                if (buttonOpenPoint != null) {
-                    robot.leftClick(buttonOpenPoint, buttonOpen);
-                    robot.sleep(180);
-                }
-
-            } while(buttonOpenPoint != null);
-        }
-
-        robot.sleep(500);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(500);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-    }
     
     public static WebDriver openBrowser(Player player) {
         WebDriverManager.chromedriver().setup();
@@ -565,23 +499,6 @@ public class Task {
         robot.sleep(300);
         
         return true; // Atacou!
-    }
-    
-    public static void helpClanMembers() {
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage iconHelpAllies = ImageUtil.loadResource("player/icon_help_allies.png");
-        Area iconHelpAlliesArea = RegionSelector.selectArea("HELP_CLAN_SHAKING_HANDS", screen);
-        
-        Point point = ImageUtil.searchSurroundings(iconHelpAllies, screen, iconHelpAlliesArea, 0.1, 20).orElse(null);
-        
-        if (point == null) {
-            System.out.println("No help allies icon found");
-        }
-        else {
-            System.out.println("Clicked on help allies icon");
-            robot.leftClick(point, iconHelpAllies);
-            robot.sleep(2500);
-        }
     }
 
     private static Optional<Point> waitImage(BufferedImage image, String name, long timeout) {
