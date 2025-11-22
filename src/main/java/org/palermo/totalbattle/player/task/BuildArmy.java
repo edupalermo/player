@@ -672,7 +672,7 @@ public class BuildArmy {
         BufferedImage quantityImage = ImageUtil.crop(screen, area);
         quantityImage = ImageUtil.toGrayscale(quantityImage, new String[] {"FFF7BF"});
         quantityImage = ImageUtil.linearNormalization(quantityImage);
-        quantityImage =ImageUtil.cropText(quantityImage);
+        quantityImage = ImageUtil.cropText(quantityImage);
         quantityImage = ImageUtil.linearNormalization(quantityImage);
         if (quantityImage.getHeight() < 70) {
             quantityImage = ImageUtil.resize(quantityImage, 70);

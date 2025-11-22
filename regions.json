@@ -196,5 +196,11 @@
     "y" : 311,
     "width" : 231,
     "height" : 214
+  },
+  "BONUS_SALE_BUTTON_CLOSE" : {
+    "x" : 1654,
+    "y" : 162,
+    "width" : 219,
+    "height" : 154
   }
 }

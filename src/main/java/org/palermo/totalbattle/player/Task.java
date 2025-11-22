@@ -91,8 +91,10 @@ public class Task {
             //helpClanMembers();
 
             // (new BuildArmy(player)).buildArmy();
+            (new Telescope(player)).findArena();
             Task.showPauseDialog("Click on the button to continue");
-            (new BuildArmy(player)).testSpeedUps();
+            (new Telescope(player)).findSilverMines();
+            //(new BuildArmy(player)).testSpeedUps();
 
             // (new Telescope(player)).findArena();
             
@@ -295,15 +297,18 @@ public class Task {
             }
             else {
                 screen = robot.captureScreen();
-                Point buttonClosepoint = ImageUtil.searchSurroundings(buttonBonusSalesClose, screen, 0.1, 20).orElse(null);
-                if (buttonClosepoint != null) {
-                    robot.leftClick(buttonClosepoint, buttonBonusSalesClose);
-                    robot.sleep(750);
+                Navigate buttonCloseNavigate = Navigate.builder()
+                        .resourceName("player/button_bonus_sales_close.png")
+                        .areaName(Area.BONUS_SALE_BUTTON_CLOSE)
+                        .build();
+                if (buttonCloseNavigate.exist()) {
+                    buttonCloseNavigate.leftClick();
+                    robot.sleep(500);
                 }
                 else {
                     System.out.println("Trying to hit scape to close initial pop-ups");
                     robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(750);
+                    robot.sleep(500);
                 }
             }
         } while (!found && (System.currentTimeMillis() - start) < 60000);
@@ -338,95 +343,6 @@ public class Task {
         }
         
         robot.sleep(1500); // The help icon is not appearing
-    }
-    
-    public static boolean attackArena(Point arenaLocation) {
-        Navigate labelMap = Navigate.builder()
-                .resourceName("player/label_map.png")
-                .areaName("BOTTOM_MENU_MAP_LABEL")
-                .waitLimit(4000)
-                .build();
-        if (labelMap.exist()) {
-            robot.leftClick(labelMap.search().get().move(12, -31));
-            robot.sleep(2000);
-        }
-
-        // When we switch to map, the Bonus Sales appear again
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(2000);
-
-        // Zoom in
-
-        Navigate iconZoomMinus = Navigate.builder()
-                .resourceName("player/icon_zoom_minus.png")
-                .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
-                .build();
-        for (int i = 0; i < 4; i++) {
-            iconZoomMinus.leftClick();
-        }
-
-        // Click on the magnifier icon
-        BufferedImage iconMagnifier = ImageUtil.loadResource("player/icon_magnifier.png");
-        Point iconMagnifierPoint = waitMandatoryImage(iconMagnifier, "Magnifier icon", 10000);
-        robot.leftClick(iconMagnifierPoint, iconMagnifier);
-        robot.sleep(1000);
-
-        BufferedImage buttonGo = ImageUtil.loadResource("player/button_go.png");
-        Point buttonGoPoint = waitMandatoryImage(buttonGo, "Go Button", 5000);
-
-        robot.leftClick(Point.of(buttonGoPoint, Point.of(981, 617), Point.of(1022, 580)));
-        robot.clearText();
-        robot.sleep(200);
-        robot.typeString(Integer.toString(arenaLocation.getX()));
-
-        robot.leftClick(Point.of(buttonGoPoint, Point.of(981, 617), Point.of(1127, 580)));
-        robot.clearText();
-        robot.sleep(200);
-        robot.typeString(Integer.toString(arenaLocation.getY()));
-
-        robot.leftClick(buttonGoPoint, buttonGo);
-        robot.sleep(1000);
-
-        // Try to click in the arena in the center of the screen
-        BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
-        Point arenaPoint = ArenaUtil.identifyCenterArena();
-        robot.leftClick(arenaPoint, arena);
-        robot.sleep(1000);
-
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage labelArena = ImageUtil.loadResource("player/label_arena.png");
-        Area labelArenaArea = Area.fromTwoPoints(896, 305, 1034, 338);
-        Point labelArenaPoint = ImageUtil.search(labelArena, screen, labelArenaArea, 0.1).orElse(null);
-        
-        if (labelArenaPoint == null) {
-            System.out.println("Arena doesn't exist anymore!");
-            robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(300);
-            return false;
-        }
-
-        screen = robot.captureScreen();
-        BufferedImage iconCheckmark = ImageUtil.loadResource("player/icon_checkmark.png");
-        Area areaForCheckmark = Area.of(labelArenaPoint, Point.of(971, 322), Point.of(865, 705), Point.of(901, 739));
-        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, areaForCheckmark));
-        Point iconCheckmarkPoint = ImageUtil.search(iconCheckmark, screen, areaForCheckmark, 0.1)
-                .orElse(null);
-
-        if (iconCheckmarkPoint == null) {
-            System.out.println("Hero is not available");
-            robot.type(KeyEvent.VK_ESCAPE);
-        }
-        else {
-            // Click Fight
-            robot.leftClick(Point.of(labelArenaPoint, Point.of(971, 322), Point.of(1145, 865)));
-        }
-
-        // Close Arena window if Hero is not available
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        
-        return true; // Atacou!
     }
 
     private static Optional<Point> waitImage(BufferedImage image, String name, long timeout) {

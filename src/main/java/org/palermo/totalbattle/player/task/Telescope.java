@@ -1,8 +1,11 @@
 package org.palermo.totalbattle.player.task;
 
+import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.SharedData;
+import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -17,29 +20,40 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class Telescope {
 
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
+    
+    private final GameStateService gameStateService = new GameStateService();
 
     public Telescope(Player player) {
         this.player = player;
     }
     
     public void findArena() {
-        if (SharedData.INSTANCE.getArena().isPresent()) {
-            System.out.println("No need to look for arenas");
+        if (gameStateService.getLocation(Arena.class).isPresent()) {
+            log.info("No need for more arenas");
             return;
         }
-        
+
         Navigate activeTelescope = Navigate.builder()
                 .areaName("ACTIVE_TELESCOPE")
                 .resourceName("player/icon_telescope.png")
                 .build();
         if (!activeTelescope.exist()) {
             System.out.println("Telescope is not activated");
-            return;
         }
+
+        for (int i = 0; i < 3; i++) {
+            findArenaByIndex(activeTelescope, i);
+        }
+        
+    }
+    
+    private void findArenaByIndex(Navigate activeTelescope, int index) {
+        // Click on the telescope icon
         activeTelescope.leftClick();
 
         Navigate titleWatchtower = Navigate.builder()
@@ -63,7 +77,6 @@ public class Telescope {
             throw new RuntimeException("Could not find crypts and arenas label");
         }
         labelCryptsAndArenas.leftClick();
-        
         
         List<Point> topButtons = new ArrayList<>();
         topButtons.add(Point.of(833,427)); // Common
@@ -95,17 +108,28 @@ public class Telescope {
         }
 
         robot.sleep(500);
-        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1249, 591)));
+        
+        // Here we click on the GO
+        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1249, 591 + (index * 100))));
+        
         robot.sleep(2000);
         robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
-        robot.sleep(2000);
+        robot.sleep(3000);
+        
+        zoomMinus();
 
         BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
         Point arenaPoint = ArenaUtil.identifyCenterArena();
+        
         robot.mouseMove(arenaPoint.move(arena.getWidth() / 2, arena.getHeight() / 2));
+        robot.sleep(500);
 
         Point arenaCoordinate = readCoordinate();
+        log.info("Arena found at {}, {}", arenaCoordinate.getX(), arenaCoordinate.getY());
         SharedData.INSTANCE.addArena(arenaCoordinate);
+        gameStateService.add(Arena.builder()
+                .position(arenaCoordinate)
+                .build());
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
@@ -114,14 +138,6 @@ public class Telescope {
     }
     
     private Point readCoordinate() {
-        Navigate iconZoomMinus = Navigate.builder()
-                .resourceName("player/icon_zoom_minus.png")
-                .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
-                .build();
-        for (int i = 0; i < 4; i++) {
-            iconZoomMinus.leftClick();
-        }
-
         BufferedImage screen = robot.captureScreen();
         Area coordinatesArea = RegionSelector.selectArea("MAP_COORDINATES", screen);
 
@@ -138,9 +154,30 @@ public class Telescope {
         Area xArea = Area.of(yPoint, Point.of(184, 1056), Point.of(150, 1054), Point.of(176, 1069));
         Area yArea = Area.of(yPoint, Point.of(184, 1056), Point.of(200, 1054), Point.of(228, 1069));
 
-        return Point.of(ImageUtil.ocrNumber(ImageUtil.crop(screen, xArea), true),
-                ImageUtil.ocrNumber(ImageUtil.crop(screen, yArea), true));
+        return Point.of(ocr(ImageUtil.crop(screen, xArea)), ocr(ImageUtil.crop(screen, yArea)));
     } 
+    
+    private int ocr(BufferedImage input) {
+        BufferedImage image = ImageUtil.toGrayscale(input, new String[] {"F6E7B6"});
+        image = ImageUtil.linearNormalization(image);
+        image = ImageUtil.cropText(image);
+        image = ImageUtil.linearNormalization(image);
+        if (image.getHeight() < ImageUtil.OCR_HEIGHT) {
+            image = ImageUtil.resize(image, ImageUtil.OCR_HEIGHT);
+        }
+        String quantityAsString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
+        return Integer.parseInt(quantityAsString);
+    }
+    
+    private void zoomMinus() {
+        Navigate iconZoomMinus = Navigate.builder()
+                .resourceName("player/icon_zoom_minus.png")
+                .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
+                .build();
+        for (int i = 0; i < 4; i++) {
+            iconZoomMinus.leftClick();
+        }
+    }
     
     public void findSilverMines() {
 
@@ -225,10 +262,10 @@ public class Telescope {
                         .build().search().orElse(null);
                 
                 if (buttonCapturePoint != null) {
-                    System.out.println("Mine can be captured! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+                    log.info("Mine can be captured! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
                 }
                 else {
-                    System.out.println("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+                    log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
                 }
 
                 // Close pop up window

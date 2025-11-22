@@ -38,6 +38,8 @@ public class ImageUtil {
 
     public static final Pattern PATTERN_FOR_ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
 
+    public static final int OCR_HEIGHT = 70;
+
     public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
     public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";

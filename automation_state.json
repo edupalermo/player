@@ -5,79 +5,87 @@
         "productionReduction" : 1,
         "checkedExistingQuantity" : true,
         "productionOrder" : [ {
-          "current" : 2717,
+          "current" : 3877,
           "target" : 5748,
           "unit" : "G5_MOUNTED"
         }, {
-          "current" : 0,
+          "current" : 308,
           "target" : 6345,
           "unit" : "G4_MELEE"
         }, {
-          "current" : 0,
+          "current" : 308,
           "target" : 6345,
           "unit" : "G4_RANGED"
         }, {
-          "current" : 0,
+          "current" : 308,
           "target" : 6345,
           "unit" : "S4_SWORDSMAN"
         }, {
-          "current" : 0,
+          "current" : 153,
           "target" : 3168,
           "unit" : "G4_MOUNTED"
         }, {
-          "current" : 36,
-          "target" : 1000,
-          "unit" : "S4_SPY"
+          "current" : 4506,
+          "target" : 11509,
+          "unit" : "G3_MELEE"
         }, {
-          "current" : 8817,
+          "current" : 0,
           "target" : 11509,
           "unit" : "G3_RANGED"
         }, {
-          "current" : 4759,
+          "current" : 0,
           "target" : 11509,
           "unit" : "S3_SWORDSMAN"
+        }, {
+          "current" : 3091,
+          "target" : 5753,
+          "unit" : "G3_MOUNTED"
         }, {
           "current" : 0,
           "target" : 2000,
           "unit" : "S3_SPY"
         }, {
-          "current" : 33,
+          "current" : 27,
           "target" : 38,
           "unit" : "FEARSOME_MANTICORE"
         }, {
-          "current" : 34,
+          "current" : 28,
+          "target" : 41,
+          "unit" : "DESERT_VANQUISER"
+        }, {
+          "current" : 28,
           "target" : 35,
           "unit" : "ETTIN"
         }, {
-          "current" : 92,
+          "current" : 80,
           "target" : 105,
           "unit" : "ICE_PHOENIX"
         }, {
-          "current" : 71,
+          "current" : 16,
           "target" : 118,
           "unit" : "MAGIC_DRAGON"
         }, {
-          "current" : 117,
+          "current" : 102,
           "target" : 137,
           "unit" : "MANY_ARMED_GUARDIAN"
         }, {
-          "current" : 141,
+          "current" : 126,
           "target" : 150,
           "unit" : "GORGON_MEDUSA"
         }, {
-          "current" : 168,
+          "current" : 135,
           "target" : 955,
           "unit" : "WATER_ELEMENTAL"
         }, {
-          "current" : 275,
+          "current" : 236,
           "target" : 401,
           "unit" : "EMERALD_DRAGON"
         }, {
-          "current" : 79,
+          "current" : 63,
           "target" : 465,
           "unit" : "BATTLE_BOAR"
         }, {
-          "current" : 145,
+          "current" : 119,
           "target" : 347,
           "unit" : "STONE_GARGOYLE"
         } ],
@@ -90,9 +98,10 @@
         }
       },
       "locks" : {
-        "BUILD_TROOPS_REEVALUATE" : "2025-11-22T02:49:07.577401406"
+        "BUILD_TROOPS_REEVALUATE" : "2025-11-22T21:52:19.576053152",
+        "BONUS_SALES_FREE" : "2025-11-23T16:02:37.940408037"
       },
-      "captains" : [ "CARTER", "HELEN", "STROR" ]
+      "captains" : [ "UNKNOW", "HELEN", "CARTER" ]
     },
     "PETER" : {
       "army" : {
@@ -101,8 +110,47 @@
         "productionOrder" : [ ],
         "target" : null
       },
-      "locks" : { },
-      "captains" : [ "CARTER", "XI_GUIYING", "STROR" ]
+      "locks" : {
+        "BONUS_SALES_FREE" : "2025-11-22T23:05:57.314914201"
+      },
+      "captains" : [ "UNKNOW", "XI_GUIYING", "STROR" ]
+    },
+    "MIGHTSHAPER" : {
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ ],
+        "target" : null
+      },
+      "locks" : {
+        "BONUS_SALES_FREE" : "2025-11-22T23:07:40.018831756"
+      },
+      "captains" : [ "UNKNOW", "XI_GUIYING", "UNKNOW" ]
+    },
+    "GRIRANA" : {
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ ],
+        "target" : null
+      },
+      "locks" : {
+        "BONUS_SALES_FREE" : "2025-11-22T23:08:18.637760745"
+      },
+      "captains" : [ "UNKNOW", "XI_GUIYING", "UNKNOW" ]
+    },
+    "ELANIN" : {
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ ],
+        "target" : null
+      },
+      "locks" : {
+        "BONUS_SALES_FREE" : "2025-11-22T23:10:00.141087844"
+      },
+      "captains" : [ "UNKNOW", "XI_GUIYING", "STROR" ]
     }
-  }
+  },
+  "locations" : [ ]
 }

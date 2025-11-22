@@ -20,4 +20,6 @@ public class PlayerState {
     private Map<Scenario, LocalDateTime> locks = new HashMap<>();
     
     private List<Captain> captains = new ArrayList<>();
+    
+    
 }

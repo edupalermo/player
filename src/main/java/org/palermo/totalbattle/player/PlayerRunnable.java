@@ -1,18 +1,15 @@
 package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
-import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.player.task.AttackArena;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
-import org.palermo.totalbattle.selenium.leadership.Point;
 
-import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +19,11 @@ public class PlayerRunnable implements Runnable {
     static {
         players.add(Player.PALERMO);
         players.add(Player.PETER);
+        /*
         players.add(Player.MIGHTSHAPER);
         players.add(Player.GRIRANA);
         players.add(Player.ELANIN);
+         */
     }
 
     @Override
@@ -60,13 +59,8 @@ public class PlayerRunnable implements Runnable {
             }
 
             (new CaptainSelector(player)).updatePlayerState();
-            
-            Point arenaLocation = SharedData.INSTANCE.getArena().orElse(null);
-            if (arenaLocation != null) {
-                if (!Task.attackArena(arenaLocation)) {
-                    SharedData.INSTANCE.removeArena(arenaLocation);
-                }
-            }
+
+            (new AttackArena(player)).attackArena();
 
             (new FreeSale(player)).freeSale();
             

@@ -11,6 +11,8 @@ import java.awt.*;
 @Builder
 @JsonDeserialize(builder = Area.AreaBuilder.class)
 public class Area {
+    
+    public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
 
     private final int x;
     private final int y;
