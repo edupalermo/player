@@ -5,6 +5,7 @@ import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -57,13 +58,8 @@ public class PlayerRunnable implements Runnable {
                 Task.showPauseDialog("Click on the button to continue");
                 SharedData.INSTANCE.removeHalt(player);
             }
-            
-            if (!SharedData.INSTANCE.shouldWait(player, Scenario.SET_DEFAULT_CAPTAINS)) {
-                (new CaptainSelector(player)).select(CaptainSelector.CARTER);
-                (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
-                (new CaptainSelector(player)).select(CaptainSelector.STROR);
-                SharedData.INSTANCE.setWait(player, Scenario.SET_DEFAULT_CAPTAINS, LocalDateTime.now().plusHours(1L));
-            }
+
+            (new CaptainSelector(player)).updatePlayerState();
             
             Point arenaLocation = SharedData.INSTANCE.getArena().orElse(null);
             if (arenaLocation != null) {
@@ -71,9 +67,9 @@ public class PlayerRunnable implements Runnable {
                     SharedData.INSTANCE.removeArena(arenaLocation);
                 }
             }
-            if (!SharedData.INSTANCE.shouldWait(player, Scenario.BONUS_SALES_FREE)) {
-                Task.freeSale(player);
-            }
+
+            (new FreeSale(player)).freeSale();
+            
             Task.quests(player);
             (new ClanContribution(player)).helpClanMembers();
             (new ClanContribution(player)).collectChests();

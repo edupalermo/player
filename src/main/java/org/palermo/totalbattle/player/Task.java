@@ -40,7 +40,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.PETER;
+        Player player = Player.PALERMO;
 
         /*
         armyService.setArmy(ArmyBean.builder()
@@ -60,13 +60,17 @@ public class Task {
 
             // (new Announce()).playPlayerName(player);
 
-            new ClanContribution(player).helpClanMembers();
-            new ClanContribution(player).collectChests();
             
             //quests(player); // Retrieve open chests
 
             // (new SummoningCircle(robot, player)).evaluate();
 
+            (new CaptainSelector(player)).updatePlayerState();
+
+            new ClanContribution(player).helpClanMembers();
+            new ClanContribution(player).collectChests();
+
+            
             /*
             (new CaptainSelector(player)).select(CaptainSelector.CARTER);
             (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
@@ -81,8 +85,8 @@ public class Task {
             //}
 
             //(new SummoningCircle(robot, player)).evaluate();
-            
-            //freeSale(player);
+
+            // (new FreeSale(player)).freeSale();
             
             //helpClanMembers();
 
@@ -209,84 +213,6 @@ public class Task {
             if (startButtonPoint != null) {
                 robot.leftClick(startButtonPoint, claimStart);
                 robot.sleep(500);
-            }
-        }
-
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-    }
-    
-    public static void freeSale(Player player) {
-        BufferedImage screen = robot.captureScreen();
-
-        BufferedImage logoTotalBattle = ImageUtil.loadResource("player/logo_total_battle.png");
-        Point logoTotalBattlePoint = ImageUtil.searchSurroundings(logoTotalBattle, screen, 0.1, 20).orElse(null);
-
-        if (logoTotalBattlePoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(logoTotalBattle, "error_image.png");
-            throw new RuntimeException("Couldn't find english label!");
-        }
-
-        // Click on the Free Sale Icon
-        robot.leftClick(logoTotalBattlePoint.move(1870 - logoTotalBattlePoint.getX(), 73));
-        robot.sleep(1000);
-
-        screen = robot.captureScreen();
-
-        BufferedImage refBonusSales = ImageUtil.loadResource("player/ref_bonus_sales.png");
-        Point refBonusSalesPoint = ImageUtil.searchSurroundings(refBonusSales, screen, 0.1, 20).orElse(null);
-
-        if (refBonusSalesPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(refBonusSales, "error_image.png");
-            throw new RuntimeException("Couldn't Bonus Sales reference!");
-        }
-        
-        
-        List<Point> tabs = new ArrayList<>();
-        tabs.add(Point.of(78, 60));
-        tabs.add(Point.of(78, 111));
-        tabs.add(Point.of(78, 166));
-        tabs.add(Point.of(78, 218));
-        tabs.add(Point.of(78, 271));
-        tabs.add(Point.of(78, 321));
-        tabs.add(Point.of(78, 374));
-        
-        // Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
-        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(341, 873), Point.of(798, 896));
-
-        BufferedImage buttonFree = ImageUtil.loadResource("player/button_bs_free.png");
-        BufferedImage iconHourglass = ImageUtil.loadResource("player/icon_bs_hourglass.png");
-
-        for (Point move: tabs) {
-            robot.leftClick(refBonusSalesPoint.move(move.getX(), move.getY()));
-            robot.sleep(750);
-
-            screen = robot.captureScreen();
-
-            Point buttonFreePoint = ImageUtil.search(buttonFree, screen, area, 0.1).orElse(null);
-
-            if (buttonFreePoint != null) {
-                robot.leftClick(buttonFreePoint, buttonFree);
-                break;
-            }
-
-            Point iconHourglassPoint = ImageUtil.search(iconHourglass, screen, area, 0.1).orElse(null);
-            if (iconHourglassPoint != null) {
-                BufferedImage next = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 18, iconHourglassPoint.getY(), 100, 18));
-                next = ImageUtil.toGrayscale(next);
-                next = ImageUtil.invertGrayscale(next);
-                next = ImageUtil.linearNormalization(next);
-                String nextAsText = ImageUtil.ocr(next, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.LINE_OF_PRINTED_TEXT);
-                LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText).orElse(null);
-                if (nextLocalDateTime != null) {
-                    SharedData.INSTANCE.setWait(player, Scenario.BONUS_SALES_FREE, nextLocalDateTime);
-                    break;
-                }
             }
         }
 

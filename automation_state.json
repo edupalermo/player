@@ -91,7 +91,18 @@
       },
       "locks" : {
         "BUILD_TROOPS_REEVALUATE" : "2025-11-22T02:49:07.577401406"
-      }
+      },
+      "captains" : [ "CARTER", "HELEN", "STROR" ]
+    },
+    "PETER" : {
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ ],
+        "target" : null
+      },
+      "locks" : { },
+      "captains" : [ "CARTER", "XI_GUIYING", "STROR" ]
     }
   }
 }

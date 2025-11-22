@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
@@ -12,6 +13,7 @@ import org.palermo.totalbattle.player.state.TroopQuantity;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
@@ -32,6 +34,7 @@ public class BuildArmy {
     private final Player player;
     
     private final ArmyService armyService = new ArmyService();
+    private final PlayerStateService playerStateService = new PlayerStateService();
 
     public BuildArmy(Player player) {
         this.player = player;
@@ -366,8 +369,11 @@ public class BuildArmy {
             
             if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
 
-                // (new CaptainSelector(player)).enable(CaptainSelector.TRAINER);
-
+                Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
+                if (!playerStateService.hasCaptain(player, captain)) {
+                    (new CaptainSelector(player)).select(captain);                    
+                }
+                
                 // Click on train button
                 robot.leftClick(trainButtonPoint);
                 robot.sleep(1500);

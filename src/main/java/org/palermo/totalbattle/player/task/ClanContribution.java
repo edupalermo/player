@@ -35,11 +35,12 @@ public class ClanContribution {
             throw new RuntimeException("Couldn't find clan image!");
         }
         
-        Area positiveFlagArea = Area.of(labelClanPoint, Point.of(1038, 1024), Point.of(1064, 976), Point.of(1072, 984));
-
+        Area positiveFlagArea = Area.of(labelClanPoint, Point.of(1038, 1024), Point.of(1063, 975), Point.of(1073, 985));
+        // ImageUtil.showImageAndWait(screen, positiveFlagArea);
         if (!Navigate.builder()
                 .area(positiveFlagArea)
                 .resourceName("player/my_clan/positive_flag.png")
+                .comparationLimit(0.2)
                 .build()
                 .exist()) {
             log.info("Nothing to collect from clan");

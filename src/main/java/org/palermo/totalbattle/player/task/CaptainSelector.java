@@ -1,25 +1,27 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 @Slf4j
 public class CaptainSelector {
 
-    public static final String CARTER = "carter";
-    public static final String TRAINER = "trainer";
-    public static final String STROR = "stror";
-
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
+    
+    private PlayerStateService playerStateService = new PlayerStateService();
 
     public CaptainSelector(Player player) {
         this.player = player;
@@ -31,8 +33,9 @@ public class CaptainSelector {
         throw new RuntimeException("Not Implemented!");
     }
     
-    public void enable(String captain) {
+    public void enable(Captain captain) {
         Point heroPoint = openCaptainManagementArea();
+        enableCaptainsLeftPane(heroPoint);
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
 
@@ -58,9 +61,9 @@ public class CaptainSelector {
         throw new RuntimeException("Could not enable " + captain);
     }
 
-    public void select(String captain) {
-        
+    public void select(Captain captain) {
         Point heroPoint = openCaptainManagementArea();
+        enableCaptainsLeftPane(heroPoint);
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
         if (isCaptainSelected(player, selectedArea, captain)) {
@@ -80,7 +83,8 @@ public class CaptainSelector {
                 robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
                 robot.sleep(500);
                 break;
-            case TRAINER:
+            case HELEN:
+            case XI_GUIYING:
                 robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
                 robot.sleep(500);
                 robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
@@ -102,11 +106,10 @@ public class CaptainSelector {
         robot.sleep(300);
     }
     
-    private void selectCaptain(Point heroPoint, String captain) {
+    private void selectCaptain(Point heroPoint, Captain captain) {
         BufferedImage screen = robot.captureScreen();
         Area availableAra = Area.of(heroPoint, Point.of(591, 875), Point.of(1078, 458), Point.of(1442, 899));
-        BufferedImage targetCaptain = loadResource(player, captain, "66");
-        Point targetCaptainPoint = ImageUtil.search(targetCaptain, screen, availableAra, 0.1).orElse(null);
+        Point targetCaptainPoint = ImageUtil.search(captain.getImage66(), screen, availableAra, 0.1).orElse(null);
 
         if (targetCaptainPoint == null) {
             throw new RuntimeException("Not found!");
@@ -142,6 +145,7 @@ public class CaptainSelector {
     }
     
     private Point openCaptainManagementArea() {
+        // Just to know where to click...
         BufferedImage garvel = ImageUtil.loadResource("player/hero/garvel_66.png");
 
         BufferedImage screen = robot.captureScreen();
@@ -157,21 +161,23 @@ public class CaptainSelector {
         area = RegionSelector.selectArea("CAPTAIN_MANAGEMENT_HERO", screen);
         heroPoint = findHeroPicture(area);
 
-        // Click on the first captain to seen all available
+        
+        return heroPoint;
+    }
+    
+    private void enableCaptainsLeftPane(Point heroPoint) {
+        // Click on the first captain to see captains all available
         robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(738, 858)));
         robot.sleep(500);
 
         // Click on the refresh top icon
         robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(1177, 420)));
         robot.sleep(500);
-        
-        return heroPoint;
     }
     
-    private boolean isCaptainSelected(Player player, Area area, String captain) {
+    private boolean isCaptainSelected(Player player, Area area, Captain captain) {
         BufferedImage screen = robot.captureScreen();
-        BufferedImage captainImage = loadResource(player, captain, "72");
-        return ImageUtil.search(captainImage, screen, area, 0.1).isPresent();
+        return ImageUtil.search(captain.getImage72(), screen, area, 0.1).isPresent();
     }
     
     private void select(Area spotArea, Area selectionArea, BufferedImage targetCaptain) {
@@ -188,8 +194,6 @@ public class CaptainSelector {
         
         robot.leftClick(spotArea);
         robot.sleep(200);
-        
-        
     }
     
     private Point findHeroPicture(Area area) {
@@ -219,18 +223,53 @@ public class CaptainSelector {
 
         throw new RuntimeException("Could not find hero picture");
     }
+    
+    public void updatePlayerState() {
 
-    private BufferedImage loadResource(Player player, String captain, String size) {
-        String captainName = captain;
-        if (TRAINER.equalsIgnoreCase(captainName)) {
-            if (player.isHasHelen()) {
-                captainName = "helen";
+        Point heroPoint = openCaptainManagementArea();
+        
+        ArrayList<Captain> captains = new ArrayList<>();
+        
+        for (int i = 0; i < 3; i++) {
+            for (Captain captain: Captain.values()) {
+                if (!captain.isReal()) {
+                    continue;
+                }
+                
+                if (Navigate.builder()
+                        .area(getCaptainArea(heroPoint, i))
+                        .searchImage(captain.getImage66())
+                        .build()
+                        .exist()) {
+                    captains.add(captain);
+                    break;
+                }
             }
-            else {
-                captainName = "xi_guiying";
+            
+            if (captains.size() < i + 1) {
+                captains.add(Captain.UNKNOW);
             }
         }
+
+        playerStateService.setCaptains(player, captains);
         
-        return ImageUtil.loadResource(String.format("player/captain/%s_%s.png", captainName, size));
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+
+    }
+    
+    private Area getCaptainArea(Point heroPoint, int slot) {
+        
+        switch (slot) {
+            case 0:
+                return Area.of(heroPoint, Point.of(591, 875), Point.of(700, 842), Point.of(779, 922));                
+            case 1:
+                return Area.of(heroPoint, Point.of(591, 875), Point.of(700 + 96, 842), Point.of(779 + 96, 922));
+            case 2:
+                return Area.of(heroPoint, Point.of(591, 875), Point.of(700 + 192 , 842), Point.of(779 + 192, 922));
+            default:
+                throw new RuntimeException("Spot not implemented");
+                
+        }
     }
 }

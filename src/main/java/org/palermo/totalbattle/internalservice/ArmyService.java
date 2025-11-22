@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ArmyService {
+public class ArmyService extends AbstractService {
 
     private LockService lockService = new  LockService();
 
@@ -46,11 +46,10 @@ public class ArmyService {
     
     
     public boolean shouldBuildArmy(Player player) {
-        AutomationState automationState = sharedData.getAutomationState();
-        PlayerState playerState = automationState.getPlayerStates().get(player);
+        PlayerState playerState = getPlayerState(player);
         Army army = playerState.getArmy();
         
-        if (army == null) {
+        if (army == null || army.getTarget() == null) {
             return false;
         }
         
@@ -214,13 +213,6 @@ public class ArmyService {
 
         lockService.lock(player, Scenario.BUILD_TROOPS_REEVALUATE,
                 LocalDateTime.now().plusHours(1));
-    }
-    
-    private PlayerState getPlayerState(Player player) {
-        AutomationState automationState = sharedData.getAutomationState();
-        return automationState
-                .getPlayerStates()
-                .computeIfAbsent(player, (p) -> new PlayerState());
     }
 
     private List<UnitQuantity> addMiners(List<UnitQuantity> input) {
