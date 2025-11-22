@@ -284,10 +284,8 @@ public class BuildArmy {
                     return false;
                 }
                 log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
-                // TODO Uncomment this
-                robot.mouseMove(buttonUsePoint);
-                //robot.leftClick(buttonUsePoint, buttonUse);
-                //robot.sleep(200);
+                robot.leftClick(buttonUsePoint, buttonUse);
+                robot.sleep(200);
                 return true;
             }
             else {
