@@ -250,7 +250,7 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.S1_SPY, 2000);
                 break;
             case GRIRANA, ELANIN:
-                output = increase(output, Unit.S1_SPY, 2000);
+                output = increase(output, Unit.S1_SPY, 1500);
                 break;
 
             default:

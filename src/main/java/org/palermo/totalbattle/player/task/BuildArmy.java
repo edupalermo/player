@@ -345,6 +345,7 @@ public class BuildArmy {
                 foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
+                    S1_SPY, S2_SPY, S3_SPY, S4_SPY,
                     MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
