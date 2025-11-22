@@ -44,6 +44,7 @@ public class Telescope {
                 .build();
         if (!activeTelescope.exist()) {
             System.out.println("Telescope is not activated");
+            return;
         }
 
         for (int i = 0; i < 3; i++) {
