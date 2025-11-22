@@ -1,37 +1,47 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.palermo.totalbattle.player.*;
+import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.RegionSelector;
+import org.palermo.totalbattle.player.Scenario;
+import org.palermo.totalbattle.player.SharedData;
+import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
+import org.palermo.totalbattle.player.state.TroopQuantity;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.selenium.stacking.Pool;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.WhatsappUtil;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class BuildArmy {
 
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
+    
+    private final ArmyService armyService = new ArmyService();
 
     public BuildArmy(Player player) {
         this.player = player;
     }
 
     public void buildArmy() {
+        if (!armyService.shouldBuildArmy(player)) {
+            return;
+        }
+        
         BufferedImage screen = robot.captureScreen();
         BufferedImage labelArmy = ImageUtil.loadResource("player/barracks/label_army.png");
         Area labelArmyArea = Area.fromTwoPoints(927, 1018, 998, 1038);
@@ -96,16 +106,25 @@ public class BuildArmy {
                     robot.sleep(200);
                 }
 
-                chooseTroopToBuild(player, titleBarracksPoint);
+                if (armyService.shouldCheckTroopQuantities(player)) {
+                    updateTroopQuantities(titleBarracksPoint);
+                    armyService.checkedTroopQuantities(player);
+                }
+                chooseTroopToBuild(titleBarracksPoint);
             }
         }
-
-
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(150);
+    }
+    
+    private void updateTroopQuantities(Point titleBarracksPoint) {
+        for (TroopQuantity troopQuantity : armyService.getProductionList(player)) {
+            int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
+            armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+        }
     }
     
     private String treatTimeLeft(BufferedImage input) {
@@ -253,30 +272,21 @@ public class BuildArmy {
     }
 
 
-    private void chooseTroopToBuild(Player player, Point titleBarracksPoint) {
+    private void chooseTroopToBuild(Point titleBarracksPoint) {
 
-        Map<Unit, Long> map = SharedData.INSTANCE.getTroopTarget(player);
+        List<TroopQuantity> list = armyService.getProductionList(player);
 
         boolean trainedSomething = false;
         
-        outer: for (Pool poll : new Pool[]{Pool.LEADERSHIP, Pool.DOMINANCE}) {
-            for (Map.Entry<Unit, Long> entry : map.entrySet()) {
-                if (entry.getKey().getPool() != poll) {
-                    continue;
-                }
-                try {
-                    long currentSize = getCurrentUnitNumber(titleBarracksPoint, entry.getKey());
-                    if (currentSize < entry.getValue().longValue()) {
-                        train(titleBarracksPoint, entry.getKey(), entry.getValue().longValue() - currentSize);
-                        trainedSomething = true;
-                        break outer;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    train(titleBarracksPoint, entry.getKey(), 1);
-                    trainedSomething = true;
-                    break outer;
-                }
+        for (int i = 0; i < list.size(); i++) {
+            TroopQuantity troopQuantity = list.get(i);
+            int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
+            armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+
+            if (currentSize < troopQuantity.getTarget()) {
+                train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
+                trainedSomething = true;
+                break;
             }
         }
 
@@ -286,7 +296,7 @@ public class BuildArmy {
         }
     }
 
-    private void train(Point titleBarracksPoint, Unit unit, long quantity) {
+    private void train(Point titleBarracksPoint, Unit unit, int quantity) {
 
         selectUnit(titleBarracksPoint, unit);
 
@@ -332,41 +342,73 @@ public class BuildArmy {
                 throw new RuntimeException("Not implemented for unit " + unit.name());
         }
 
-        if (textPoint == null) {
-            throw new RuntimeException("Not implemented for " + unit.name());
-        }
-
         robot.leftClick(textPoint);
         robot.typeString(String.valueOf(quantity));
         robot.sleep(250);
 
+        handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
+
+        int target;
+        int counter = 0;
+        boolean continueTrying = true;
+
+        do {
+            target = Math.max((int) Math.round(quantity / Math.pow(2, counter)), 1);
+
+
+            robot.leftClick(titleBarracksPoint); // I need to take the focus from the text area
+            robot.leftClick(textPoint);
+            robot.sleep(250);
+            robot.typeString(String.valueOf(target));
+            robot.sleep(500);
+            
+            counter = counter + 1;
+            
+            if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
+
+                // (new CaptainSelector(player)).enable(CaptainSelector.TRAINER);
+
+                // Click on train button
+                robot.leftClick(trainButtonPoint);
+                robot.sleep(1500);
+
+                // Click on help button
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+                robot.sleep(350);
+
+                continueTrying = false;
+            }
+            
+            if (target == 1) {
+                continueTrying = false;
+                log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
+            }
+            
+        } while(continueTrying);
+    }
+
+    private boolean isResourceEnough(Area area) {
         BufferedImage screen = robot.captureScreen();
 
         BufferedImage colorOkImage = ImageUtil.loadResource("player/barracks/color_ok.png");
 
-        if (ImageUtil.search(colorOkImage, screen, silverArea, 0.1).isEmpty()) {
+        return ImageUtil.search(colorOkImage, screen, area, 0.1).isPresent();
+    }
+
+    private void handleResourcesIfNeeded(Unit unit, Point silverPoint, Area silverArea, Point foodPoint, Area foodArea) {
+
+        if (!isResourceEnough(silverArea)) {
             fillSilver(silverPoint);
-            return;
         }
 
-        if (ImageUtil.search(colorOkImage, screen, foodArea, 0.1).isEmpty()) {
+        if (!isResourceEnough(foodArea)) {
             if (unit.getPool() == Pool.LEADERSHIP) {
                 fillFood(foodPoint);
             }
             else {
                 System.out.println("Not enough dragon coins!");
-
             }
-            return;
         }
-
-        // Click on train button
-        robot.leftClick(trainButtonPoint);
-        robot.sleep(1500);
-
-        // Click on help button
-        robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
-        robot.sleep(350);
     }
 
     private void fillFood(Point point) {
@@ -547,22 +589,44 @@ public class BuildArmy {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
                 robot.sleep(wait);
                 break;
+            case EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER:
+                // Click on Engineer corps
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
+                robot.sleep(wait);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                robot.sleep(wait);
+                break;
+            case S1_SPY, S2_SPY, S3_SPY, S4_SPY:
+                // Click on Specialists left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                robot.sleep(wait);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 1) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                robot.sleep(wait);
+                break;
             default:
-                throw new RuntimeException("Not implemented!");
+                throw new RuntimeException("Not implemented for unit " + unit.name());
         }
     }
 
-    private long getCurrentUnitNumber(Point titleBarracksPoint, Unit unit) {
-        Area area = null;
+    private int getCurrentUnitNumber(Point titleBarracksPoint, Unit unit) {
+        Area area;
 
         selectUnit(titleBarracksPoint, unit);
 
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN,
-                    EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR, G5_GRIFFIN:
+                    EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR, G5_GRIFFIN,
+                    EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852, 677), Point.of(912, 699));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
+                 S1_SPY, S2_SPY, S3_SPY, S4_SPY,
                     MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
@@ -570,37 +634,24 @@ public class BuildArmy {
                     DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
                 break;
-                /*
-            case MAGIC_DRAGON:
-                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(862 + 261, 677), Point.of(912 + 261, 699));
-                break;
-                 */
             default:
-                throw new RuntimeException("Not Implemented!");
-        }
-
-        if (area == null) {
-            throw new RuntimeException("Not implemented for " + unit.name());
+                throw new RuntimeException("Not Implemented for "+ unit.name());
         }
 
         robot.sleep(200);
         BufferedImage screen = robot.captureScreen();
         BufferedImage quantityImage = ImageUtil.crop(screen, area);
-        quantityImage = ImageUtil.toGrayscale(quantityImage);
-        quantityImage = ImageUtil.invertGrayscale(quantityImage);
+        quantityImage = ImageUtil.toGrayscale(quantityImage, new String[] {"FFF7BF"});
         quantityImage = ImageUtil.linearNormalization(quantityImage);
-
-        long quantity = 0;
-        try {
-            String quantityAsString = ImageUtil.ocrBestMethod(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS);
-            System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
-
-            quantity = Long.parseLong(quantityAsString);
-        } catch (NumberFormatException e) {
-            ImageUtil.showImageFor5Seconds(quantityImage, "Fail to get numbers from it");
-            throw new RuntimeException(e);
+        quantityImage =ImageUtil.cropText(quantityImage);
+        quantityImage = ImageUtil.linearNormalization(quantityImage);
+        if (quantityImage.getHeight() < 70) {
+            quantityImage = ImageUtil.resize(quantityImage, 70);
         }
 
-        return quantity;
+        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
+        System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
+
+        return Integer.parseInt(quantityAsString);
     }
 }

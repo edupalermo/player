@@ -1,8 +1,5 @@
 package org.palermo.totalbattle.selenium.stacking;
 
-import com.google.common.collect.ImmutableSet;
-import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,11 +87,11 @@ public class Stacking {
                 .addUnit(Unit.G1_RANGED)
                 .addUnit(Unit.G1_MELEE)
                 .addUnit(Unit.G1_MOUNTED)
-                .addUnit(Unit.G1_ENGINEER)
+                .addUnit(Unit.EC1_ENGINEER)
                 .addUnit(Unit.G2_RANGED)
                 .addUnit(Unit.G2_MELEE)
                 .addUnit(Unit.G2_MOUNTED)
-                .addUnit(Unit.G2_ENGINEER)
+                .addUnit(Unit.EC2_ENGINEER)
                 .addUnit(Unit.G3_RANGED)
                 .addUnit(Unit.G3_MELEE)
                 .addUnit(Unit.G3_MOUNTED)

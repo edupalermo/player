@@ -6,7 +6,9 @@ import java.util.Set;
 
 public enum Attribute {
     
-    GUARDSMAN, SPECIALIST, HUMAN, MOUNTED, RANGED, MELEE, SIEGE, ELEMENTAL, FLYING, EPIC_MONSTER_HUNTER, GIANT, DRAGON, BEAST;
+    GUARDSMAN, SPECIALIST, 
+    
+    SCOUT, HUMAN, MOUNTED, RANGED, MELEE, SIEGE, ELEMENTAL, FLYING, EPIC_MONSTER_HUNTER, GIANT, DRAGON, BEAST;
 
     public static Set<Attribute> GUARDSMAN_RIDER = ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.MOUNTED);
     public static Set<Attribute> GUARDSMAN_ARCHER = ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED);

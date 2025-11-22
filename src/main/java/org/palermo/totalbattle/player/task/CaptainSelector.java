@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.player.task;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -10,6 +11,7 @@ import org.palermo.totalbattle.util.ImageUtil;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+@Slf4j
 public class CaptainSelector {
 
     public static final String CARTER = "carter";
@@ -22,34 +24,45 @@ public class CaptainSelector {
     public CaptainSelector(Player player) {
         this.player = player;
     }
+
+    public void select(String first, String second, String third) {
+        Point heroPoint = openCaptainManagementArea();
+
+        throw new RuntimeException("Not Implemented!");
+    }
     
-    public void select(String captain) {
-
-        BufferedImage garvel = ImageUtil.loadResource("player/hero/garvel_66.png");
-
-        BufferedImage screen = robot.captureScreen();
-        Area area = RegionSelector.selectArea("MAIN_HERO_PICTURE", screen);
-        Point heroPoint = findHeroPicture(area);
-        
-        robot.leftClick(heroPoint, garvel);
-        robot.sleep(500);
-
-
-        // Captain management!
-        screen = robot.captureScreen();
-        area = RegionSelector.selectArea("CAPTAIN_MANAGEMENT_HERO", screen);
-        heroPoint = findHeroPicture(area);
-
-        // Click on the first captain to seen all available
-        robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(738, 858)));
-        robot.sleep(500);
-        
-        // Click on the refresh top icon
-        robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(1177, 420)));
-        robot.sleep(500);
+    public void enable(String captain) {
+        Point heroPoint = openCaptainManagementArea();
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
 
+        if (isCaptainSelected(player, selectedArea, captain)) {
+            log.info("Captain {} is already selected", captain);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return;
+        }
+        
+        for (int i = 0; i < 3; i++) {
+            removeCaptainAndSelectSpot(i, heroPoint);
+            selectCaptain(heroPoint, captain);
+
+            if (isCaptainSelected(player, selectedArea, captain)) {
+                log.info("Captain {} is already selected", captain);
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(300);
+                return;
+            }
+        }
+
+        throw new RuntimeException("Could not enable " + captain);
+    }
+
+    public void select(String captain) {
+        
+        Point heroPoint = openCaptainManagementArea();
+
+        Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
         if (isCaptainSelected(player, selectedArea, captain)) {
             System.out.println("Captain is already selected");
             robot.type(KeyEvent.VK_ESCAPE);
@@ -58,7 +71,6 @@ public class CaptainSelector {
             robot.sleep(150);
             return;
         }
-
 
         // Remove captain from the spot
         switch(captain) {
@@ -84,33 +96,76 @@ public class CaptainSelector {
                 throw new RuntimeException("Not implemented");
         }
 
-
-        screen = robot.captureScreen();
-        Area availableAra = Area.of(heroPoint, Point.of(591, 875), Point.of(1078, 458), Point.of(1442, 899));
-        BufferedImage targetCaptain = loadResource(player, captain, "66"); 
-        Point targetCaptainPoint = ImageUtil.search(targetCaptain, screen, availableAra, 0.1).orElse(null);
-        
-        if (targetCaptainPoint == null) {
-            throw new RuntimeException("Not found!");
-        }
-        
-        robot.leftClick(targetCaptainPoint.move(33, 30));
-        robot.sleep(300);        
-
-        /*
-        screen = robot.captureScreen();
-        Area firstArea = Area.of(heroPoint, Point.of(591, 875), Point.of(693, 836), Point.of(787, 930));
-        ImageUtil.showImageAndWait(screen, firstArea);
-        Area secondArea = Area.of(heroPoint, Point.of(591, 875), Point.of(790, 836), Point.of(881, 930));
-        ImageUtil.showImageAndWait(screen, secondArea);
-        Area thirdArea = Area.of(heroPoint, Point.of(591, 875), Point.of(885, 836), Point.of(979, 930));
-        ImageUtil.showImageAndWait(screen, thirdArea);
-      */  
+        selectCaptain(heroPoint, captain);
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(150);
+    }
+    
+    private void selectCaptain(Point heroPoint, String captain) {
+        BufferedImage screen = robot.captureScreen();
+        Area availableAra = Area.of(heroPoint, Point.of(591, 875), Point.of(1078, 458), Point.of(1442, 899));
+        BufferedImage targetCaptain = loadResource(player, captain, "66");
+        Point targetCaptainPoint = ImageUtil.search(targetCaptain, screen, availableAra, 0.1).orElse(null);
+
+        if (targetCaptainPoint == null) {
+            throw new RuntimeException("Not found!");
+        }
+
+        robot.leftClick(targetCaptainPoint.move(33, 30));
+        robot.sleep(300);
+    }
+    
+    private void removeCaptainAndSelectSpot(int spot, Point heroPoint) {
+        switch(spot) {
+            case 0:
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
+                robot.sleep(500);
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
+                robot.sleep(500);
+                break;
+            case 1:
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
+                robot.sleep(500);
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
+                robot.sleep(500);
+                break;
+            case 2:
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(931, 902)));
+                robot.sleep(500);
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(931, 902)));
+                robot.sleep(500);
+                break;
+            default:
+                throw new RuntimeException("Spot " + spot + " not implemented");
+        }
+    }
+    
+    private Point openCaptainManagementArea() {
+        BufferedImage garvel = ImageUtil.loadResource("player/hero/garvel_66.png");
+
+        BufferedImage screen = robot.captureScreen();
+        Area area = RegionSelector.selectArea("MAIN_HERO_PICTURE", screen);
+        Point heroPoint = findHeroPicture(area);
+
+        robot.leftClick(heroPoint, garvel);
+        robot.sleep(500);
+
+
+        // Captain management!
+        screen = robot.captureScreen();
+        area = RegionSelector.selectArea("CAPTAIN_MANAGEMENT_HERO", screen);
+        heroPoint = findHeroPicture(area);
+
+        // Click on the first captain to seen all available
+        robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(738, 858)));
+        robot.sleep(500);
+
+        // Click on the refresh top icon
+        robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(1177, 420)));
+        robot.sleep(500);
+        
+        return heroPoint;
     }
     
     private boolean isCaptainSelected(Player player, Area area, String captain) {

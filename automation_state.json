@@ -1,0 +1,97 @@
+{
+  "playerStates" : {
+    "PALERMO" : {
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : true,
+        "productionOrder" : [ {
+          "current" : 2717,
+          "target" : 5748,
+          "unit" : "G5_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 6345,
+          "unit" : "G4_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 6345,
+          "unit" : "G4_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 6345,
+          "unit" : "S4_SWORDSMAN"
+        }, {
+          "current" : 0,
+          "target" : 3168,
+          "unit" : "G4_MOUNTED"
+        }, {
+          "current" : 36,
+          "target" : 1000,
+          "unit" : "S4_SPY"
+        }, {
+          "current" : 8817,
+          "target" : 11509,
+          "unit" : "G3_RANGED"
+        }, {
+          "current" : 4759,
+          "target" : 11509,
+          "unit" : "S3_SWORDSMAN"
+        }, {
+          "current" : 0,
+          "target" : 2000,
+          "unit" : "S3_SPY"
+        }, {
+          "current" : 33,
+          "target" : 38,
+          "unit" : "FEARSOME_MANTICORE"
+        }, {
+          "current" : 34,
+          "target" : 35,
+          "unit" : "ETTIN"
+        }, {
+          "current" : 92,
+          "target" : 105,
+          "unit" : "ICE_PHOENIX"
+        }, {
+          "current" : 71,
+          "target" : 118,
+          "unit" : "MAGIC_DRAGON"
+        }, {
+          "current" : 117,
+          "target" : 137,
+          "unit" : "MANY_ARMED_GUARDIAN"
+        }, {
+          "current" : 141,
+          "target" : 150,
+          "unit" : "GORGON_MEDUSA"
+        }, {
+          "current" : 168,
+          "target" : 955,
+          "unit" : "WATER_ELEMENTAL"
+        }, {
+          "current" : 275,
+          "target" : 401,
+          "unit" : "EMERALD_DRAGON"
+        }, {
+          "current" : 79,
+          "target" : 465,
+          "unit" : "BATTLE_BOAR"
+        }, {
+          "current" : 145,
+          "target" : 347,
+          "unit" : "STONE_GARGOYLE"
+        } ],
+        "target" : {
+          "goal" : "Tinman",
+          "waves" : 3,
+          "leadership" : 26884,
+          "dominance" : 6703,
+          "authority" : 13266
+        }
+      },
+      "locks" : {
+        "BUILD_TROOPS_REEVALUATE" : "2025-11-22T02:49:07.577401406"
+      }
+    }
+  }
+}

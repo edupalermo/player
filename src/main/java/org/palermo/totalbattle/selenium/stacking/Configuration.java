@@ -107,19 +107,17 @@ public class Configuration {
 
         return answer;
     }
-    
-    /*
-    private int computeWave(int quantity) {
-        
-        double factor = 0; 
-        
+
+    public static int computeWaves(int quantity, int wave) {
+        double factor = 0;
+
         for (int i = 0; i < wave; i++) {
-            factor += Math.pow(1.06, i); 
+            factor += Math.pow(1.06, i);
         }
-        
+
         return (int) Math.round(quantity * factor);
     }
-     */
+
 
     public int getLowerHealth(int[] troops, Pool pool) {
         int lower = Integer.MAX_VALUE;

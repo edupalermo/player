@@ -8,6 +8,7 @@ import lombok.Getter;
 public class ArmyBean {
 
     private final String playerName;
+    private final String goal;
     private final int waves;
     private final int leadership;
     private final int dominance;

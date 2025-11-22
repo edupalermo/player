@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
+import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.SummoningCircle;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerRunnable implements Runnable {
-
+    
     private static List<Player> players = new ArrayList<>();
     static {
         players.add(Player.PALERMO);
@@ -78,13 +79,7 @@ public class PlayerRunnable implements Runnable {
 
             (new Telescope(player)).findArena();
 
-            if (SharedData.INSTANCE.hasTroopBuildPlan(player) &&
-                    (!SharedData.INSTANCE.shouldWait(player, Scenario.TRAIN_TROOPS))) {
-                (new BuildArmy(player)).buildArmy();
-            }
-            else {
-                Toolkit.getDefaultToolkit().beep();
-            }
+            (new BuildArmy(player)).buildArmy();
             
             if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();

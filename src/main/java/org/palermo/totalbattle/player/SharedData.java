@@ -1,19 +1,17 @@
 package org.palermo.totalbattle.player;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.palermo.totalbattle.player.bean.ArmyBean;
-import org.palermo.totalbattle.player.bean.UnitQuantity;
+import org.palermo.totalbattle.player.state.AutomationState;
+import org.palermo.totalbattle.player.state.TroopQuantity;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
-import org.palermo.totalbattle.selenium.stacking.Configuration;
-import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
+import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.util.IoUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,27 +38,9 @@ public enum SharedData {
     private final Map<String, Map<Unit, Long>> troopTarget = new HashMap<>();
     
     public final MyRobot robot = MyRobot.INSTANCE;
-    private ObjectMapper mapper = new ObjectMapper();
 
-
-    private final File file = new File("army.json");
-    private Map<String, ArmyBean> armies;
-
-    SharedData() {
-        if (file.exists()) {
-            try {
-                armies = mapper.readValue(file, new TypeReference<Map<String, ArmyBean>>() {});
-                for (Map.Entry<String, ArmyBean> entry : armies.entrySet()) {
-                    setArmy(entry.getValue());
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-            armies = new HashMap<>();
-        }
-    }
+    private final File AUTOMATION_STATE_FILE = new File("automation_state.json");
+    private AutomationState automationState = IoUtil.readJson(AUTOMATION_STATE_FILE, AutomationState.class);
     
     public void addArena(Point point) {
         this.arenas.add(point);
@@ -73,6 +53,10 @@ public enum SharedData {
         return Optional.of(this.arenas.get(0));
     }
 
+    public AutomationState getAutomationState() {
+        return this.automationState;
+    }
+    
     public void removeArena(Point point) {
         arenas.remove(point);
     }
@@ -148,243 +132,24 @@ public enum SharedData {
         map.put(unit, quantity);
     }
     
-    {
-        // The Hero
-        //setArmy(Player.PALERMO, 3, 35689, 8922, 17844);
-        //setArmy(Player.PETER_II, 3, 13893, 3460, 6961);
-        //setArmy(Player.MIGHTSHAPER, 3, 12532, 3116, 6191);
-        //setArmy(Player.GRIRANA, 3, 5477, 1353, 2680);
-        //setArmy(Player.ELANIN, 3, 4700, 1140, 2280);
-        
-        /* One Captain
-        setArmy(Player.PALERMO, 3, 26532, 6621, 13148);
-        setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
-        setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
-        setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
-        setArmy(Player.ELANIN, 3, 3475, 850, 1700);
-         */
-        
-        /* Three Captains
-        setArmy(Player.PALERMO, 3, 26532, 6621, 13148); // Cleopatra  Aydae Ingrid
-        setArmy(Player.PETER_II, 3, 13757, 3548, 7049);
-        setArmy(Player.MIGHTSHAPER, 3, 12805, 3259, 6431);
-        setArmy(Player.GRIRANA, 3, 3592, 878, 1740);
-        setArmy(Player.ELANIN, 3, 3475, 850, 1700);
-         */
-    }
+    final Comparator<TroopQuantity> UNIT_QUANTITY_COMPARATOR = (u1, u2) -> {
+        if (u1.getUnit().getPool() != u2.getUnit().getPool()) { // LEADERSHIP should go first
+            return u1.getUnit().getPool() == Pool.LEADERSHIP ? -1 : 1;
+        }
+        if (u1.getUnit().getTier() != u2.getUnit().getTier()) { // Higher tier should go first
+            return u2.getUnit().getTier() - u1.getUnit().getTier();
+        }
+        int result = (int) ((u2.getTarget() * u2.getUnit().getHeadCount()) // Troops with bit gap should go first
+                - (u1.getTarget() * u1.getUnit().getHeadCount()));
+
+        if (result != 0) {
+            return result;
+        }
+
+        return u1.getUnit().name().compareToIgnoreCase(u2.getUnit().name()); // User anything...
+    };
     
-    public void setAndSaveArmy(ArmyBean armyBean) {
-        try {
-            setArmy(armyBean);
-            armies.put(armyBean.getPlayerName(), armyBean);
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, armies);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    private void setArmy(ArmyBean armyBean) {
-        Player player = Player.getPlayerByName(armyBean.getPlayerName());
-
-        List<Unit> units = getUnits(player);
-
-        ConfigurationBuilder builder = Configuration.builder()
-                .leadership(armyBean.getLeadership())
-                .dominance(armyBean.getDominance())
-                .authority(armyBean.getAuthority());
-
-        for (Unit unit: units) {
-            builder.addUnit(unit);
-        }
-        
-        int[] qtds = builder.build().resolve();
-
-        List<UnitQuantity> unitQuantities = new ArrayList();
-        for (int i = 0; i < qtds.length; i++) {
-            unitQuantities.add(UnitQuantity.builder()
-                    .unit(units.get(i))
-                    .quantity(computeWaves(qtds[i], armyBean.getWaves()))
-                    .build());
-        }
-
-        unitQuantities = addMiners(unitQuantities);
-
-        unitQuantities = incrementLastLayer(unitQuantities, player);
-
-        for (UnitQuantity unitQuantity: unitQuantities) {
-            setTroopTarget(player, unitQuantity.getUnit(), unitQuantity.getQuantity());
-        }
-        
-        
-    }
-    
-    private List<UnitQuantity> addMiners(List<UnitQuantity> input) {
-        List<UnitQuantity> output = new ArrayList<>();
-        boolean found = false;
-        for (UnitQuantity unitQuantity: input) {
-            if (unitQuantity.getUnit() == Unit.G1_MELEE) {
-                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + 3500));
-                found = true;
-            }
-            else {
-                output.add(unitQuantity);
-            }
-        }
-        
-        if (!found) {
-            output.add(UnitQuantity.builder()
-                    .unit(Unit.G1_MELEE)
-                    .quantity(3500).build());
-        }
-        return output;
-    }
-
-    private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, Player player) {
-        
-        List<UnitQuantity> output = input;
-        
-        switch (player) {
-            case PALERMO:
-                output = increase(output, Unit.G5_MOUNTED, 4000);
-                output = increase(output, Unit.G5_RANGED, 8000);
-                output = increase(output, Unit.G5_MELEE, 8000);
-                output = increase(output, Unit.G5_GRIFFIN, 400);
-                break;
-            case PETER, MIGHTSHAPER:
-                output = increase(output, Unit.G4_MOUNTED, 4000);
-                output = increase(output, Unit.G4_RANGED, 8000);
-                output = increase(output, Unit.G4_MELEE, 8000);
-                break;
-            case GRIRANA, ELANIN:
-                output = increase(output, Unit.G3_MOUNTED, 2000);
-                output = increase(output, Unit.G3_RANGED, 4000);
-                output = increase(output, Unit.G3_MELEE, 4000);
-                break;
-
-            default:
-                throw new RuntimeException("Not Implemented");
-        }
-        
-        return output; 
-    }
-    
-    private List<UnitQuantity> increase(List<UnitQuantity> input, Unit unit, int qtd) {
-        List<UnitQuantity> output = new ArrayList<>();
-        boolean found = false;
-        for (UnitQuantity unitQuantity: input) {
-            if (unitQuantity.getUnit() == unit) {
-                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + qtd));
-                found = true;
-            }
-            else {
-                output.add(unitQuantity);
-            }
-        }
-
-        if (!found) {
-            output.add(UnitQuantity.builder()
-                    .unit(unit)
-                    .quantity(qtd).build());
-        }
-        return output;
-
-    }
-
-
-    private List<Unit> getUnits(Player player) {
-        
-        List<Unit> units = new ArrayList<>();
-        
-        switch (player) {
-            case PALERMO:
-                
-                units.add(Unit.S3_SWORDSMAN);
-                units.add(Unit.G3_RANGED);
-                units.add(Unit.G3_MELEE);
-                units.add(Unit.G3_MOUNTED);
-
-                units.add(Unit.S4_SWORDSMAN);
-                units.add(Unit.G4_RANGED);
-                units.add(Unit.G4_MELEE);
-                units.add(Unit.G4_MOUNTED);
-                
-                units.add(Unit.G5_RANGED);
-                units.add(Unit.G5_MELEE);
-                units.add(Unit.G5_MOUNTED);
-                units.add(Unit.G5_GRIFFIN);
-
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
-
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
-
-                units.add(Unit.DESERT_VANQUISER);
-                units.add(Unit.FLAMING_CENTAUR);
-                units.add(Unit.ETTIN);
-                units.add(Unit.FEARSOME_MANTICORE);
-                break;
-
-            case PETER, MIGHTSHAPER:
-                units.add(Unit.S2_SWORDSMAN);
-                units.add(Unit.G2_RANGED);
-                units.add(Unit.G2_MELEE);
-                units.add(Unit.G2_MOUNTED);
-
-                units.add(Unit.G3_RANGED);
-                units.add(Unit.G3_MELEE);
-                units.add(Unit.G3_MOUNTED);
-
-                units.add(Unit.G4_RANGED);
-                units.add(Unit.G4_MELEE);
-                units.add(Unit.G4_MOUNTED);
-
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
-
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
-                break;
-            case GRIRANA, ELANIN:
-                units.add(Unit.S1_SWORDSMAN);
-                units.add(Unit.G1_RANGED);
-                units.add(Unit.G1_MELEE);
-                units.add(Unit.G1_MOUNTED);
-
-                units.add(Unit.G2_RANGED);
-                units.add(Unit.G2_MELEE);
-                units.add(Unit.G2_MOUNTED);
-
-                units.add(Unit.G3_RANGED);
-                units.add(Unit.G3_MELEE);
-                units.add(Unit.G3_MOUNTED);
-
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
-                break;
-            default:
-                throw new RuntimeException("Not Implemented for " + player.getName());
-        }
-        return units;
-    }
-
-    private int computeWaves(int quantity, int wave) {
-        double factor = 0;
-
-        for (int i = 0; i < wave; i++) {
-            factor += Math.pow(1.06, i);
-        }
-
-        return (int) Math.round(quantity * factor);
+    public void saveAutomationState() {
+        IoUtil.writeJson(AUTOMATION_STATE_FILE, this.automationState);
     }
 }

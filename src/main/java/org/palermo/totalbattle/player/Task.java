@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -32,27 +33,32 @@ import java.util.Optional;
 
 @Slf4j
 public class Task {
+    
+    private static final ArmyService armyService = new ArmyService();
 
     private static MyRobot robot = MyRobot.INSTANCE;
     
     public static void main(String[] args) {
         
         Player player = Player.PALERMO;
-        
-        SharedData.INSTANCE.setAndSaveArmy(ArmyBean.builder()
-            .playerName(player.getName())
-            .waves(2)
-            .leadership(61899)
-            .dominance(15508)
-            .authority(30876)
+
+        /*
+        armyService.setArmy(ArmyBean.builder()
+            .player(player)
+            .goal("Tinman")
+            .waves(3)
+            .leadership(26884)
+            .dominance(6703)
+            .authority(13266)
             .build());
+         */
         
         WebDriver driver = null;
         try {
             driver = openBrowser(player);
             login(player);
 
-            (new Announce()).playPlayerName(player);
+            // (new Announce()).playPlayerName(player);
             
             // collectChests(); // Retrieve chests
             
@@ -79,12 +85,11 @@ public class Task {
             
             //helpClanMembers();
 
-
-            // (new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
 
             // (new Telescope(player)).findArena();
             
-            (new Telescope(player)).findSilverMines();
+            // (new Telescope(player)).findSilverMines();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {

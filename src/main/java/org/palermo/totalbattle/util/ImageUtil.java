@@ -3,6 +3,8 @@ package org.palermo.totalbattle.util;
 import lombok.Getter;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.palermo.totalbattle.dao.OcrDao;
+import org.palermo.totalbattle.entity.ProcessedImage;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
@@ -16,6 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +34,11 @@ import java.util.zip.CRC32;
 
 public class ImageUtil {
 
-    private static final int GRAY_THRESHOLD = 255;
+    private static final int GRAY_THRESHOLD = 20;
 
+    public static final Pattern PATTERN_FOR_ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
+
+    public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
     public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH = "0123456789,/";
@@ -45,8 +52,12 @@ public class ImageUtil {
     public static final int PSM_SPARSE_TEXT = 11;
     
     public static final String LANGUAGE_TB = "tb";
+    
+    private static final String HOSTNAME_NOTEBOOK = "eduardo-XPS-15-9500";
 
     private static Map<String, BufferedImage> imageCache = new HashMap<>();
+    
+    private static OcrDao ocrDao = new OcrDao();
     
     public static BufferedImage loadResource(String resourceName) {
         BufferedImage cachedImage = imageCache.get(resourceName);
@@ -474,6 +485,82 @@ public class ImageUtil {
 
         return result;
     }
+
+    public static BufferedImage removeBackground(BufferedImage original, BufferedImage background, String color) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB); // This will support grayscale with transparency
+        
+        int newBackgroundColor = toRgbInt(color);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int originalRgb = original.getRGB(x, y);
+                int backgroundRgb = background.getRGB(x, y);
+                
+                if (originalRgb == backgroundRgb) {
+                    result.setRGB(x, y, newBackgroundColor);
+                }
+                else {
+                    result.setRGB(x, y, originalRgb);
+                }
+            }
+        }
+        return result;
+    }
+
+    public static BufferedImage toGrayscale(BufferedImage original, String[] blackReferences) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB); // This will support grayscale with transparency
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = original.getRGB(x, y);
+
+                // Extract color components
+                int alpha = (argb >> 24) & 0xFF;
+                int r = (argb >> 16) & 0xFF;
+                int g = (argb >> 8) & 0xFF;
+                int b = argb & 0xFF;
+
+                double minimumDistance = Double.MAX_VALUE;
+                
+                for (String blackReference: blackReferences) {
+                    int[] rgb = hexToRgb(blackReference); 
+                    minimumDistance = Math.min(minimumDistance, Math.abs(rgb[0] - r) + Math.abs(rgb[1] - g) + Math.abs(rgb[2] - b));                    
+                }
+                
+                // Maximum possible distance between two RGB colors
+                double maxDistance = 3 * 255;
+
+                // Normalize 0..max → 0..255
+                int gray = (int) Math.round((minimumDistance / maxDistance) * 255);
+                
+                // Set new pixel (same value for R, G, B)
+                int newPixel = (alpha << 24) | (gray << 16) | (gray << 8) | gray;
+                result.setRGB(x, y, newPixel);
+            }
+        }
+
+        return result;
+    }
+
+    public static int[] hexToRgb(String hex) {
+        // Remove optional leading '#'
+        if (hex.startsWith("#")) {
+            hex = hex.substring(1);
+        }
+
+        if (hex.length() != 6) {
+            throw new IllegalArgumentException("Hex color must be 6 characters long.");
+        }
+
+        int r = Integer.parseInt(hex.substring(0, 2), 16);
+        int g = Integer.parseInt(hex.substring(2, 4), 16);
+        int b = Integer.parseInt(hex.substring(4, 6), 16);
+
+        return new int[] { r, g, b };
+    }
     
     @Getter
     public static class MinMax {
@@ -560,9 +647,7 @@ public class ImageUtil {
                 int alpha = (rgb >> 24) & 0xFF;
                 int gray = rgb & 0xFF;
                 int normalizedGray = ((gray - min) * 255) / (max - min);
-                if (normalizedGray > GRAY_THRESHOLD) {
-                    normalizedGray = 255;
-                }
+                normalizedGray = Math.min(normalizedGray, 255);
 
                 int newPixel = (alpha << 24) | (normalizedGray << 16) | (normalizedGray << 8) | normalizedGray;
                 result.setRGB(x, y, newPixel);
@@ -629,14 +714,103 @@ public class ImageUtil {
                 }
             }
         }
-        return image.getSubimage(minX, minY, (maxX - minX + 1), (maxY - minY + 1));
+        
+        final int MARGIN = 3;
+        
+        minX = Math.max(minX - MARGIN , 0);
+        minY = Math.max(minY - MARGIN, 0);
+        return image.getSubimage(
+                minX, 
+                minY, 
+                Math.min(maxX - minX + MARGIN,  width - minX),
+                Math.min((maxY - minY + MARGIN), height - minY));
     }
 
     public static String ocr(BufferedImage image, String whitelist, int pageSegMode) {
         return ocr(image, whitelist, pageSegMode, null);
     }
 
+    public static String ocr(BufferedImage image, String whitelist, Pattern pattern) {
+
+        try {
+            List<ProcessedImage> list =  ocrDao.retrieve(image.getWidth(), image.getHeight(), whitelist);
+            ProcessedImage databaseAnswer = list.stream()
+                    .filter((pi) -> compare(pi.getImage(), image, 0.05))
+                    .findAny()
+                    .orElse(null);
+            if (databaseAnswer != null) {
+                if (pattern.matcher(databaseAnswer.getText()).matches()) {
+                    return databaseAnswer.getText();
+                }
+            }
+
+            String stringValue = ocrBestMethod(image, whitelist);
+            if (stringValue != null && stringValue.length() > 0) {
+                if (pattern.matcher(stringValue).matches()) {
+                    return stringValue;
+                }
+            }
+            
+            if (HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
+                stringValue = askManualOcr(image);
+                
+                if (stringValue != null && stringValue.length() > 0) {
+                    if (pattern.matcher(stringValue).matches()) {
+                        ocrDao.persist(image, stringValue, whitelist);
+                        return stringValue;
+                    }
+                }
+            }
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        
+        ImageUtil.showImageFor5Seconds(image, "Fail to parse it as " + whitelist);
+        throw new RuntimeException("It was not possible to make ocr of the given image!");
+    }
+
+    /**
+     * Shows a modal popup with the given image, a text field, and a confirm button.
+     * Returns the text the user typed, or null if the user cancelled/closed the dialog.
+     */
+    public static String askManualOcr(BufferedImage image) {
+        // Panel with image and text field
+        JLabel imageLabel = new JLabel(new ImageIcon(image));
+
+        JTextField textField = new JTextField(20);
+
+        JPanel content = new JPanel(new BorderLayout(10, 10));
+        content.add(imageLabel, BorderLayout.CENTER);
+
+        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
+        bottomPanel.add(new JLabel("OCR text:"), BorderLayout.WEST);
+        bottomPanel.add(textField, BorderLayout.CENTER);
+        content.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Custom button text
+        String[] options = { "Confirm", "Cancel" };
+
+        int result = JOptionPane.showOptionDialog(
+                null,
+                content,
+                "Manual OCR",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (result == JOptionPane.OK_OPTION) {
+            return textField.getText();
+        } else {
+            return null; // user cancelled or closed
+        }
+    }
+
+
     public static String ocrBestMethod(BufferedImage image, String whitelist) {
+        
         String result = ocr(image, whitelist, SINGLE_LINE_MODE, null);
 
         String temp = ocr(image, whitelist, SINGLE_WORD_MODE, null);
@@ -967,4 +1141,23 @@ public class ImageUtil {
 
         return output;
     }
+
+    public static int toRgbInt(String hex) {
+        // Remove optional leading '#'
+        if (hex.startsWith("#")) {
+            hex = hex.substring(1);
+        }
+
+        // Expect exactly 6 hex digits
+        if (hex.length() != 6) {
+            throw new IllegalArgumentException("Hex color must be 6 characters: " + hex);
+        }
+
+        int r = Integer.parseInt(hex.substring(0, 2), 16);
+        int g = Integer.parseInt(hex.substring(2, 4), 16);
+        int b = Integer.parseInt(hex.substring(4, 6), 16);
+
+        // Pack into 0xRRGGBB 
+        return (0xFF << 24) | (r << 16) | (g << 8) | b;
+    }    
 }

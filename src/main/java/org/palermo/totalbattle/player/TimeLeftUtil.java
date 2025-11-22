@@ -45,6 +45,15 @@ public class TimeLeftUtil {
         }
 
         if (!parsed) {
+            pattern = Pattern.compile("^(\\d+)s$");
+            matcher = pattern.matcher(input.trim());
+            if (matcher.matches()) {
+                seconds = Integer.parseInt(matcher.group(1));
+                parsed = true;
+            }
+        }
+
+        if (!parsed) {
             pattern = Pattern.compile("(\\d+)d[:]?([\\d+]+)h");
             matcher = pattern.matcher(input.trim());
             if (matcher.matches()) {
