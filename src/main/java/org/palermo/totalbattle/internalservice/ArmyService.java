@@ -246,11 +246,10 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.S3_SPY, 2000);
                 break;
             case PETER, MIGHTSHAPER:
-                output = increase(output, Unit.S3_SPY, 1000);
-                output = increase(output, Unit.S2_SPY, 2000);
+                output = increase(output, Unit.S2_SPY, 1000);
+                output = increase(output, Unit.S1_SPY, 2000);
                 break;
             case GRIRANA, ELANIN:
-                output = increase(output, Unit.S2_SPY, 1000);
                 output = increase(output, Unit.S1_SPY, 2000);
                 break;
 
