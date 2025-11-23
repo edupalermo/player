@@ -220,7 +220,7 @@ public class ArmyService extends AbstractService {
         boolean found = false;
         for (UnitQuantity unitQuantity: input) {
             if (unitQuantity.getUnit() == Unit.G1_MELEE) {
-                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + 3500));
+                output.add(unitQuantity.withQuantity(unitQuantity.getQuantity() + 2000));
                 found = true;
             }
             else {
@@ -231,7 +231,7 @@ public class ArmyService extends AbstractService {
         if (!found) {
             output.add(UnitQuantity.builder()
                     .unit(Unit.G1_MELEE)
-                    .quantity(3500).build());
+                    .quantity(2000).build());
         }
         return output;
     }

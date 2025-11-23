@@ -226,7 +226,8 @@ public class BuildArmy {
             throw new RuntimeException("Could not find speed up title");
         }
 
-        final int turns = 5;
+        // Now many speed-ups should be used
+        final int turns = 6;
 
         for (int r = 0; r < turns; r++) {
 

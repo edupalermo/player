@@ -12,5 +12,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class Mine extends Location {
     
-    
+    private MineType type;
 }

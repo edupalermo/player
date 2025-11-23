@@ -1,5 +1,7 @@
 package org.palermo.totalbattle.selenium.stacking;
 
+import org.palermo.totalbattle.player.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +66,7 @@ public class Stacking {
         
         //custom(Player.PALERMO, set, 4, 43446 - (36 * 10)); // Citadel
 
-        custom(Player.PETER_II, set, 2, 8058);
+        custom(Player.PETER, set, 2, 8058);
         //custom(Player.PETER_II, set, 3, 11679);
         
         //custom(Player.PETER_II, set, 2, 7599);
@@ -150,26 +152,6 @@ public class Stacking {
         //System.out.println("Damage: " + configuration.damage(troops));
 
     }
-
-    public enum Player {
-        PALERMO, PETER_II, MIGHTSHAPER, GRIRANA, ELANIN;
-
-        public static Player from(String name) {
-            if (name == null) {
-                throw new IllegalArgumentException("Input cannot be null");
-            }
-            String key = name.trim().replaceAll("\\s+", "_");
-            if (key.isEmpty()) {
-                throw new IllegalArgumentException("Input cannot be blank");
-            }
-            for (Player e : values()) {
-                if (e.name().equalsIgnoreCase(key)) {
-                    return e;
-                }
-            }
-            throw new IllegalArgumentException("No enum constant matching: " + name);   
-        }
-    }
     
     private static void custom(Player player, Set<Attribute> exclusions, int tiers, int leadership) {
 
@@ -178,7 +160,7 @@ public class Stacking {
             case PALERMO:
                 units = getPalermoUnits(tiers);
                 break;
-            case PETER_II:
+            case PETER:
                 units = getPeterIIUnits(tiers);
                 break;
             default:

@@ -9,7 +9,6 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.time.Duration;
 import java.util.Optional;
 
 public class Navigate {
@@ -66,11 +65,7 @@ public class Navigate {
         }
     }
 
-    public Optional<Point> search() {
-        if (point != null) {
-            return Optional.of(point);
-        }
-        
+    public Optional<Point> searchAgain() {
         long start = System.currentTimeMillis();
         do {
             lastScreen = robot.captureScreen();
@@ -84,6 +79,14 @@ public class Navigate {
         } while (point == null && (System.currentTimeMillis() - start < waitLimit));
         return Optional.ofNullable(point);
     }
+    
+    public Optional<Point> search() {
+        if (point != null) {
+            return Optional.of(point);
+        }
+        
+        return this.searchAgain();
+    }
 
     public boolean exist() {
         if (point == null) {
@@ -92,7 +95,7 @@ public class Navigate {
         return point != null;
     }
 
-    public Point ensureExistence() {
+    public Point getPoint() {
         if (!this.exist()) {
             if (debug) {
                 ImageUtil.showImageAndWait(lastScreen, area);

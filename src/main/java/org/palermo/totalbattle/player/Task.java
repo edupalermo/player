@@ -40,7 +40,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.PALERMO;
+        Player player = Player.GRIRANA;
 
         /*
         armyService.setArmy(ArmyBean.builder()
@@ -80,9 +80,9 @@ public class Task {
 
             // (new Telescope(player)).evaluate();
 
-            //if (SharedData.INSTANCE.getArena().isPresent()) {
+            // (new AttackArena(player)).attackArena();
+            (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
-            //}
 
             // (new SummoningCircle(robot, player)).evaluate();
 
@@ -91,14 +91,16 @@ public class Task {
             //helpClanMembers();
 
             // (new BuildArmy(player)).buildArmy();
-            (new Telescope(player)).findArena();
-            Task.showPauseDialog("Click on the button to continue");
-            (new Telescope(player)).findSilverMines();
+            // (new Telescope(player)).findArena();
+            //Task.showPauseDialog("Click on the button to continue");
+            // (new Telescope(player)).findSilverMines();
             //(new BuildArmy(player)).testSpeedUps();
+            
+            
 
             // (new Telescope(player)).findArena();
             
-            // (new Telescope(player)).findSilverMines();
+            //(new Telescope(player)).findSilverMines();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {

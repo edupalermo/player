@@ -6,6 +6,9 @@ import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.state.location.Arena;
+import org.palermo.totalbattle.player.state.location.Mine;
+import org.palermo.totalbattle.player.state.location.MineType;
+import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -16,7 +19,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,8 @@ public class Telescope {
     private final Player player;
     
     private final GameStateService gameStateService = new GameStateService();
+    
+    private final int MINE_COUNT_TARGET = 3;
 
     public Telescope(Player player) {
         this.player = player;
@@ -181,10 +185,17 @@ public class Telescope {
     }
     
     public void findSilverMines() {
+        
+        if (gameStateService.countMines(MineType.SILVER) >= MINE_COUNT_TARGET) {
+            log.info("No need for look for new mines");
+            return;
+        }
 
         Point minePoint = null;
+        
+        int mainLoopCount = 0;
 
-        for (int i = 0; i < 10; i++) {
+        do {
 
             Point titleWatchtowerPoint = openWatchtower().orElse(null);
 
@@ -208,10 +219,10 @@ public class Telescope {
             clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_tar_on.png"), resourcesArea);
 
 
-            int scroll = 10;
-            for (int s = 0; s < i / 3; s++) {
+            final int SCROLL_PIXELS = 10;
+            for (int s = 0; s < mainLoopCount / 3; s++) {
                 Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 523)); 
-                robot.mouseDrag(initialPoint, 0, 10 * (i / 3));
+                robot.mouseDrag(initialPoint, 0, SCROLL_PIXELS * (mainLoopCount / 3));
             }
             
             Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
@@ -223,7 +234,7 @@ public class Telescope {
             List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
            
                 // Click on GO Button
-                robot.leftClick(buttons.get(i % 3)); // It seems that 4 buttons appear, but we use 3 
+                robot.leftClick(buttons.get(mainLoopCount % 3)); // It seems that 4 buttons appear, but we use 3 
                 robot.sleep(1000);
 
                 Navigate.builder()
@@ -232,18 +243,14 @@ public class Telescope {
                         .waitLimit(7500)
                         .pressEscapeWhileWaiting(true)
                         .build()
-                        .ensureExistence();
+                        .getPoint();
                 robot.sleep(2000);
-
-                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
+            
                 if (minePoint == null) {
-                    screen = robot.captureScreen();
-                    Area centerArea = RegionSelector.selectArea("MAP_CENTER", screen);
-                    minePoint = ImageUtil.searchBestFit(new BufferedImage[] {mine}, screen, centerArea);
+                    minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter();
                 }
                 
-                //ImageUtil.showImageAndWait(screen, Area.of(minePoint.getX(), minePoint.getY(), mine.getWidth(), mine.getHeight()));
-                
+                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
                 robot.mouseMove(minePoint.move(mine.getWidth() / 2, mine.getHeight() / 2));
 
                 Point arenaCoordinate = readCoordinate();
@@ -255,7 +262,7 @@ public class Telescope {
                         .areaName("TELESCOPE_VILLAGE_TITLE")
                         .waitLimit(10000)
                         .build()
-                        .ensureExistence();
+                        .getPoint();
                 
                 Point buttonCapturePoint = Navigate.builder()
                         .resourceName("player/watchtower/button_capture.png")
@@ -264,15 +271,23 @@ public class Telescope {
                 
                 if (buttonCapturePoint != null) {
                     log.info("Mine can be captured! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+                    
+                    gameStateService.add(Mine.builder()
+                            .position(arenaCoordinate)
+                            .type(MineType.SILVER)
+                            .build());
                 }
                 else {
                     log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
                 }
 
+                mainLoopCount = mainLoopCount + 1;
+                
                 // Close pop up window
                 robot.type(KeyEvent.VK_ESCAPE);
                 robot.sleep(300);
-        }
+                
+        } while (gameStateService.countMines(MineType.SILVER) < 5);
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);

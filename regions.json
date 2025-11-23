@@ -202,5 +202,17 @@
     "y" : 162,
     "width" : 219,
     "height" : 154
+  },
+  "POPUP_SILVER_VILLAGE_CAPTURE_BUTTON" : {
+    "x" : 826,
+    "y" : 654,
+    "width" : 263,
+    "height" : 81
+  },
+  "POPUP_MINE_START_MARCH_BUTTON" : {
+    "x" : 1003,
+    "y" : 827,
+    "width" : 207,
+    "height" : 76
   }
 }

@@ -13,7 +13,10 @@ import java.awt.*;
 public class Area {
     
     public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
-
+    public static final String TELESCOPE_VILLAGE_TITLE = "TELESCOPE_VILLAGE_TITLE";
+    public static final String POPUP_SILVER_VILLAGE_CAPTURE_BUTTON = "POPUP_SILVER_VILLAGE_CAPTURE_BUTTON";
+    public static final String POPUP_MINE_START_MARCH_BUTTON = "POPUP_MINE_START_MARCH_BUTTON";
+    
     private final int x;
     private final int y;
     

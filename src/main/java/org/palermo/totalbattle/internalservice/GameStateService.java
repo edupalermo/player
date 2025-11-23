@@ -2,6 +2,8 @@ package org.palermo.totalbattle.internalservice;
 
 import org.palermo.totalbattle.player.state.AutomationState;
 import org.palermo.totalbattle.player.state.location.Location;
+import org.palermo.totalbattle.player.state.location.Mine;
+import org.palermo.totalbattle.player.state.location.MineType;
 import org.palermo.totalbattle.selenium.leadership.Point;
 
 import java.util.List;
@@ -14,17 +16,27 @@ public class GameStateService extends AbstractService {
         automationState.locations.add(location);
         saveGameState();
     }
-    
+
     public <T> Optional<T> getLocation(Class<T> clazz) {
         AutomationState automationState = getAutomationState();
         List<Location> locations = automationState.getLocations();
-        
+
         for (Location location : locations) {
             if (clazz.isInstance(location)) {
                 return Optional.of(clazz.cast(location));
             }
         }
         return Optional.empty();
+    }
+
+    public Optional<Mine> getMine(MineType type) {
+        AutomationState automationState = getAutomationState();
+        List<Location> locations = automationState.getLocations();
+
+        return locations.stream().filter(Mine.class::isInstance)
+                .map(Mine.class::cast)
+                .filter((mine) -> mine.getType() == type)
+                .findFirst();
     }
 
     public void remove(Location location) {
@@ -65,5 +77,16 @@ public class GameStateService extends AbstractService {
             locations.remove(indexToBeRemoved);
         }
         saveGameState();
+    }
+    
+    public int countMines(MineType type) {
+        AutomationState automationState = getAutomationState();
+        List<Location> locations = automationState.getLocations();
+        
+        return (int) locations.stream()
+                .filter(Mine.class::isInstance)
+                .map(Mine.class::cast)
+                .filter((loc) -> loc.getType() == MineType.SILVER)
+                .count();
     }
 }

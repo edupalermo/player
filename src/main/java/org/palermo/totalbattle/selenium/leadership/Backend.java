@@ -1,10 +1,10 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
-import org.palermo.totalbattle.selenium.stacking.Stacking;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
 
@@ -39,14 +39,14 @@ public class Backend {
     };
 
     
-    public static List<Unit> getUnits(String player, 
+    public static List<Unit> getUnits(String playerName, 
                                       Set<Attribute> exclusions, 
                                       int tiers, 
                                       MonsterOverride monsterOverride) {
         
         List<Unit> troops = new ArrayList<>();
         
-        switch(Stacking.Player.from(player)) {
+        switch(Player.getPlayerByName(playerName)) {
             case PALERMO -> {
                 if (tiers >= 4) {
                     troops.add(Unit.S2_SWORDSMAN);
@@ -105,7 +105,7 @@ public class Backend {
                     troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
                 }
             }
-            case PETER_II, MIGHTSHAPER -> {
+            case PETER, MIGHTSHAPER -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S2_SWORDSMAN);
                     troops.add(Unit.G2_RANGED);
@@ -178,7 +178,7 @@ public class Backend {
 
                 troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
             }
-            default -> throw new RuntimeException("Not implemented for " + player);
+            default -> throw new RuntimeException("Not implemented for " + playerName);
         }
 
         return troops

@@ -6,6 +6,7 @@ import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.FreeSale;
+import org.palermo.totalbattle.player.task.MineSilver;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 
@@ -58,8 +59,6 @@ public class PlayerRunnable implements Runnable {
 
             (new CaptainSelector(player)).updatePlayerState();
 
-            (new AttackArena(player)).attackArena();
-
             (new FreeSale(player)).freeSale();
             
             Task.quests(player);
@@ -67,9 +66,13 @@ public class PlayerRunnable implements Runnable {
             (new ClanContribution(player)).collectChests();
 
             (new Telescope(player)).findArena();
+            (new Telescope(player)).findSilverMines();
 
             (new BuildArmy(player)).buildArmy();
-            
+
+            (new AttackArena(player)).attackArena();
+            (new MineSilver(player)).mine();
+
             if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
             }
