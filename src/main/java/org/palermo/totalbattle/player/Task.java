@@ -58,6 +58,9 @@ public class Task {
             driver = openBrowser(player);
             login(player);
 
+            Task.showPauseDialog("Click on the button to continue");
+
+
             // (new Announce()).playPlayerName(player);
 
             
@@ -80,8 +83,8 @@ public class Task {
 
             // (new Telescope(player)).evaluate();
 
-            // (new AttackArena(player)).attackArena();
-            (new MineSilver(player)).mine();
+            (new AttackArena(player)).attackArena();
+            // (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
             // (new SummoningCircle(robot, player)).evaluate();

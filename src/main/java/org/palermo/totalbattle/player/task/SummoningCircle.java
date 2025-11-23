@@ -120,6 +120,7 @@ public class SummoningCircle {
         if (buttonFreePoint != null) {
             robot.leftClick(buttonFreePoint, buttonFree);
             robot.sleep(7500);
+            robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
             Navigate.builder()
                     .resourceName("player/sc/button_return.png")
@@ -191,6 +192,7 @@ public class SummoningCircle {
         if (buttonFreePoint != null) { // Common Artifact
             robot.leftClick(buttonFreePoint, buttonFree);
             robot.sleep(5500);
+            robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
             screen = robot.captureScreen();
             Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
@@ -209,6 +211,7 @@ public class SummoningCircle {
         if (buttonFreePoint != null) { // Button free is available
             robot.leftClick(buttonFreePoint, buttonFree);
             robot.sleep(5500);
+            robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
             screen = robot.captureScreen();
             Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
@@ -291,6 +294,8 @@ public class SummoningCircle {
 
         robot.leftClick(iconQuestionMarkPoint.move(112, 56));
         robot.sleep(5000);
+        robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
+
 
         screen = robot.captureScreen();
         BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
@@ -317,6 +322,8 @@ public class SummoningCircle {
 
         robot.leftClick(iconQuestionMarkPoint.move(0, 56));
         robot.sleep(5000);
+        robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
+        
 
         screen = robot.captureScreen();
         BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");

@@ -11,7 +11,8 @@ import java.awt.*;
 @Builder
 @JsonDeserialize(builder = Area.AreaBuilder.class)
 public class Area {
-    
+
+    public static final String MAIN_ZOOM_LABEL_25 = "MAIN_ZOOM_LABEL_25";
     public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
     public static final String TELESCOPE_VILLAGE_TITLE = "TELESCOPE_VILLAGE_TITLE";
     public static final String POPUP_SILVER_VILLAGE_CAPTURE_BUTTON = "POPUP_SILVER_VILLAGE_CAPTURE_BUTTON";

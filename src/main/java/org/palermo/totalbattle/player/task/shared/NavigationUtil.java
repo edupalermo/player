@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.player.task.shared;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -11,6 +12,7 @@ import org.palermo.totalbattle.util.Navigate;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+@Slf4j
 public class NavigationUtil {
     
     private static final MyRobot robot = SharedData.INSTANCE.robot; 
@@ -32,6 +34,16 @@ public class NavigationUtil {
     }
     
     public static void zoomInIfNeeded() {
+        Navigate twentyFivePerc = Navigate.builder()
+                .resourceName("player/label_zoom_25.png")
+                .areaName(Area.MAIN_ZOOM_LABEL_25)
+                .comparationLimit(0.03)
+                .build();
+        if (twentyFivePerc.exist()) {
+            log.info("Zoom is already 25%");
+            return;
+        }
+        
         // Zoom in
         Navigate iconZoomMinus = Navigate.builder()
                 .resourceName("player/icon_zoom_minus.png")

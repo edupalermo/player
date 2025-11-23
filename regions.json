@@ -214,5 +214,11 @@
     "y" : 827,
     "width" : 207,
     "height" : 76
+  },
+  "MAIN_ZOOM_LABEL_25" : {
+    "x" : 1739,
+    "y" : 993,
+    "width" : 148,
+    "height" : 56
   }
 }

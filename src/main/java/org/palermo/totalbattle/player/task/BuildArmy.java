@@ -227,7 +227,7 @@ public class BuildArmy {
         }
 
         // Now many speed-ups should be used
-        final int turns = 6;
+        final int turns = 7;
 
         for (int r = 0; r < turns; r++) {
 
