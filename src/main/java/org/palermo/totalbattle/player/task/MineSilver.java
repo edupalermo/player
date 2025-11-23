@@ -155,7 +155,7 @@ public class MineSilver {
         }
 
         robot.leftClick(meleeUnit.getPoint().move(135, 44));
-        robot.typeString("1000");
+        robot.typeString("2000");
         robot.sleep(500);
 
         buttonStartMarch.leftClick();
