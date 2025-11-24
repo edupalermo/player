@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.util;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.palermo.totalbattle.dao.OcrDao;
@@ -32,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
+@Slf4j
 public class ImageUtil {
 
     private static final int GRAY_THRESHOLD = 20;
@@ -753,6 +755,9 @@ public class ImageUtil {
             if (stringValue != null && stringValue.length() > 0) {
                 if (pattern.matcher(stringValue).matches()) {
                     return stringValue;
+                }
+                else {
+                    log.info("Tesseract returned a string that doesn't match the given pattern: " + stringValue);
                 }
             }
             
