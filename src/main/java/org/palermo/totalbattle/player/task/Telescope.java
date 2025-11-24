@@ -256,6 +256,7 @@ public class Telescope {
                 Point arenaCoordinate = readCoordinate();
 
                 robot.leftClick(minePoint, mine);
+                robot.sleep(500);
 
                 Point titleVillagePoint = Navigate.builder()
                         .resourceName("player/watchtower/title_village.png")

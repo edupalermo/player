@@ -40,7 +40,7 @@ public class ClanContribution {
         if (!Navigate.builder()
                 .area(positiveFlagArea)
                 .resourceName("player/my_clan/positive_flag.png")
-                .comparationLimit(0.2)
+                .comparationLimit(0.03)
                 .build()
                 .exist()) {
             log.info("Nothing to collect from clan");

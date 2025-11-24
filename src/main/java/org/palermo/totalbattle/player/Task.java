@@ -58,13 +58,14 @@ public class Task {
             driver = openBrowser(player);
             login(player);
 
-            Task.showPauseDialog("Click on the button to continue");
+            //Task.showPauseDialog("Click on the button to continue");
 
+            // (new ClanContribution(player)).helpClanMembers();
+            (new ClanContribution(player)).collectChests();
 
             // (new Announce()).playPlayerName(player);
 
             
-            //quests(player); // Retrieve open chests
 
             // (new SummoningCircle(robot, player)).evaluate();
 
@@ -83,7 +84,7 @@ public class Task {
 
             // (new Telescope(player)).evaluate();
 
-            (new AttackArena(player)).attackArena();
+            // (new AttackArena(player)).attackArena();
             // (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
@@ -91,11 +92,8 @@ public class Task {
 
             // (new FreeSale(player)).freeSale();
             
-            //helpClanMembers();
-
             // (new BuildArmy(player)).buildArmy();
             // (new Telescope(player)).findArena();
-            //Task.showPauseDialog("Click on the button to continue");
             // (new Telescope(player)).findSilverMines();
             //(new BuildArmy(player)).testSpeedUps();
             
