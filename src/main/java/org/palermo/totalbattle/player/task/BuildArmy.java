@@ -219,61 +219,70 @@ public class BuildArmy {
 
         long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
-        BufferedImage screen = robot.captureScreen();
-        
         Navigate speedUpsTitle = Navigate.builder()
                 .resourceName("player/speed_up/title_speed_ups.png")
                 .area(Area.fromTwoPoints(910, 325, 1066, 361))
                 .waitLimit(1000)
-                .build(); 
+                .build();
 
-        // Now many speed-ups should be used
-        final int turns = 7;
+        try {
+            // Now many speed-ups should be used
+            final int turns = 7;
 
-        for (int r = 0; r < turns; r++) {
-            
-            if (r == 0) {
-                speedUpsTitle.ensureExistence();
-            }
-            else {
-                if (speedUpsTitle.searchAgain().isEmpty()) {
-                    return;
+            for (int r = 0; r < turns; r++) {
+                
+                if (r == 0) {
+                    speedUpsTitle.ensureExistence();
                 }
-            }
-
-            if (r != 0) {
-                // Scroll up
-                robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
-                robot.sleep(500);
-            }
-
-            SpeedUpBean bestSpeedUp = null;
-
-            for (SpeedUpBean bean : speedUps) {
-                if (bean.getSeconds() < seconds) {
-                    if (bestSpeedUp == null) {
-                        bestSpeedUp = bean;
-                    }
-                    else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
-                        bestSpeedUp = bean;
+                else {
+                    if (speedUpsTitle.searchAgain().isEmpty()) {
+                        return;
                     }
                 }
+    
+                if (r != 0) {
+                    // Scroll up
+                    robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
+                    robot.sleep(500);
+                }
+    
+                SpeedUpBean bestSpeedUp = null;
+    
+                for (SpeedUpBean bean : speedUps) {
+                    if (bean.getSeconds() < seconds) {
+                        if (bestSpeedUp == null) {
+                            bestSpeedUp = bean;
+                        }
+                        else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
+                            bestSpeedUp = bean;
+                        }
+                    }
+                }
+    
+                if (bestSpeedUp == null) {
+                    System.out.println("Shouldn't use speed ups!");
+                    break;
+                }
+    
+                if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+                    break;
+                }
+                seconds = seconds - bestSpeedUp.getSeconds();
+                
             }
-
-            if (bestSpeedUp == null) {
-                System.out.println("Shouldn't use speed ups!");
-                break;
-            }
-
-            if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
-                break;
-            }
-            seconds = seconds - bestSpeedUp.getSeconds();
-            
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            SpeedUpBean fifteen = speedUps.stream()
+                    .filter((sp) -> sp.getSeconds() == Duration.ofMinutes(15).getSeconds())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No 15 minutes!"));
+            clickOnSpeedUp(fifteen, speedUpsTitle.getPoint());
         }
 
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
+        if (speedUpsTitle.searchAgain().isPresent()) {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
     }
 
     private boolean clickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
