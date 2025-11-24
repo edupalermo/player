@@ -9,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.palermo.totalbattle.internalservice.ArmyService;
-import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
@@ -26,9 +25,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -41,17 +38,6 @@ public class Task {
     public static void main(String[] args) {
         
         Player player = Player.GRIRANA;
-
-        /*
-        armyService.setArmy(ArmyBean.builder()
-            .player(player)
-            .goal("Tinman")
-            .waves(3)
-            .leadership(26884)
-            .dominance(6703)
-            .authority(13266)
-            .build());
-         */
         
         WebDriver driver = null;
         try {
@@ -61,7 +47,7 @@ public class Task {
             //Task.showPauseDialog("Click on the button to continue");
 
             // (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
+            // (new ClanContribution(player)).collectChests();
 
             // (new Announce()).playPlayerName(player);
 
@@ -85,7 +71,7 @@ public class Task {
             // (new Telescope(player)).evaluate();
 
             // (new AttackArena(player)).attackArena();
-            // (new MineSilver(player)).mine();
+            (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
             // (new SummoningCircle(robot, player)).evaluate();
@@ -409,7 +395,7 @@ public class Task {
                 .areaName("ACCEPT_COOKIES")
                 .waitLimit(2000)
                 .build()
-                .clickIfExists();
+                .leftClickIfExists();
 
         // Click on Login link
         robot.leftClick(linkLoginPoint, linkLogin);

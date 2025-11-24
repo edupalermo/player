@@ -220,5 +220,11 @@
     "y" : 993,
     "width" : 148,
     "height" : 56
+  },
+  "MAIN_ONGOING_OPERATIONS" : {
+    "x" : 934,
+    "y" : 142,
+    "width" : 399,
+    "height" : 367
   }
 }

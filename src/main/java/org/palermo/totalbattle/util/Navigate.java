@@ -116,7 +116,7 @@ public class Navigate {
         robot.sleep(500);
     }
 
-    public void clickIfExists() {
+    public void leftClickIfExists() {
         if (point == null) {
             point = search().orElse(null);
         }

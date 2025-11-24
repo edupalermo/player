@@ -12,6 +12,7 @@ import java.awt.*;
 @JsonDeserialize(builder = Area.AreaBuilder.class)
 public class Area {
 
+    public static final String MAIN_ONGOING_OPERATIONS = "MAIN_ONGOING_OPERATIONS";
     public static final String MAIN_ZOOM_LABEL_25 = "MAIN_ZOOM_LABEL_25";
     public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
     public static final String TELESCOPE_VILLAGE_TITLE = "TELESCOPE_VILLAGE_TITLE";

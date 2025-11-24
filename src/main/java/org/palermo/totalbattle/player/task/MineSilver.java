@@ -30,11 +30,32 @@ public class MineSilver {
     
     public void mine() {
         Mine mine = gameStateService.getMine(MineType.SILVER).orElse(null);
-        
         if (mine == null) {
             log.info("No mine available");
             return;
         }
+
+        Navigate.builder()
+                .areaName(Area.MAIN_ONGOING_OPERATIONS)
+                .resourceName("player/icon_expand_ongoing_operations.png")
+                .build()
+                .leftClickIfExists();
+        
+        if (Navigate.builder()
+                .areaName(Area.MAIN_ONGOING_OPERATIONS)
+                .resourceName("player/ongoing_tasks/label_march_stror.png")
+                .build()
+                .exist()
+            ||
+                Navigate.builder()
+                        .areaName(Area.MAIN_ONGOING_OPERATIONS)
+                        .resourceName("player/ongoing_tasks/label_resource_gathering.png")
+                        .build()
+                        .exist()) {
+            log.info("Stror is busy");
+            return;
+        }
+
 
         NavigationUtil.switchToMapIfNeeded();
 
