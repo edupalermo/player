@@ -104,6 +104,10 @@ public class Navigate {
         }
         return this.point;
     }
+    
+    public void ensureExistence() {
+        this.getPoint();
+    }
 
     public void leftClick() {
         if (point == null) {

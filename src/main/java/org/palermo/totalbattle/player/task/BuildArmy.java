@@ -131,14 +131,15 @@ public class BuildArmy {
     }
     
     private String treatTimeLeft(BufferedImage input) {
-        BufferedImage timeLeft = ImageUtil.toGrayscale(input);
-        timeLeft = ImageUtil.invertGrayscale(timeLeft);
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"FFF7BF"});
         timeLeft = ImageUtil.linearNormalization(timeLeft);
-        if (timeLeft.getHeight() < 100) {
-            timeLeft = ImageUtil.resize(timeLeft, 100);
+        timeLeft = ImageUtil.cropText(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        if (timeLeft.getHeight() < ImageUtil.OCR_HEIGHT) {
+            timeLeft = ImageUtil.resize(timeLeft, ImageUtil.OCR_HEIGHT);
         }
-        
-        return ImageUtil.ocrBestMethod(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN);
+        // ImageUtil.showImageAndWait(timeLeft);
+        return ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.PATTERN_FOR_COUNTDOWN);
     }
 
 
@@ -219,21 +220,30 @@ public class BuildArmy {
         long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
         BufferedImage screen = robot.captureScreen();
-        BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
-        Area speedUpsTitleArea = Area.fromTwoPoints(910, 325, 1066, 361);
-        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, speedUpsTitleArea, 0.1).orElse(null);
-        if (speedUpsTitlePoint == null) {
-            throw new RuntimeException("Could not find speed up title");
-        }
+        
+        Navigate speedUpsTitle = Navigate.builder()
+                .resourceName("player/speed_up/title_speed_ups.png")
+                .area(Area.fromTwoPoints(910, 325, 1066, 361))
+                .waitLimit(1000)
+                .build(); 
 
         // Now many speed-ups should be used
         final int turns = 7;
 
         for (int r = 0; r < turns; r++) {
+            
+            if (r == 0) {
+                speedUpsTitle.ensureExistence();
+            }
+            else {
+                if (speedUpsTitle.searchAgain().isEmpty()) {
+                    return;
+                }
+            }
 
             if (r != 0) {
                 // Scroll up
-                robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
+                robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
                 robot.sleep(500);
             }
 
@@ -255,7 +265,7 @@ public class BuildArmy {
                 break;
             }
 
-            if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitlePoint)) {
+            if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
                 break;
             }
             seconds = seconds - bestSpeedUp.getSeconds();

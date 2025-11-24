@@ -37,6 +37,9 @@ public class ImageUtil {
     private static final int GRAY_THRESHOLD = 20;
 
     public static final Pattern PATTERN_FOR_ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
+    public static final Pattern PATTERN_FOR_COUNTDOWN = Pattern.compile("^(?:\\d{1,2}d:?\\d{1,2}h|" +
+            "\\d{1,2}h:?\\d{1,2}m|" +
+            "(?:\\d{1,2}m:?)?\\d{1,2}s)$");
 
     public static final int OCR_HEIGHT = 70;
 
@@ -1161,5 +1164,34 @@ public class ImageUtil {
 
         // Pack into 0xRRGGBB 
         return (0xFF << 24) | (r << 16) | (g << 8) | b;
-    }    
+    }
+
+    
+    private static void test(String input) {
+        System.out.println(input + " " + PATTERN_FOR_COUNTDOWN.matcher(input).matches());
+    }
+    
+
+    public static void main(String[] args) {
+
+        test("12h3m");
+        test("12d3h");
+        test("3m3s");
+
+
+        test("12h:3m");
+        test("12d:3h");
+        test("3m:3s");
+        test("52s");
+
+
+        test("12h:3ss");
+        test("122d:3h");
+        test("3m:333");
+        test("525");
+
+
+
+    }
+    
 }

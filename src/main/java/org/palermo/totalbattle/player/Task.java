@@ -37,7 +37,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.GRIRANA;
+        Player player = Player.PALERMO;
         
         WebDriver driver = null;
         try {
@@ -71,14 +71,14 @@ public class Task {
             // (new Telescope(player)).evaluate();
 
             // (new AttackArena(player)).attackArena();
-            (new MineSilver(player)).mine();
+            // (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
             // (new SummoningCircle(robot, player)).evaluate();
 
             // (new FreeSale(player)).freeSale();
             
-            // (new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
             // (new Telescope(player)).findArena();
             // (new Telescope(player)).findSilverMines();
             //(new BuildArmy(player)).testSpeedUps();
