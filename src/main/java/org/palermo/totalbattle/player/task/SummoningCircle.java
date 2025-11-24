@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 
+import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
@@ -19,6 +20,8 @@ public class SummoningCircle {
 
     private final MyRobot robot;
     private final Player player;
+    
+    private final LockService lockService = new LockService();
     
     public SummoningCircle(MyRobot robot, Player player) {
         this.robot = robot;
@@ -105,7 +108,7 @@ public class SummoningCircle {
         Point iconArtifactPoint = ImageUtil.searchSurroundings(iconArtifact, screen, iconArtifactArea, 0.1, 20).orElse(null);
 
         if (iconArtifactPoint == null) {
-            SharedData.INSTANCE.setWait(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, LocalDateTime.now().plusHours(12));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, LocalDateTime.now().plusHours(12));
             return;
         }
         robot.leftClick(iconArtifactPoint, iconArtifact);
@@ -156,7 +159,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            SharedData.INSTANCE.setWait(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
         }
     }
 
@@ -254,7 +257,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            SharedData.INSTANCE.setWait(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
 
         }
         else {
@@ -273,7 +276,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            SharedData.INSTANCE.setWait(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
         }
         else {
             collectEliteCaptainFragments(eliteArtifactQtd);

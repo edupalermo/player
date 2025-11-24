@@ -19,7 +19,7 @@ public class LockService {
         playerState.getLocks().put(scenario, until);
         sharedData.saveAutomationState();;
     }
-    
+
     public boolean isLocked(Player player, Scenario scenario) {
         AutomationState automationState = sharedData.getAutomationState();
         PlayerState playerState = automationState.getPlayerStates()
@@ -29,6 +29,10 @@ public class LockService {
             return false;
         }
         return LocalDateTime.now().isBefore(until);
+    }
+    
+    public boolean isFree(Player player, Scenario scenario) {
+        return !isLocked(player, scenario);
     }
 
     public void clear(Player player, Scenario scenario) {

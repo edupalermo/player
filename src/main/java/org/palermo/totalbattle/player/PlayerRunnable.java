@@ -1,12 +1,14 @@
 package org.palermo.totalbattle.player;
 
 import org.openqa.selenium.WebDriver;
+import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.task.AttackArena;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.CaptainSelector;
 import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.MineSilver;
+import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Telescope;
 
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerRunnable implements Runnable {
+    
+    private LockService lockService = new LockService();
     
     private static List<Player> players = new ArrayList<>();
     static {
@@ -60,8 +64,8 @@ public class PlayerRunnable implements Runnable {
             (new CaptainSelector(player)).updatePlayerState();
 
             (new FreeSale(player)).freeSale();
-            
-            Task.quests(player);
+
+            (new Quests(player)).evaluate();
             (new ClanContribution(player)).helpClanMembers();
             (new ClanContribution(player)).collectChests();
 
@@ -73,7 +77,7 @@ public class PlayerRunnable implements Runnable {
             (new AttackArena(player)).attackArena();
             (new MineSilver(player)).mine();
 
-            if (!SharedData.INSTANCE.shouldWaitForSummoningCircle(player)) {
+            if (!isSummoningCircleFree(player)) {
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
             }
 
@@ -96,5 +100,11 @@ public class PlayerRunnable implements Runnable {
             }
         }
 
+    }
+
+    public boolean isSummoningCircleFree(Player player) {
+        return lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
+                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
+                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
     }
 }

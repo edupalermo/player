@@ -89,36 +89,6 @@ public enum SharedData {
         return lock.contains(player.getName());        
     }
 
-    public void setWait(Player player, Scenario scenario, LocalDateTime dateTime) {
-        Map<Scenario, LocalDateTime> map = wait.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
-        map.put(scenario, dateTime);
-    }
-    
-    public void clearWait(Player player, Scenario scenario) {
-        Map<Scenario, LocalDateTime> map = wait.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
-        map.remove(scenario);
-    }
-
-    public Optional<LocalDateTime> getWait(Player player, Scenario scenario) {
-        return Optional.ofNullable(wait
-                .computeIfAbsent(player.getName(), (k) -> new HashMap<>())
-                .get(scenario));
-    }
-
-    public boolean shouldWait(Player player, Scenario scenario) {
-        LocalDateTime waitUntil = getWait(player, scenario).orElse(null);
-        if (waitUntil == null) {
-            return false;
-        }
-        return LocalDateTime.now().isBefore(waitUntil);
-    }
-
-    public boolean shouldWaitForSummoningCircle(Player player) {
-        return shouldWait(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
-                shouldWait(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
-                shouldWait(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
-    }
-
     public Map<Unit, Long> getTroopTarget(Player player) {
         return troopTarget.get(player.getName());
     }

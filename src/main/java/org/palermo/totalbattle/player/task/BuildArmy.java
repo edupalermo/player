@@ -2,11 +2,11 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
-import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.player.state.TroopQuantity;
@@ -35,12 +35,17 @@ public class BuildArmy {
     
     private final ArmyService armyService = new ArmyService();
     private final PlayerStateService playerStateService = new PlayerStateService();
+    private final LockService lockService = new LockService();
 
     public BuildArmy(Player player) {
         this.player = player;
     }
-
+    
     public void buildArmy() {
+        if (lockService.isLocked(player, Scenario.TRAIN_TROOPS)) {
+            return;
+        }
+
         if (!armyService.shouldBuildArmy(player)) {
             return;
         }
@@ -329,7 +334,7 @@ public class BuildArmy {
         }
 
         if (!trainedSomething) {
-            SharedData.INSTANCE.setWait(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
+            lockService.lock(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
             WhatsappUtil.send(player.getName() + " has finished building the army");
         }
     }
