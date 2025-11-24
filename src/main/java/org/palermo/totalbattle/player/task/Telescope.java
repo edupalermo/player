@@ -243,8 +243,10 @@ public class Telescope {
                         .waitLimit(7500)
                         .pressEscapeWhileWaiting(true)
                         .build()
-                        .getPoint();
+                        .ensureExistence();
                 robot.sleep(2000);
+                
+                NavigationUtil.zoomInIfNeeded();
             
                 if (minePoint == null) {
                     minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter();

@@ -102,7 +102,7 @@ public class BuildArmy {
 
                     speedUp(7, nextLocalDateTime);
                 } catch (RuntimeException e) {
-                    speedUp(1, LocalDateTime.now().plusMinutes(15));
+                    speedUp(1, LocalDateTime.now().plusMinutes(20));
                 }
             }
             else { // No Hourglass and No Help button
