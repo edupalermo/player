@@ -271,6 +271,11 @@ public class BuildArmy {
                 }
     
                 if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+                    bestSpeedUp = speedUps.stream()
+                            .filter((sp) -> sp.getSeconds() == Duration.ofMinutes(15).getSeconds())
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("15 m not found"));
+                    clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint());
                     break;
                 }
                 seconds = seconds - bestSpeedUp.getSeconds();
@@ -291,7 +296,11 @@ public class BuildArmy {
 
         Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
+            if (i == 0) {
+                robot.leftClick(scrollPoint);
+                robot.sleep(300);
+            }
             BufferedImage screen = robot.captureScreen();
             Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
             if (speedUpPoint != null) {

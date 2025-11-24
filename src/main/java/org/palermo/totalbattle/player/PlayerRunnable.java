@@ -23,10 +23,12 @@ public class PlayerRunnable implements Runnable {
     private static List<Player> players = new ArrayList<>();
     static {
         players.add(Player.PALERMO);
+        /*
         players.add(Player.PETER);
         players.add(Player.MIGHTSHAPER);
         players.add(Player.GRIRANA);
         players.add(Player.ELANIN);
+         */
     }
 
     @Override
