@@ -86,19 +86,24 @@ public class BuildArmy {
 
             if (iconHourglassPoint != null) {
                 BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
-                String timeLeftAsText = treatTimeLeft(timeLeft);
-                System.out.println("Time Left: " + timeLeftAsText);
 
-                LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-                if (nextLocalDateTime == null) {
-                    throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+                try {
+                    String timeLeftAsText = treatTimeLeft(timeLeft);
+                    System.out.println("Time Left: " + timeLeftAsText);
+
+                    LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
+                    if (nextLocalDateTime == null) {
+                        throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+                    }
+
+                    // Click of the speed-up button
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+                    robot.sleep(350);
+
+                    speedUp(7, nextLocalDateTime);
+                } catch (RuntimeException e) {
+                    speedUp(1, LocalDateTime.now().plusMinutes(15));
                 }
-
-                // Click of the speed-up button
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
-                robot.sleep(350);
-
-                speedUp(nextLocalDateTime);
             }
             else { // No Hourglass and No Help button
                 BufferedImage buttonComplete = ImageUtil.loadResource("player/barracks/button_complete.png");
@@ -215,7 +220,7 @@ public class BuildArmy {
     }
 
 
-    private void speedUp(LocalDateTime dateTime) {
+    private void speedUp(int turns, LocalDateTime dateTime) {
 
         long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
@@ -224,10 +229,6 @@ public class BuildArmy {
                 .area(Area.fromTwoPoints(910, 325, 1066, 361))
                 .waitLimit(1000)
                 .build();
-
-        try {
-            // Now many speed-ups should be used
-            final int turns = 7;
 
             for (int r = 0; r < turns; r++) {
                 
@@ -270,14 +271,6 @@ public class BuildArmy {
                 seconds = seconds - bestSpeedUp.getSeconds();
                 
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            SpeedUpBean fifteen = speedUps.stream()
-                    .filter((sp) -> sp.getSeconds() == Duration.ofMinutes(15).getSeconds())
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No 15 minutes!"));
-            clickOnSpeedUp(fifteen, speedUpsTitle.getPoint());
-        }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
             robot.type(KeyEvent.VK_ESCAPE);
