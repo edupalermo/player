@@ -1,6 +1,8 @@
 package org.palermo.totalbattle.player;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
+import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.task.AttackArena;
 import org.palermo.totalbattle.player.task.BuildArmy;
@@ -16,19 +18,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.palermo.totalbattle.internalservice.GameStateService.PROPERTY_NEXT;
+
 public class PlayerRunnable implements Runnable {
-    
+
     private LockService lockService = new LockService();
+    private GameStateService gameStateService = new GameStateService();
     
     private static List<Player> players = new ArrayList<>();
     static {
         players.add(Player.PALERMO);
-        /*
         players.add(Player.PETER);
         players.add(Player.MIGHTSHAPER);
         players.add(Player.GRIRANA);
         players.add(Player.ELANIN);
-         */
     }
 
     @Override
@@ -43,6 +46,16 @@ public class PlayerRunnable implements Runnable {
                 if (!SharedData.INSTANCE.isLocked(player)) {
                     play(player);
                 }
+
+                String playerName = gameStateService.getProperty(GameStateService.PROPERTY_NEXT);
+                if (StringUtils.isNoneBlank(playerName)) {
+                    Player adHocPlayer = Player.findPlayerByName(playerName).orElse(null);
+                    if (adHocPlayer != null) {
+                        play(adHocPlayer);
+                        gameStateService.removeProperty(GameStateService.PROPERTY_NEXT);
+                    }
+                }
+                    
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();

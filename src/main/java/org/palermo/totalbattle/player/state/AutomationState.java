@@ -15,8 +15,10 @@ import java.util.Map;
 public class AutomationState {
     
     public Map<Player, PlayerState> playerStates;
-    
+
     public List<Location> locations = new ArrayList<>();
+    
+    public Map<String, String> properties = new HashMap<>();
 
     public Map<Player, PlayerState> getPlayerStates() {
         if (playerStates == null) {

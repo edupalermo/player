@@ -2,6 +2,8 @@ package org.palermo.totalbattle.player;
 
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Getter
 public enum Player {
 
@@ -39,5 +41,14 @@ public enum Player {
             }
         }
         throw new RuntimeException("Cannot find player with name " + name);
+    }
+
+    public static Optional<Player> findPlayerByName(String name) {
+        for (Player player : Player.values()) {
+            if (player.name.equalsIgnoreCase(name)) {
+                return Optional.of(player);
+            }
+        }
+        return Optional.empty();
     }
 }
