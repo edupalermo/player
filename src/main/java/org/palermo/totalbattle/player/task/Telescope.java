@@ -170,7 +170,8 @@ public class Telescope {
         if (image.getHeight() < ImageUtil.OCR_HEIGHT) {
             image = ImageUtil.resize(image, ImageUtil.OCR_HEIGHT);
         }
-        String quantityAsString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
+        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
+        String quantityAsString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
         return Integer.parseInt(quantityAsString);
     }
     

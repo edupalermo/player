@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
@@ -36,6 +37,7 @@ public class BuildArmy {
     private final ArmyService armyService = new ArmyService();
     private final PlayerStateService playerStateService = new PlayerStateService();
     private final LockService lockService = new LockService();
+    private final GameStateService gameStateService = new GameStateService();
 
     public BuildArmy(Player player) {
         this.player = player;
@@ -154,7 +156,8 @@ public class BuildArmy {
             timeLeft = ImageUtil.resize(timeLeft, ImageUtil.OCR_HEIGHT);
         }
         // ImageUtil.showImageAndWait(timeLeft);
-        return ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.PATTERN_FOR_COUNTDOWN);
+        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
+        return ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
     }
 
 
@@ -710,7 +713,8 @@ public class BuildArmy {
             quantityImage = ImageUtil.resize(quantityImage, 70);
         }
 
-        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
+        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
+        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
         System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
 
         return Integer.parseInt(quantityAsString);

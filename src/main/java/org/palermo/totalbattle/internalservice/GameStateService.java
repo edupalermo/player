@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class GameStateService extends AbstractService {
-    
+
     public static final String PROPERTY_NEXT = "NEXT";
+    public static final String PROPERTY_MANUAL_OCR = "MANUAL_OCR";
 
     public void add(Location location) {
         AutomationState automationState = getAutomationState();
@@ -91,9 +92,17 @@ public class GameStateService extends AbstractService {
                 .filter((loc) -> loc.getType() == MineType.SILVER)
                 .count();
     }
+
+    public String getProperty(String key) {
+        return getAutomationState().getProperties().get(key);
+    }
     
-    public String getProperty(String key) { 
-        return getAutomationState().getProperties().get(key);    
+    public boolean getPropertyAsBoolean(String key) {
+        String value = getAutomationState().getProperties().get(key);
+        if (value == null) {
+            return false;
+        }
+        return value.equals("1") || value.equalsIgnoreCase("true");
     }
 
     public String removeProperty(String key) {

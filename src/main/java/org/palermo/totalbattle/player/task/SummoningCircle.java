@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 
+import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
@@ -20,8 +21,9 @@ public class SummoningCircle {
 
     private final MyRobot robot;
     private final Player player;
-    
+
     private final LockService lockService = new LockService();
+    private final GameStateService gameStateService = new GameStateService();
     
     public SummoningCircle(MyRobot robot, Player player) {
         this.robot = robot;
@@ -163,7 +165,7 @@ public class SummoningCircle {
         }
     }
 
-    private static int getArtifactQuantity(BufferedImage input) {
+    private int getArtifactQuantity(BufferedImage input) {
         int qtd = 0;
         try {
             BufferedImage image = ImageUtil.toGrayscale(input, new String[] {"FFF7BF"});
@@ -174,7 +176,8 @@ public class SummoningCircle {
                 image = ImageUtil.resize(image, 70);
             }
 
-            String numberAsText = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS);
+            boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
+            String numberAsText = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
             qtd = Integer.parseInt(numberAsText);
         } catch (NumberFormatException e) {
             ImageUtil.showImageFor5Seconds(input, "Fail to parse artifact quantity!");

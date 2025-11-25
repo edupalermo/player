@@ -737,7 +737,7 @@ public class ImageUtil {
         return ocr(image, whitelist, pageSegMode, null);
     }
 
-    public static String ocr(BufferedImage image, String whitelist, Pattern pattern) {
+    public static String ocr(BufferedImage image, String whitelist, Pattern pattern, boolean manualOcr) {
 
         try {
             List<ProcessedImage> list =  ocrDao.retrieve(image.getWidth(), image.getHeight(), whitelist);
@@ -761,7 +761,7 @@ public class ImageUtil {
                 }
             }
             
-            if (HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
+            if (manualOcr || HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
                 stringValue = askManualOcr(image);
                 
                 if (stringValue != null && stringValue.length() > 0) {
