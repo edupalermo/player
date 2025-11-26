@@ -11,6 +11,7 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -70,17 +71,13 @@ public class Quests {
         }
 
         screen = robot.captureScreen();
-        BufferedImage weeklyReward = ImageUtil.loadResource("player/label_weekly_reward.png");
-        Area weeklyRewardArea = RegionSelector.selectArea("QUESTS_DAILY_QUESTS_WEEKLY_REWARD", screen);
-        Point weeklyRewardPoint = ImageUtil.searchSurroundings(weeklyReward, screen, weeklyRewardArea, 0.1, 20).orElse(null);
+        Navigate weeklyReward = Navigate.builder()
+                .resourceName("player/label_weekly_reward.png")
+                .areaName("QUESTS_DAILY_QUESTS_WEEKLY_REWARD")
+                .waitLimit(5000)
+                .build(); 
 
-        if (weeklyRewardPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(labelQuestes, "error_image.png");
-            throw new RuntimeException("Couldn't find weekly reward label!");
-        }
-
-        Area claimArea = Area.of(weeklyRewardPoint, Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
+        Area claimArea = Area.of(weeklyReward.getPoint(), Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
         BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
         Point buttonClaimPoint = ImageUtil.search(buttonClaim, screen, claimArea, 0.1).orElse(null);
 
@@ -89,7 +86,7 @@ public class Quests {
         }
 
         // Daily Jobs Tab
-        robot.leftClick(weeklyRewardPoint.move(-310, 65));
+        robot.leftClick(weeklyReward.getPoint().move(-310, 65));
         robot.sleep(300);
 
         screen = robot.captureScreen();
