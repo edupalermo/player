@@ -5,6 +5,7 @@ import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.SharedData;
+import org.palermo.totalbattle.player.clan.ClanTge;
 import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
@@ -255,8 +256,13 @@ public class Telescope {
                 
                 BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
                 robot.mouseMove(minePoint.move(mine.getWidth() / 2, mine.getHeight() / 2));
-
+            
                 Point arenaCoordinate = readCoordinate();
+                
+                if(ClanTge.contains(arenaCoordinate)) {
+                    log.info("Mine belong to TGE clan area");
+                    continue;
+                }
 
                 robot.leftClick(minePoint, mine);
                 robot.sleep(500);
@@ -273,17 +279,21 @@ public class Telescope {
                         .area(Area.of(titleVillagePoint, Point.of(969, 481), Point.of(933, 682), Point.of(1042, 724)))
                         .build().search().orElse(null);
                 
-                if (buttonCapturePoint != null) {
-                    log.info("Mine can be captured! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
-                    
-                    gameStateService.add(Mine.builder()
-                            .position(arenaCoordinate)
-                            .type(MineType.SILVER)
-                            .build());
-                }
-                else {
+                if (buttonCapturePoint == null) {
                     log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+
+                    // Close pop up window
+                    robot.type(KeyEvent.VK_ESCAPE);
+                    robot.sleep(300);
+                    continue;
                 }
+                    
+                log.info("Mine can be captured! {} {}", arenaCoordinate.getX(), arenaCoordinate.getY());
+                
+                gameStateService.add(Mine.builder()
+                        .position(arenaCoordinate)
+                        .type(MineType.SILVER)
+                        .build());
 
                 mainLoopCount = mainLoopCount + 1;
                 

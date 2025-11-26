@@ -37,7 +37,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.PALERMO;
+        Player player = Player.LORVEN;
         
         WebDriver driver = null;
         try {
@@ -78,7 +78,7 @@ public class Task {
 
             // (new FreeSale(player)).freeSale();
             
-            (new BuildArmy(player)).buildArmy();
+            //(new BuildArmy(player)).buildArmy();
             // (new Telescope(player)).findArena();
             // (new Telescope(player)).findSilverMines();
             //(new BuildArmy(player)).testSpeedUps();
@@ -88,6 +88,9 @@ public class Task {
             // (new Telescope(player)).findArena();
             
             //(new Telescope(player)).findSilverMines();
+
+            (new NoName(player)).evaluate();
+            (new PayTaxes(player)).pay();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
