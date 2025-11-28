@@ -123,36 +123,13 @@ public class Task {
         options.setExperimentalOption("useAutomationExtension", false);
 
         WebDriver driver = new ChromeDriver(options);
-        driver.get(getAddress());
+        driver.get(AddressSelector.select(player));
 
         waitPageToBeLoaded(driver);
 
         System.out.println("Page has loaded");
 
         return driver;
-    }
-    
-    private static String getAddress() {
-        LocalDate today = LocalDate.now();
-        int weekdayNumber = today.getDayOfWeek().getValue();
-        
-        switch (weekdayNumber) {
-            case 1:
-                return "https://totalbattle.com/en/?present=gold";
-            case 2:
-                return "https://totalbattle.com/en/?present=xp";
-            case 3:
-                return "https://totalbattle.com/en/?present=tar";
-            case 4:
-                return "https://totalbattle.com/en/?present=march25";
-            case 5:
-                return "https://totalbattle.com/en/?present=gold500";
-            case 6:
-                return "https://totalbattle.com/en/?present=speedups15";
-            case 7:
-                return "https://totalbattle.com/en/?present=speedups3";
-        }
-        throw new RuntimeException("Week day problem!");
     }
     
     public static void login(Player player) {
