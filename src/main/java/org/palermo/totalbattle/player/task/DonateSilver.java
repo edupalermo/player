@@ -29,18 +29,11 @@ public class DonateSilver {
     
     public void donate() {
 
-        /*
         SilverRequest silverRequest = gameStateService.shouldDonateSilver(player).orElse(null);
         
         if (silverRequest == null) {
             return;
         }
-         */
-
-        SilverRequest silverRequest =   SilverRequest.builder()
-                .target(Player.PALERMO)
-                .expirationDate(LocalDateTime.now().plusHours(3))
-                .build();
 
         NavigationUtil.switchToMapIfNeeded();
         
@@ -73,7 +66,6 @@ public class DonateSilver {
                 .ensureExistence();
         
         Area resourcesArea = Area.of(buttonStartMarch.getPoint(), Point.of(1090, 877), Point.of(786, 400), Point.of(885, 805));
-        BufferedImage screen = robot.captureScreen();
 
         Navigate iconSilver = Navigate.builder()
                 .resourceName("player/icon_silver.png")
