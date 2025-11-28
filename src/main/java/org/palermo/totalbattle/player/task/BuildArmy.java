@@ -413,6 +413,7 @@ public class BuildArmy {
         int target;
         int counter = 0;
         boolean continueTrying = true;
+        boolean requestSilverFromOthers = false;
 
         do {
             target = Math.max((int) Math.round(quantity / Math.pow(2, counter)), 1);
@@ -426,7 +427,13 @@ public class BuildArmy {
             
             counter = counter + 1;
             
-            if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
+            boolean isSilverEnough = isResourceEnough(silverArea); 
+            
+            if (!isSilverEnough) {
+                requestSilverFromOthers = true;
+            }
+            
+            if (isSilverEnough && isResourceEnough(foodArea)) {
 
                 Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
                 if (!playerStateService.hasCaptain(player, captain)) {
@@ -449,14 +456,14 @@ public class BuildArmy {
                 log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
             }
             
-            if (continueTrying) { // not enough resources
-                gameStateService.publishMessage(SilverRequest.builder()
-                                .target(player)
-                                .expirationDate(LocalDateTime.now().plusHours(3))
-                        .build());
-            }
-            
         } while(continueTrying);
+
+        if (requestSilverFromOthers) { // not enough resources
+            gameStateService.publishMessage(SilverRequest.builder()
+                    .target(player)
+                    .expirationDate(LocalDateTime.now().plusHours(3))
+                    .build());
+        }
     }
 
     private boolean isResourceEnough(Area area) {
