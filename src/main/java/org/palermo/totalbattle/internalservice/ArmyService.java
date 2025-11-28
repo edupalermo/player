@@ -351,7 +351,32 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.FEARSOME_MANTICORE);
                 break;
 
-            case PETER, MIGHTSHAPER:
+            case PETER:
+                units.add(Unit.S2_SWORDSMAN);
+                units.add(Unit.G2_RANGED);
+                units.add(Unit.G2_MELEE);
+                units.add(Unit.G2_MOUNTED);
+
+                units.add(Unit.S3_SWORDSMAN);
+                units.add(Unit.G3_RANGED);
+                units.add(Unit.G3_MELEE);
+                units.add(Unit.G3_MOUNTED);
+
+                units.add(Unit.G4_RANGED);
+                units.add(Unit.G4_MELEE);
+                units.add(Unit.G4_MOUNTED);
+
+                units.add(Unit.EMERALD_DRAGON);
+                units.add(Unit.WATER_ELEMENTAL);
+                units.add(Unit.STONE_GARGOYLE);
+                units.add(Unit.BATTLE_BOAR);
+
+                units.add(Unit.MAGIC_DRAGON);
+                units.add(Unit.ICE_PHOENIX);
+                units.add(Unit.MANY_ARMED_GUARDIAN);
+                units.add(Unit.GORGON_MEDUSA);
+                break;
+            case MIGHTSHAPER:
                 units.add(Unit.S2_SWORDSMAN);
                 units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);

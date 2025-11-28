@@ -57,10 +57,6 @@ public enum SharedData {
         return this.automationState;
     }
     
-    public void removeArena(Point point) {
-        arenas.remove(point);
-    }
-
     public void halt(Player player) {
         halt.add(player.getName());
     }
@@ -88,36 +84,6 @@ public enum SharedData {
     public boolean isLocked(Player player) {
         return lock.contains(player.getName());        
     }
-
-    public Map<Unit, Long> getTroopTarget(Player player) {
-        return troopTarget.get(player.getName());
-    }
-    
-    public boolean hasTroopBuildPlan(Player player) {
-        return troopTarget.get(player.getName()) != null;
-    }
-
-    public void setTroopTarget(Player player, Unit unit, Long quantity) {
-        Map<Unit, Long> map = troopTarget.computeIfAbsent(player.getName(), (k) -> new HashMap<>());
-        map.put(unit, quantity);
-    }
-    
-    final Comparator<TroopQuantity> UNIT_QUANTITY_COMPARATOR = (u1, u2) -> {
-        if (u1.getUnit().getPool() != u2.getUnit().getPool()) { // LEADERSHIP should go first
-            return u1.getUnit().getPool() == Pool.LEADERSHIP ? -1 : 1;
-        }
-        if (u1.getUnit().getTier() != u2.getUnit().getTier()) { // Higher tier should go first
-            return u2.getUnit().getTier() - u1.getUnit().getTier();
-        }
-        int result = (int) ((u2.getTarget() * u2.getUnit().getHeadCount()) // Troops with bit gap should go first
-                - (u1.getTarget() * u1.getUnit().getHeadCount()));
-
-        if (result != 0) {
-            return result;
-        }
-
-        return u1.getUnit().name().compareToIgnoreCase(u2.getUnit().name()); // User anything...
-    };
     
     public void saveAutomationState() {
         IoUtil.writeJson(AUTOMATION_STATE_FILE, this.automationState);

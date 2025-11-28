@@ -86,6 +86,8 @@ public class PlayerRunnable implements Runnable {
             
             (new MineSilver(player)).mine();
 
+            (new PayTaxes(player)).pay();
+
             (new DonateSilver(player)).donate();
 
             if (!isSummoningCircleFree(player)) {

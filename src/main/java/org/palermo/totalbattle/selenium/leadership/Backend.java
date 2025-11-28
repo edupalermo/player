@@ -46,7 +46,9 @@ public class Backend {
         
         List<Unit> troops = new ArrayList<>();
         
-        switch(Player.getPlayerByName(playerName)) {
+        Player player = Player.getPlayerByName(playerName);
+        
+        switch(player) {
             case PALERMO -> {
                 if (tiers >= 4) {
                     troops.add(Unit.S2_SWORDSMAN);
@@ -113,7 +115,9 @@ public class Backend {
                     troops.add(Unit.G2_MOUNTED);
                 }
                 if (tiers >= 2) {
-                    //troops.add(Unit.S3_SWORDSMAN);
+                    if (player == Player.PETER) {
+                        troops.add(Unit.S3_SWORDSMAN);
+                    }
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
