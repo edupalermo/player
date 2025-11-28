@@ -61,6 +61,30 @@ public class ClanContribution {
             throw new RuntimeException("Couldn't My Clan title!");
         }
 
+
+        // Click on Information (left tab)
+        robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(611, 393)));
+        robot.sleep(500);
+        
+        screen = robot.captureScreen();
+        Area unionOfTriumphFlagArea = Area.of(titleMyClanPoint, Point.of(963, 325), Point.of(1383, 400), Point.of(1398, 414));
+
+        if (Navigate.builder()
+                .area(unionOfTriumphFlagArea)
+                .resourceName("player/my_clan/positive_flag.png")
+                .comparationLimit(0.03)
+                .build()
+                .exist()) {
+
+            robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(1355, 441)));
+            robot.sleep(500);
+            
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(500);
+        }
+
+
+
         // Click on Gifts (left tab)
         robot.leftClick(Point.of(titleMyClanPoint, Point.of(963, 325), Point.of(611, 497)));
         robot.sleep(500);

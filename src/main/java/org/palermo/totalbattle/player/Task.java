@@ -34,7 +34,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.GRIRANA;
+        Player player = Player.ELANIN;
         
         WebDriver driver = null;
         try {
@@ -44,7 +44,7 @@ public class Task {
             //Task.showPauseDialog("Click on the button to continue");
 
             // (new ClanContribution(player)).helpClanMembers();
-            // (new ClanContribution(player)).collectChests();
+            (new ClanContribution(player)).collectChests();
 
             // (new Announce()).playPlayerName(player);
 
@@ -89,7 +89,7 @@ public class Task {
             // (new InfoGather(player)).evaluate();
             
 //             (new PayTaxes(player)).pay();
-            (new DonateSilver(player)).donate();
+            //(new DonateSilver(player)).donate();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {
