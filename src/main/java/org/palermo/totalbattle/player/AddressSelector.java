@@ -44,10 +44,10 @@ public class AddressSelector {
 
 
     private static final String[] ONE_TIME_BONUS = new String[] {
-            "https://totalbattle.com/de/?present=ref5_november_25_ZN6z",
-            "https://totalbattle.com/de/?present=ref1_november_25_rGga",
-            "https://totalbattle.com/de/?present=ref1_october_25_6nhH",
-            "https://totalbattle.com/de/?present=ref4_spareoctober_25_FK5y"
+            "https://totalbattle.com/en/?present=ref5_november_25_ZN6z",
+            "https://totalbattle.com/en/?present=ref1_november_25_rGga",
+            "https://totalbattle.com/en/?present=ref1_october_25_6nhH",
+            "https://totalbattle.com/en/?present=ref4_spareoctober_25_FK5y"
     };
 
     private static String getAddressByWeekDay() {
