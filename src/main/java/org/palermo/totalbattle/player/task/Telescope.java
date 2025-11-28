@@ -261,6 +261,7 @@ public class Telescope {
                 
                 if(ClanTge.contains(arenaCoordinate)) {
                     log.info("Mine belong to TGE clan area");
+                    mainLoopCount = mainLoopCount + 1;
                     continue;
                 }
 
@@ -281,6 +282,8 @@ public class Telescope {
                 
                 if (buttonCapturePoint == null) {
                     log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
+
+                    mainLoopCount = mainLoopCount + 1;
 
                     // Close pop up window
                     robot.type(KeyEvent.VK_ESCAPE);

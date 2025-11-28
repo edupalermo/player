@@ -105,8 +105,9 @@ public class Navigate {
         return this.point;
     }
     
-    public void ensureExistence() {
+    public Navigate ensureExistence() {
         this.getPoint();
+        return this;
     }
 
     public void leftClick() {
@@ -117,6 +118,17 @@ public class Navigate {
             throw new RuntimeException("Could not find the given resource");
         }
         robot.leftClick(point, searchImage);
+        robot.sleep(500);
+    }
+
+    public void mouseHover() {
+        if (point == null) {
+            point = search().orElse(null);
+        }
+        if (point == null) {
+            throw new RuntimeException("Could not find the given resource");
+        }
+        robot.mouseMove(point, searchImage);
         robot.sleep(500);
     }
 

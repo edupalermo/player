@@ -90,4 +90,25 @@ public class NavigationUtil {
         Area centerArea = RegionSelector.selectArea("MAP_CENTER", screen);
         return ImageUtil.searchBestFit(new BufferedImage[] {mine}, screen, centerArea);
     }
+    
+    public static void switchToCityView() {
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(150);
+
+        Navigate labelCity = Navigate.builder()
+                .resourceName("player/label_city.png")
+                .area(Area.fromTwoPoints(664, 1059, 716, 1075))
+                .waitLimit(2000)
+                .build();
+        labelCity.leftClickIfExists();
+
+        Navigate labelMap = Navigate.builder()
+                .resourceName("player/label_map.png")
+                .area(Area.fromTwoPoints(664, 1059, 716, 1075))
+                .waitLimit(5000)
+                .build();
+        labelMap.ensureExistence();
+    }
 }

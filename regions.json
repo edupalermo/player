@@ -226,5 +226,17 @@
     "y" : 142,
     "width" : 399,
     "height" : 367
+  },
+  "MAIN_TOP_MENU" : {
+    "x" : 598,
+    "y" : 125,
+    "width" : 765,
+    "height" : 92
+  },
+  "CAPITOL_TITLE" : {
+    "x" : 792,
+    "y" : 325,
+    "width" : 292,
+    "height" : 94
   }
 }

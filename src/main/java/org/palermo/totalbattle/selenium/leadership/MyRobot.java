@@ -66,13 +66,22 @@ public enum MyRobot {
     }
 
     public void mouseMove(Point point) {
+        mouseMove(point.getX(), point.getY());
+    }
+
+    private void mouseMove(int x, int y) {
         try {
-            robot.mouseMove(point.getX(), point.getY());
+            robot.mouseMove(x, y);
             Thread.sleep(getDelayBetweenTasks());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public void mouseMove(Point point, BufferedImage image) {
+        mouseMove(point.getX() + (image.getWidth() / 2), point.getY() + (image.getHeight() / 2));
+    }
+
 
     public void mouseDrag(Point point, int dx, int dy) {
         try {
