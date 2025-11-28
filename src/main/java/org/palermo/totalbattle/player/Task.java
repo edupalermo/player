@@ -34,7 +34,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.LORVEN;
+        Player player = Player.GRIRANA;
         
         WebDriver driver = null;
         try {

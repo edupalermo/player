@@ -250,5 +250,11 @@
     "y" : 362,
     "width" : 302,
     "height" : 107
+  },
+  "PLAYERS_CITY_CARAVAN_BUTTON" : {
+    "x" : 694,
+    "y" : 586,
+    "width" : 513,
+    "height" : 219
   }
 }
