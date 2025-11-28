@@ -13,10 +13,12 @@ import java.awt.*;
 public class Area {
 
     public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
+    public static final String CAPITOL_ROYAL_TREASURY_TITLE = "CAPITOL_ROYAL_TREASURY_TITLE";
     public static final String CAPITOL_TITLE = "CAPITOL_TITLE";
     public static final String MAIN_ONGOING_OPERATIONS = "MAIN_ONGOING_OPERATIONS";
     public static final String MAIN_TOP_MENU = "MAIN_TOP_MENU";
     public static final String MAIN_ZOOM_LABEL_25 = "MAIN_ZOOM_LABEL_25";
+    public static final String PLAYERS_CITY_TITLE = "PLAYERS_CITY_TITLE";
     public static final String POPUP_SILVER_VILLAGE_CAPTURE_BUTTON = "POPUP_SILVER_VILLAGE_CAPTURE_BUTTON";
     public static final String POPUP_MINE_START_MARCH_BUTTON = "POPUP_MINE_START_MARCH_BUTTON";
     public static final String TELESCOPE_VILLAGE_TITLE = "TELESCOPE_VILLAGE_TITLE";

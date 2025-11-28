@@ -14,6 +14,9 @@ import java.util.Map;
 @Getter
 @Setter
 public class PlayerState {
+
+    private int commonTar;
+    private int silver;
     
     private Army army = new Army();
     

@@ -3,6 +3,7 @@ package org.palermo.totalbattle.player;
 public enum Scenario {
 
     BONUS_SALES_FREE,
+    PAY_TAXES,
     TRAIN_TROOPS,
     QUESTS_TRY_FULL_CHESTS,
     SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT,

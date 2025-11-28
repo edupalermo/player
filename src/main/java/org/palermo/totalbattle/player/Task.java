@@ -23,9 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -89,8 +86,10 @@ public class Task {
             
             //(new Telescope(player)).findSilverMines();
 
-            (new NoName(player)).evaluate();
-            (new PayTaxes(player)).pay();
+            // (new InfoGather(player)).evaluate();
+            
+//             (new PayTaxes(player)).pay();
+            (new DonateSilver(player)).donate();
             
             waitUntilWindowIsClosed(driver);
         } catch (Exception e) {

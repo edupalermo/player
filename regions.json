@@ -238,5 +238,17 @@
     "y" : 325,
     "width" : 292,
     "height" : 94
+  },
+  "CAPITOL_ROYAL_TREASURY_TITLE" : {
+    "x" : 812,
+    "y" : 389,
+    "width" : 267,
+    "height" : 87
+  },
+  "PLAYERS_CITY_TITLE" : {
+    "x" : 850,
+    "y" : 362,
+    "width" : 302,
+    "height" : 107
   }
 }

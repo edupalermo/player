@@ -115,13 +115,9 @@ public class MineSilver {
             return;
         }
         
-        BufferedImage screen = robot.captureScreen();
-        Area captainsArea = Area.of(buttonStartMarch.getPoint(), Point.of(1090, 877), Point.of(835, 433), Point.of(1145, 521));
-        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, captainsArea));
-        
         Navigate strorNavigate = Navigate.builder()
                 .resourceName("player/captain/stror_72.png")
-                .area(captainsArea)
+                .area(Area.of(buttonStartMarch.getPoint(), Point.of(1090, 877), Point.of(835, 433), Point.of(1145, 521)))
                 .waitLimit(1000)
                 .build();
         

@@ -1,6 +1,8 @@
 package org.palermo.totalbattle.player.task;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
+import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -10,14 +12,16 @@ import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.image.BufferedImage;
 
-public class NoName {
+@Slf4j
+public class InfoGather {
 
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
-    
-    private static final GameStateService gameStateService = new GameStateService();
 
-    public NoName(Player player) {
+    private static final GameStateService gameStateService = new GameStateService();
+    private static final PlayerStateService playerStateService = new PlayerStateService();
+
+    public InfoGather(Player player) {
         this.player = player;
     }
 
@@ -27,13 +31,15 @@ public class NoName {
         
         BufferedImage screen = robot.captureScreen();
         Area silverAmountArea = Area.of(iconSilver.getPoint(), Point.of(1141, 179), Point.of(1222,271), Point.of(1316, 290));
-        System.out.println("Silver: " + ocr(ImageUtil.crop(screen, silverAmountArea)));
+        log.info("Silver: {}", ocr(ImageUtil.crop(screen, silverAmountArea)));
+        playerStateService.getState(player).setSilver(Integer.parseInt(ocr(ImageUtil.crop(screen, silverAmountArea))));
 
         Navigate iconCommonTar = hoverTopMenuIcon("player/top_menu/icon_common_tar.png");
 
         screen = robot.captureScreen();
         Area commonTarAmountArea = Area.of(iconCommonTar.getPoint(), Point.of(767, 190), Point.of(858,281), Point.of(931, 300));
-        System.out.println("Tar: " + ocr(ImageUtil.crop(screen, commonTarAmountArea)));
+        log.info("Tar: {}", ocr(ImageUtil.crop(screen, commonTarAmountArea)));
+        playerStateService.getState(player).setCommonTar(Integer.parseInt(ocr(ImageUtil.crop(screen, commonTarAmountArea))));
     }
     
     private static Navigate hoverTopMenuIcon(String resourceName) {

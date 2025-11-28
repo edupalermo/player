@@ -54,7 +54,7 @@ public class NavigationUtil {
         }
     }
     
-    public static void goToMapPosition(Point position) {
+    public static Point goToMapPosition(Point position) {
         // Click on the magnifier icon
         Navigate.builder()
                 .resourceName("player/icon_magnifier.png")
@@ -82,6 +82,8 @@ public class NavigationUtil {
 
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(2000);
+        
+        return buttonGoPoint.move(buttonGo.getWidth() / 2, buttonGo.getWidth() / 2);
     }
     
     public static Point spotSilverMinePositionPointInTheCenter() {

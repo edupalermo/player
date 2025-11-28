@@ -22,7 +22,12 @@ public class PlayerStateService extends AbstractService {
         playerState.setCaptains(new ArrayList<>(captains));
         sharedData.saveAutomationState();
     }
-    
+
+    public PlayerState getState(Player player) {
+        return getPlayerState(player);
+    }
+
+
     public boolean hasCaptain(Player player, Captain captain) {
         PlayerState playerState = getPlayerState(player);
         return playerState.getCaptains().contains(captain);

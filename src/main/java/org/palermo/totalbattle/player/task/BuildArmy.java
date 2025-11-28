@@ -10,6 +10,7 @@ import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
+import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.TroopQuantity;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -446,6 +447,13 @@ public class BuildArmy {
             if (target == 1) {
                 continueTrying = false;
                 log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
+            }
+            
+            if (continueTrying) { // not enough resources
+                gameStateService.publishMessage(SilverRequest.builder()
+                                .target(player)
+                                .expirationDate(LocalDateTime.now().plusHours(3))
+                        .build());
             }
             
         } while(continueTrying);

@@ -4,15 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.player.task.AttackArena;
-import org.palermo.totalbattle.player.task.BuildArmy;
-import org.palermo.totalbattle.player.task.CaptainSelector;
-import org.palermo.totalbattle.player.task.ClanContribution;
-import org.palermo.totalbattle.player.task.FreeSale;
-import org.palermo.totalbattle.player.task.MineSilver;
-import org.palermo.totalbattle.player.task.Quests;
-import org.palermo.totalbattle.player.task.SummoningCircle;
-import org.palermo.totalbattle.player.task.Telescope;
+import org.palermo.totalbattle.player.task.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,6 +69,7 @@ public class PlayerRunnable implements Runnable {
             }
 
             (new CaptainSelector(player)).updatePlayerState();
+            (new InfoGather(player)).evaluate();
 
             (new FreeSale(player)).freeSale();
 
@@ -90,7 +83,10 @@ public class PlayerRunnable implements Runnable {
             (new BuildArmy(player)).buildArmy();
 
             (new AttackArena(player)).attackArena();
+            
             (new MineSilver(player)).mine();
+
+            (new DonateSilver(player)).donate();
 
             if (!isSummoningCircleFree(player)) {
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
