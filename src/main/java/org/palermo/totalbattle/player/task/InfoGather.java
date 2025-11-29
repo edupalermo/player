@@ -40,6 +40,8 @@ public class InfoGather {
         Area commonTarAmountArea = Area.of(iconCommonTar.getPoint(), Point.of(767, 190), Point.of(858,281), Point.of(931, 300));
         log.info("Tar: {}", ocr(ImageUtil.crop(screen, commonTarAmountArea)));
         playerStateService.getState(player).setCommonTar(Integer.parseInt(ocr(ImageUtil.crop(screen, commonTarAmountArea))));
+
+        hoverTopMenuIcon("player/top_menu/icon_silver.png");
     }
     
     private static Navigate hoverTopMenuIcon(String resourceName) {

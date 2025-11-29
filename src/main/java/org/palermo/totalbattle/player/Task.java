@@ -34,7 +34,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.ELANIN;
+        Player player = Player.PALERMO;
         
         WebDriver driver = null;
         try {
@@ -44,7 +44,7 @@ public class Task {
             //Task.showPauseDialog("Click on the button to continue");
 
             // (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
+            // (new ClanContribution(player)).collectChests();
 
             // (new Announce()).playPlayerName(player);
 
@@ -83,8 +83,11 @@ public class Task {
             
 
             // (new Telescope(player)).findArena();
-            
-            //(new Telescope(player)).findSilverMines();
+
+            // (new Telescope(player)).findSilverMines();
+
+            (new Telescope(player)).findCitadels();
+            (new Telescope(player)).findCrypts();
 
             // (new InfoGather(player)).evaluate();
             

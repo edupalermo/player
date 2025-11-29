@@ -346,4 +346,52 @@ public class Telescope {
         }
         return Optional.ofNullable(titleWatchtowerPoint);
     }
+    
+    
+    public void findCitadels() {
+        Point titleWatchtowerPoint = openWatchtower().orElse(null);
+
+        if (titleWatchtowerPoint == null) {
+            System.out.println("Telescope is not activated");
+            return;
+        }
+
+        // Click on Monters let tab
+        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 497)));
+        robot.sleep(500);
+
+
+
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+    
+    public void findCrypts() {
+        Point titleWatchtowerPoint = openWatchtower().orElse(null);
+
+        if (titleWatchtowerPoint == null) {
+            System.out.println("Telescope is not activated");
+            return;
+        }
+
+        // Click on Crypt and Arenas let tab
+        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 556)));
+        robot.sleep(500);
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
 }

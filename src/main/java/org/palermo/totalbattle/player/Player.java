@@ -11,6 +11,7 @@ public enum Player {
     PALERMO(cfg("Palermo")
             .hasHelen(true)
             .miningLevel(25)
+            .commonTarRequired(65800)
             .profileFolder("chrome-profiles/palermo")
             .username("fp2268@gmail.com")
             .priority(1)
@@ -19,6 +20,7 @@ public enum Player {
     PETER(cfg("Peter")
             .hasHelen(false)
             .miningLevel(20)
+            .commonTarRequired(34000)
             .profileFolder("chrome-profiles/peter")
             .username("edupalermo@gmail.com")
             .priority(2)
@@ -27,6 +29,7 @@ public enum Player {
     MIGHTSHAPER(cfg("Mightshaper")
             .hasHelen(false)
             .miningLevel(20)
+            .commonTarRequired(40000)
             .profileFolder("chrome-profiles/mightshaper")
             .username("edupalermo+01@gmail.com")
             .priority(3)
@@ -35,6 +38,7 @@ public enum Player {
     GRIRANA(cfg("Grirana")
             .hasHelen(false)
             .miningLevel(10)
+            .commonTarRequired(3700)
             .profileFolder("chrome-profiles/grirana")
             .username("edupalermo+02@gmail.com")
             .priority(4)
@@ -43,6 +47,7 @@ public enum Player {
     ELANIN(cfg("Elanin")
             .hasHelen(false)
             .miningLevel(10)
+            .commonTarRequired(3800)
             .profileFolder("chrome-profiles/elanin")
             .username("edupalermo+03@gmail.com")
             .priority(5)
@@ -59,6 +64,7 @@ public enum Player {
     private String name;
     private boolean hasHelen;
     private int miningLevel;
+    private int commonTarRequired;
     private String profileFolder;
     private String username;
     private String password;
@@ -69,6 +75,7 @@ public enum Player {
         this.name = cfg.name;
         this.hasHelen = cfg.hasHelen;
         this.miningLevel = cfg.miningLevel;
+        this.commonTarRequired = cfg.commonTarRequired;
         this.profileFolder = cfg.profileFolder;
         this.username = cfg.username;
         this.password = System.getenv("TOTAL_BATTLE_PASSWORD");
@@ -106,6 +113,7 @@ public enum Player {
         private final String name;
         private boolean hasHelen;
         private int miningLevel;
+        private int commonTarRequired;
         private String profileFolder;
         private String username;
         private int priority;
@@ -139,9 +147,14 @@ public enum Player {
             this.priority = priority;
             return this;
         }
-        
+
         Config position(int x, int y) {
-            this.position = Point.of(x, y);            
+            this.position = Point.of(x, y);
+            return this;
+        }
+        
+        Config commonTarRequired(int tarQtd) {
+            this.commonTarRequired = tarQtd;
             return this;
         }
     }

@@ -47,7 +47,10 @@ public class AddressSelector {
             "https://totalbattle.com/en/?present=ref5_november_25_ZN6z",
             "https://totalbattle.com/en/?present=ref1_november_25_rGga",
             "https://totalbattle.com/en/?present=ref1_october_25_6nhH",
-            "https://totalbattle.com/en/?present=ref4_spareoctober_25_FK5y"
+            "https://totalbattle.com/en/?present=ref4_spareoctober_25_FK5y",
+            "https://totalbattle.com/en/?present=ref2_october_25_3SX2", // Recorded
+            "https://totalbattle.com/en/?present=ref4_september_25_AE0S",
+            "https://totalbattle.com/en/?present=ref3_september_25_Wm0e"
     };
 
     private static String getAddressByWeekDay() {
