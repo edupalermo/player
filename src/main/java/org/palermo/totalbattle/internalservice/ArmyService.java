@@ -28,6 +28,9 @@ public class ArmyService extends AbstractService {
     private SharedData sharedData = SharedData.INSTANCE;
 
     private static final Comparator<TroopQuantity> UNIT_QUANTITY_COMPARATOR = (u1, u2) -> {
+        if (u1.getUnit() == Unit.G1_MELEE || u2.getUnit() == Unit.G1_MELEE) {
+            return u1.getUnit() == Unit.G1_MELEE ? -1 : 1;
+        }
         if (u1.getUnit().getPool() != u2.getUnit().getPool()) { // LEADERSHIP should go first
             return u1.getUnit().getPool() == Pool.LEADERSHIP ? -1 : 1;
         }
