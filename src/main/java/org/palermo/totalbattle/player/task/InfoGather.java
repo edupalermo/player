@@ -26,25 +26,23 @@ public class InfoGather {
     }
 
     public void evaluate() {
+        Navigate iconCommonTar = selectTopMenuIcon("player/top_menu/icon_common_tar.png", true);
 
-        Navigate iconSilver = hoverTopMenuIcon("player/top_menu/icon_silver.png");
-        
         BufferedImage screen = robot.captureScreen();
-        Area silverAmountArea = Area.of(iconSilver.getPoint(), Point.of(1141, 179), Point.of(1222,271), Point.of(1316, 290));
-        log.info("Silver: {}", ocr(ImageUtil.crop(screen, silverAmountArea)));
-        playerStateService.getState(player).setSilver(Integer.parseInt(ocr(ImageUtil.crop(screen, silverAmountArea))));
-
-        Navigate iconCommonTar = hoverTopMenuIcon("player/top_menu/icon_common_tar.png");
-
-        screen = robot.captureScreen();
         Area commonTarAmountArea = Area.of(iconCommonTar.getPoint(), Point.of(767, 190), Point.of(858,281), Point.of(931, 300));
         log.info("Tar: {}", ocr(ImageUtil.crop(screen, commonTarAmountArea)));
         playerStateService.getState(player).setCommonTar(Integer.parseInt(ocr(ImageUtil.crop(screen, commonTarAmountArea))));
 
-        hoverTopMenuIcon("player/top_menu/icon_silver.png");
+
+        Navigate iconSilver = selectTopMenuIcon("player/top_menu/icon_silver.png", true);
+        
+        screen = robot.captureScreen();
+        Area silverAmountArea = Area.of(iconSilver.getPoint(), Point.of(1141, 179), Point.of(1222,271), Point.of(1316, 290));
+        log.info("Silver: {}", ocr(ImageUtil.crop(screen, silverAmountArea)));
+        playerStateService.getState(player).setSilver(Integer.parseInt(ocr(ImageUtil.crop(screen, silverAmountArea))));
     }
-    
-    private static Navigate hoverTopMenuIcon(String resourceName) {
+
+    private static Navigate selectTopMenuIcon(String resourceName, boolean hover) {
         Navigate iconNext = Navigate.builder()
                 .areaName(Area.MAIN_TOP_MENU)
                 .resourceName("player/top_menu/icon_next.png")
@@ -60,7 +58,9 @@ public class InfoGather {
             iconNext.leftClick();
         }
 
-        resource.mouseHover();
+        if (hover) {
+            resource.mouseHover();
+        }
         return resource;
     }
     

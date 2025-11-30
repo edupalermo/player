@@ -58,6 +58,7 @@ public class NavigationUtil {
         // Click on the magnifier icon
         Navigate.builder()
                 .resourceName("player/icon_magnifier.png")
+                .areaName(Area.MAP_MAGNIFIER)
                 .waitLimit(10000)
                 .build().leftClick();
         robot.sleep(1000);

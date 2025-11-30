@@ -82,9 +82,9 @@ public class Task {
             
             
 
-            // (new Telescope(player)).findArena();
-
-            // (new Telescope(player)).findSilverMines();
+            //(new Telescope(player)).findArena();
+            //(new Telescope(player)).findSilverMines();
+            //(new AttackArena(player)).attackArena();
 
             (new Telescope(player)).findCitadels();
             (new Telescope(player)).findCrypts();

@@ -43,7 +43,11 @@ public class Point implements Serializable {
     public Point move(int dx, int dy) {
         return Point.of(this.x + dx, this.y + dy);
     }
-    
+
+    public Point centralize(BufferedImage image) {
+        return Point.of(this.x + (image.getWidth() / 2), this.y + (image.getHeight() / 2));
+    }
+
     public Point toTheMiddleOf(BufferedImage image) {
         return Point.of(this.x + Math.round(image.getWidth() / 2d), this.y +  + Math.round(image.getHeight() / 2d));
     }

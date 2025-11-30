@@ -122,7 +122,7 @@ public class Telescope {
         robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
         robot.sleep(3000);
         
-        zoomMinus();
+        NavigationUtil.zoomInIfNeeded();
 
         BufferedImage arena = ImageUtil.loadResource("player/arena/arena_type_i.png");
         Point arenaPoint = ArenaUtil.identifyCenterArena();
@@ -176,16 +176,6 @@ public class Telescope {
         return Integer.parseInt(quantityAsString);
     }
     
-    private void zoomMinus() {
-        Navigate iconZoomMinus = Navigate.builder()
-                .resourceName("player/icon_zoom_minus.png")
-                .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
-                .build();
-        for (int i = 0; i < 4; i++) {
-            iconZoomMinus.leftClick();
-        }
-    }
-    
     public void findSilverMines() {
         
         if (gameStateService.countMines(MineType.SILVER) >= MINE_COUNT_TARGET) {
@@ -222,9 +212,12 @@ public class Telescope {
 
 
             final int SCROLL_PIXELS = 10;
-            for (int s = 0; s < mainLoopCount / 3; s++) {
-                Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 523)); 
+            Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 523));
+            robot.leftClick(initialPoint);
+            robot.sleep(150);
+            if (mainLoopCount / 3 > 0) {
                 robot.mouseDrag(initialPoint, 0, SCROLL_PIXELS * (mainLoopCount / 3));
+                robot.sleep(150);
             }
             
             Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
@@ -251,11 +244,13 @@ public class Telescope {
                 NavigationUtil.zoomInIfNeeded();
             
                 if (minePoint == null) {
-                    minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter();
+                    BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
+                    minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter()
+                            .centralize(mine)
+                            .move(0, -6);
                 }
                 
-                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
-                robot.mouseMove(minePoint.move(mine.getWidth() / 2, mine.getHeight() / 2));
+                robot.mouseMove(minePoint);
             
                 Point arenaCoordinate = readCoordinate();
                 
@@ -265,7 +260,7 @@ public class Telescope {
                     continue;
                 }
 
-                robot.leftClick(minePoint, mine);
+                robot.leftClick(minePoint);
                 robot.sleep(500);
 
                 Point titleVillagePoint = Navigate.builder()
@@ -356,15 +351,105 @@ public class Telescope {
             return;
         }
 
-        // Click on Monters let tab
+        // Click on Monsters let tab
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 497)));
         robot.sleep(500);
 
+        selectMonsters(titleWatchtowerPoint, new boolean[] {false, false, false, true, false, false});
+        
+        selectRarity(titleWatchtowerPoint, new boolean[] {false, false, false, true});
+        
+        BufferedImage screen = robot.captureScreen();
+        Area sliderArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(882, 536), Point.of(1338, 565));
+        ImageUtil.showImageAndWait(screen, sliderArea);
+        BufferedImage slider = ImageUtil.loadResource("player/watchtower/monsters/slider.png");
+        
+        List<Point> sliders = ImageUtil.searchMultiple(slider, screen, sliderArea, 0.07);
+        System.out.println("Sliders: " + sliders.size());
+        sliders = simplify(slider, sliders);
+        System.out.println("Sliders: " + sliders.size());
 
+        robot.leftClick(sliders.get(0), slider);
+        robot.mouseDrag(sliders.get(0).centralize(slider), -500, 0);
 
-
+        robot.leftClick(sliders.get(1), slider);
+        robot.mouseDrag(sliders.get(1).centralize(slider), 500, 0);
+        
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
+    }
+    
+    private List<Point> simplify(BufferedImage image, List<Point> points) {
+        List<Point> answer = new ArrayList<>();
+        
+        for (Point point : points) {
+            boolean intersect = false;
+            
+            for (Point included: answer) {
+                if (point.getX() >= included.getX() && 
+                        point.getX() < included.getX() + image.getWidth()) {
+                    intersect = true;
+                    break;
+                }
+            }
+            
+            if (!intersect) {
+                answer.add(point);
+            }
+        }
+        
+        return answer;
+    }
+    
+    public void selectMonsters(Point titleWatchtowerPoint, boolean[] enabled) {
+        Area monsterTypeArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(825, 426), Point.of(1334, 465));
+
+        List<BufferedImage> monsterIcons = new ArrayList<>();
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_barbarians_on.png"));
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_inferno_on.png"));
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_undead_on.png"));
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_elves_on.png"));
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_cursed_on.png"));
+        monsterIcons.add(ImageUtil.loadResource("player/watchtower/monsters/icon_others_on.png"));
+        
+        List<Point> iconPoints = new ArrayList<>();
+        iconPoints.add(Point.of(846, 449));
+        iconPoints.add(Point.of(943, 449));
+        iconPoints.add(Point.of(1031, 449));
+        iconPoints.add(Point.of(1122, 449));
+        iconPoints.add(Point.of(1215, 449));
+        iconPoints.add(Point.of(1306, 449));
+        
+        
+        for (int i = 0; i < enabled.length; i++) {
+            Navigate item = Navigate.builder()
+                    .area(monsterTypeArea)
+                    .searchImage(monsterIcons.get(i))
+                    .build();           
+            if (item.exist() && !enabled[i] ||
+                    !item.exist() && enabled[i]) {
+                robot.leftClick(iconPoints.get(i));
+                robot.sleep(150);
+            }
+        }
+    }
+    
+    private void selectRarity(Point titleWatchtowerPoint, boolean[] enabled) {
+
+        BufferedImage screen = robot.captureScreen();
+        
+        for (int i = 0; i < 4; i++) {
+            Area flagArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(833 + (i * 129), 494), Point.of(852 + (i * 129), 515));
+            Navigate buttonOn = Navigate.builder()
+                    .area(flagArea)
+                    .resourceName("player/watchtower/button_on.png")
+                    .build();
+            if ((!enabled[i] && buttonOn.exist()) ||
+                    (enabled[i] && !buttonOn.exist())) {
+                robot.leftClick(flagArea);
+                robot.sleep(200);
+            }
+        }
     }
     
     public void findCrypts() {
@@ -379,6 +464,7 @@ public class Telescope {
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 556)));
         robot.sleep(500);
 
+        
         
         
         

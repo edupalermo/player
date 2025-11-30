@@ -256,5 +256,11 @@
     "y" : 586,
     "width" : 513,
     "height" : 219
+  },
+  "MAP_MAGNIFIER" : {
+    "x" : 30,
+    "y" : 790,
+    "width" : 226,
+    "height" : 114
   }
 }
