@@ -114,4 +114,12 @@ public class NavigationUtil {
                 .build();
         labelMap.ensureExistence();
     }
+
+    public static Point identifyCenterCitadel() {
+        BufferedImage image = ImageUtil.loadResource("player/watchtower/citadel.png");
+        BufferedImage screen = robot.captureScreen();
+        Area arenaArea = RegionSelector.selectArea("MAP_CENTER", screen);
+        Point point = ImageUtil.searchBestFit(new BufferedImage[] {image}, screen, arenaArea);
+        return point.centralize(image);
+    }
 }

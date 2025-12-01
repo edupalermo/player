@@ -27,12 +27,39 @@ public class CaptainSelector {
         this.player = player;
     }
 
-    public void select(String first, String second, String third) {
+    public boolean select(Captain firstCaptain, Captain secondCaptain, Captain thirdCaptain) {
         Point heroPoint = openCaptainManagementArea();
+        enableCaptainsLeftPane(heroPoint);
+        
+        boolean configured = select(firstCaptain, heroPoint, 0) &&
+                select(secondCaptain, heroPoint, 1) &&
+                select(thirdCaptain, heroPoint, 2);
 
-        throw new RuntimeException("Not Implemented!");
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+
+        return configured;
     }
     
+    private boolean select(Captain captain, Point heroPoint, int slot) {
+        if (captain == Captain.UNKNOW || captain == Captain.EMPTY) {
+            return true;
+        }
+        if (captain != Captain.UNKNOW && captain != Captain.EMPTY) {
+            Navigate firstNavigate = Navigate.builder()
+                    .area(getCaptainArea(heroPoint, slot))
+                    .searchImage(captain.getImage66())
+                    .build();
+
+            if (!firstNavigate.exist()) {
+                removeCaptainAndSelectSpot(slot, heroPoint);
+                selectCaptain(heroPoint, captain);
+            }
+        }
+        return true;
+    }
+    
+
     public void enable(Captain captain) {
         Point heroPoint = openCaptainManagementArea();
         enableCaptainsLeftPane(heroPoint);

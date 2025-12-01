@@ -36,11 +36,11 @@ public enum Unit {
     G5_MOUNTED(1050, 3150, UnitType.RIDER, 5, Attribute.GUARDSMAN_RIDER, "leadership/mounted_v.png", Pool.LEADERSHIP, 2),
     G5_GRIFFIN(10000, 30000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING, Attribute.GUARDSMAN), "leadership/griffin_v.png", Pool.LEADERSHIP, 20),
     
-    EC1_ENGINEER(250, 1500, UnitType.CATAPULT, 1, Pool.LEADERSHIP, 10),
-    EC2_ENGINEER(450, 2700, UnitType.CATAPULT, 2, Pool.LEADERSHIP, 10),
-    EC3_ENGINEER(810, 4860, UnitType.CATAPULT, 3, Pool.LEADERSHIP, 10),
-    EC4_ENGINEER(1460, 8750, UnitType.CATAPULT, 4, Pool.LEADERSHIP, 10),
-    EC5_ENGINEER(2630, 15800, UnitType.CATAPULT, 4, Pool.LEADERSHIP, 10),
+    EC1_ENGINEER(250, 1500, UnitType.CATAPULT, 1, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_i.png", Pool.LEADERSHIP, 10),
+    EC2_ENGINEER(450, 2700, UnitType.CATAPULT, 2, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_ii.png", Pool.LEADERSHIP, 10),
+    EC3_ENGINEER(810, 4860, UnitType.CATAPULT, 3, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_iii.png", Pool.LEADERSHIP, 10),
+    EC4_ENGINEER(1460, 8750, UnitType.CATAPULT, 4, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_iv.png", Pool.LEADERSHIP, 10),
+    EC5_ENGINEER(2630, 15800, UnitType.CATAPULT, 5, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_v.png", Pool.LEADERSHIP, 10),
 
     SWIFT_MARKSMAN(1050, 3150, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/swift_marksman.png", Pool.AUTHORITY, 1),
     EPIC_MONSTER_HUNTER_V(1050, 3150, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_v.png", Pool.AUTHORITY, 1),

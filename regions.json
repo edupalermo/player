@@ -262,5 +262,17 @@
     "y" : 790,
     "width" : 226,
     "height" : 114
+  },
+  "GENERAL_TITLE" : {
+    "x" : 524,
+    "y" : 296,
+    "width" : 887,
+    "height" : 276
+  },
+  "TITLE_ELVEN_CITADEL" : {
+    "x" : 764,
+    "y" : 422,
+    "width" : 522,
+    "height" : 102
   }
 }

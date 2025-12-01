@@ -104,6 +104,9 @@ public enum MyRobot {
         }
     }
 
+    public void mouseDrag(Point source, Point destination) {
+        mouseDrag(source, destination.getX()- source.getX(), destination.getY() - source.getY());
+    }
 
     public void mouseWheel(Point point, int notches) {
         try {

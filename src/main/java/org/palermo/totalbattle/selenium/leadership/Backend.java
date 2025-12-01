@@ -224,7 +224,8 @@ public class Backend {
         return ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_USERNAME, ImageUtil.SINGLE_LINE_MODE);
     }
 
-    public static int[] getHeadCount(MyRobot robot, BufferedImage screen) {
+    public static int[] getHeadCount(MyRobot robot) {
+        BufferedImage screen = robot.captureScreen();
         BufferedImage closeButtonImage = ImageUtil.loadResource("leadership/close_button.png");
         Point closeButtonLocation = ImageUtil.search(closeButtonImage, screen, 1380, 300, 250, 250, 0.05)
                 .orElseThrow(() -> new RuntimeException("Cannot find the close button"));

@@ -10,6 +10,8 @@ public enum Captain {
     
     EMPTY,
     UNKNOW,
+    AYDAE("aydae"),
+    MINAMOTO("minamoto"),
     CARTER("carter"),
     HELEN("helen"),
     XI_GUIYING("xi_guiying"),

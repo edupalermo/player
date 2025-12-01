@@ -34,7 +34,7 @@ public class Task {
     
     public static void main(String[] args) {
         
-        Player player = Player.PALERMO;
+        Player player = Player.PETER;
         
         WebDriver driver = null;
         try {
@@ -86,8 +86,10 @@ public class Task {
             //(new Telescope(player)).findSilverMines();
             //(new AttackArena(player)).attackArena();
 
-            (new Telescope(player)).findCitadels();
-            (new Telescope(player)).findCrypts();
+            //(new Telescope(player)).findCitadels();
+            (new AttackCitadel(player)).attack();
+            
+            //(new Telescope(player)).findCrypts();
 
             // (new InfoGather(player)).evaluate();
             

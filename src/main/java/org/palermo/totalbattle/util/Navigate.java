@@ -69,6 +69,9 @@ public class Navigate {
         long start = System.currentTimeMillis();
         do {
             lastScreen = robot.captureScreen();
+            if (debug) {
+                ImageUtil.showImageAndWait(lastScreen, area);
+            }
             point = ImageUtil.searchSurroundings(searchImage, lastScreen, area, comparationLimit, 20).orElse(null);
             if (point == null) {
                 if (this.pressEscapeWhileWaiting) {
@@ -76,6 +79,7 @@ public class Navigate {
                 }
                 robot.sleep(200);
             }
+            // System.out.println((System.currentTimeMillis() - start) + " - " + waitLimit);
         } while (point == null && (System.currentTimeMillis() - start < waitLimit));
         return Optional.ofNullable(point);
     }
@@ -97,9 +101,6 @@ public class Navigate {
 
     public Point getPoint() {
         if (!this.exist()) {
-            if (debug) {
-                ImageUtil.showImageAndWait(lastScreen, area);
-            }
             throw new RuntimeException("Could not find mandatory resource");
         }
         return this.point;

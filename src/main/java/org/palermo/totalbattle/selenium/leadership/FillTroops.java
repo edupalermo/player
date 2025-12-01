@@ -61,7 +61,7 @@ public class FillTroops {
 
         ENEMY_DATABASE.add(EnemyAttribute.builder()
                 .icon(ImageUtil.loadResource("enemies/wolf_rider_i.png"))
-                .attributes(ImmutableSet.of(Attribute.RANGED, Attribute.SIEGE)).build());
+                .attributes(ImmutableSet.of(Attribute.RANGED, Attribute.SIEGE_ENGINE)).build());
 
         ENEMY_DATABASE.add(EnemyAttribute.builder()
                 .icon(ImageUtil.loadResource("enemies/magog_i.png"))
@@ -126,7 +126,7 @@ public class FillTroops {
 
         ENEMY_DATABASE.add(EnemyAttribute.builder()
                 .icon(ImageUtil.loadResource("enemies/centaur_iii.png"))
-                .attributes(ImmutableSet.of(Attribute.RANGED, Attribute.SIEGE)).build());
+                .attributes(ImmutableSet.of(Attribute.RANGED, Attribute.SIEGE_ENGINE)).build());
 
         ENEMY_DATABASE.add(EnemyAttribute.builder()
                 .icon(ImageUtil.loadResource("enemies/pegasus_rider_iv.png"))

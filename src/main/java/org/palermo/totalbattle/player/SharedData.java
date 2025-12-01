@@ -41,17 +41,6 @@ public enum SharedData {
 
     private final File AUTOMATION_STATE_FILE = new File("automation_state.json");
     private AutomationState automationState = IoUtil.readJson(AUTOMATION_STATE_FILE, AutomationState.class);
-    
-    public void addArena(Point point) {
-        this.arenas.add(point);
-    }
-
-    public Optional<Point> getArena() {
-        if (arenas.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(this.arenas.get(0));
-    }
 
     public AutomationState getAutomationState() {
         return this.automationState;

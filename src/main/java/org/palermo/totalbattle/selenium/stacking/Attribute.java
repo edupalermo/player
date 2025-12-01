@@ -8,7 +8,9 @@ public enum Attribute {
     
     GUARDSMAN, SPECIALIST, 
     
-    SCOUT, HUMAN, MOUNTED, RANGED, MELEE, SIEGE, ELEMENTAL, FLYING, EPIC_MONSTER_HUNTER, GIANT, DRAGON, BEAST;
+    ENGINEER_CORPS, SIEGE_ENGINE,
+    
+    SCOUT, HUMAN, MOUNTED, RANGED, MELEE, ELEMENTAL, FLYING, EPIC_MONSTER_HUNTER, GIANT, DRAGON, BEAST;
 
     public static Set<Attribute> GUARDSMAN_RIDER = ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.MOUNTED);
     public static Set<Attribute> GUARDSMAN_ARCHER = ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED);

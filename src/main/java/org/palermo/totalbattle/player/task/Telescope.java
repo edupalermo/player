@@ -7,12 +7,14 @@ import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.clan.ClanTge;
 import org.palermo.totalbattle.player.state.location.Arena;
+import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
@@ -20,7 +22,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -132,7 +136,6 @@ public class Telescope {
 
         Point arenaCoordinate = readCoordinate();
         log.info("Arena found at {}, {}", arenaCoordinate.getX(), arenaCoordinate.getY());
-        SharedData.INSTANCE.addArena(arenaCoordinate);
         gameStateService.add(Arena.builder()
                 .position(arenaCoordinate)
                 .build());
@@ -159,7 +162,7 @@ public class Telescope {
 
         Area xArea = Area.of(yPoint, Point.of(184, 1056), Point.of(150, 1054), Point.of(176, 1069));
         Area yArea = Area.of(yPoint, Point.of(184, 1056), Point.of(200, 1054), Point.of(228, 1069));
-
+        
         return Point.of(ocr(ImageUtil.crop(screen, xArea)), ocr(ImageUtil.crop(screen, yArea)));
     } 
     
@@ -168,8 +171,8 @@ public class Telescope {
         image = ImageUtil.linearNormalization(image);
         image = ImageUtil.cropText(image);
         image = ImageUtil.linearNormalization(image);
-        if (image.getHeight() < ImageUtil.OCR_HEIGHT) {
-            image = ImageUtil.resize(image, ImageUtil.OCR_HEIGHT);
+        if (image.getHeight() < 100) {
+            image = ImageUtil.resize(image, 100);
         }
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
         String quantityAsString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
@@ -341,7 +344,19 @@ public class Telescope {
         }
         return Optional.ofNullable(titleWatchtowerPoint);
     }
-    
+
+
+    private Map<Integer, Point> leftSlider = new HashMap<>();
+    private Map<Integer, Point> rightSlider = new HashMap<>();
+    {
+        leftSlider.put(1, Point.of(893 + 16, 551));
+        
+        leftSlider.put(10, Point.of(968 + 16, 551));
+        rightSlider.put(10, Point.of(1002 + 16, 551));
+        
+        rightSlider.put(35, Point.of(1290 + 19, 551));
+        
+    }
     
     public void findCitadels() {
         Point titleWatchtowerPoint = openWatchtower().orElse(null);
@@ -350,9 +365,14 @@ public class Telescope {
             System.out.println("Telescope is not activated");
             return;
         }
+        
+        Transformation transformation = Transformation.builder()
+                .real(titleWatchtowerPoint)
+                .reference(Point.of(946, 323))
+                .build();
 
         // Click on Monsters let tab
-        robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 497)));
+        robot.leftClick(transformation.transform(Point.of(715, 497)));
         robot.sleep(500);
 
         selectMonsters(titleWatchtowerPoint, new boolean[] {false, false, false, true, false, false});
@@ -360,8 +380,7 @@ public class Telescope {
         selectRarity(titleWatchtowerPoint, new boolean[] {false, false, false, true});
         
         BufferedImage screen = robot.captureScreen();
-        Area sliderArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(882, 536), Point.of(1338, 565));
-        ImageUtil.showImageAndWait(screen, sliderArea);
+        Area sliderArea = transformation.transform(Point.of(882, 536), Point.of(1338, 565));
         BufferedImage slider = ImageUtil.loadResource("player/watchtower/monsters/slider.png");
         
         List<Point> sliders = ImageUtil.searchMultiple(slider, screen, sliderArea, 0.07);
@@ -369,14 +388,39 @@ public class Telescope {
         sliders = simplify(slider, sliders);
         System.out.println("Sliders: " + sliders.size());
 
+        final int shift = 6;
+        
         robot.leftClick(sliders.get(0), slider);
-        robot.mouseDrag(sliders.get(0).centralize(slider), -500, 0);
+        robot.mouseDrag(sliders.get(0).centralize(slider), transformation.transform(leftSlider.get(1)).move(-shift, 0));
+        
+        robot.leftClick(sliders.get(1), slider);
+        robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(35)).move(shift, 0));
+
+        robot.leftClick(sliders.get(0), slider);
+        robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(10)).move(shift, 0));
 
         robot.leftClick(sliders.get(1), slider);
-        robot.mouseDrag(sliders.get(1).centralize(slider), 500, 0);
-        
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
+        robot.mouseDrag(transformation.transform(rightSlider.get(35)), transformation.transform(rightSlider.get(10)).move(-shift, 0));
+
+
+        robot.leftClick(transformation.transform(1248, 635)); //Click GO Button
+        robot.sleep(2000);
+        robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
+        robot.sleep(3000);
+
+        Point citadelPoint = NavigationUtil.identifyCenterCitadel();
+
+        robot.mouseMove(citadelPoint);
+        robot.sleep(500);
+
+        Point mapCoordinates = readCoordinate();
+
+        log.info("Citadel found at {}, {}", mapCoordinates.getX(), mapCoordinates.getY());
+
+        gameStateService.add(Citadel.builder()
+                .position(mapCoordinates)
+                .level(10)
+                .build());
     }
     
     private List<Point> simplify(BufferedImage image, List<Point> points) {
@@ -436,8 +480,6 @@ public class Telescope {
     
     private void selectRarity(Point titleWatchtowerPoint, boolean[] enabled) {
 
-        BufferedImage screen = robot.captureScreen();
-        
         for (int i = 0; i < 4; i++) {
             Area flagArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(833 + (i * 129), 494), Point.of(852 + (i * 129), 515));
             Navigate buttonOn = Navigate.builder()

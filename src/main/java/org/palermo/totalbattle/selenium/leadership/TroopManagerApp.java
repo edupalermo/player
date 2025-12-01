@@ -211,7 +211,7 @@ public class TroopManagerApp extends JFrame {
             }
             
             //Set Head Count
-            int[] headCount = Backend.getHeadCount(robot, screen);
+            int[] headCount = Backend.getHeadCount(robot);
 
             leadershipField.setValue(headCount[0]);
             dominanceField.setValue(headCount[1]);

@@ -28,7 +28,7 @@ public class ArmyService extends AbstractService {
     private SharedData sharedData = SharedData.INSTANCE;
 
     private static final Comparator<TroopQuantity> UNIT_QUANTITY_COMPARATOR = (u1, u2) -> {
-        if (u1.getUnit() == Unit.G1_MELEE || u2.getUnit() == Unit.G1_MELEE) {
+        if (u1.getUnit() == Unit.G1_MELEE || u2.getUnit() == Unit.G1_MELEE) { // Melee should come first to collect silver
             return u1.getUnit() == Unit.G1_MELEE ? -1 : 1;
         }
         if (u1.getUnit().getPool() != u2.getUnit().getPool()) { // LEADERSHIP should go first
@@ -194,6 +194,8 @@ public class ArmyService extends AbstractService {
         unitQuantities = incrementLastLayer(unitQuantities, player);
 
         unitQuantities = addSpies(unitQuantities, player);
+        
+        unitQuantities = addCatapults(unitQuantities, player);
 
         Army army = playerState.getArmy();
         army.getProductionOrder().clear();
@@ -262,6 +264,30 @@ public class ArmyService extends AbstractService {
 
         return output;
     }
+
+
+    private List<UnitQuantity> addCatapults(List<UnitQuantity> input, Player player) {
+
+        List<UnitQuantity> output = input;
+
+        switch (player) {
+            case PALERMO:
+                output = increase(output, Unit.EC5_ENGINEER, 20);
+                break;
+            case PETER, MIGHTSHAPER:
+                output = increase(output, Unit.EC4_ENGINEER, 36);
+                break;
+            case GRIRANA, ELANIN:
+                output = increase(output, Unit.EC2_ENGINEER, 290);
+                break;
+
+            default:
+                throw new RuntimeException("Not Implemented");
+        }
+
+        return output;
+    }
+
 
 
     private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, Player player) {
