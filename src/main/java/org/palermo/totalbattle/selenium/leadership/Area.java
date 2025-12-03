@@ -17,6 +17,8 @@ public class Area {
     public static final String CAPITOL_TITLE = "CAPITOL_TITLE";
     public static final String MAIN_ONGOING_OPERATIONS = "MAIN_ONGOING_OPERATIONS";
     public static final String MAIN_TOP_MENU = "MAIN_TOP_MENU";
+    public static final String MAIN_TOAST_INFO = "MAIN_TOAST_INFO";
+    public static final String MAIN_BUILD_BUTTON = "MAIN_BUILD_BUTTON";
     public static final String MAIN_ZOOM_LABEL_25 = "MAIN_ZOOM_LABEL_25";
     public static final String MAP_MAGNIFIER = "MAP_MAGNIFIER";
     public static final String PLAYERS_CITY_TITLE = "PLAYERS_CITY_TITLE";

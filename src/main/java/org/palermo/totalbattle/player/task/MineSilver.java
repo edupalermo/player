@@ -10,11 +10,9 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Captain;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 @Slf4j
 public class MineSilver {
@@ -56,18 +54,22 @@ public class MineSilver {
             return;
         }
 
-
         NavigationUtil.switchToMapIfNeeded();
 
         NavigationUtil.zoomInIfNeeded();
 
-        NavigationUtil.goToMapPosition(mine.getPosition());
-        
-        Point minePosition = NavigationUtil.spotSilverMinePositionPointInTheCenter();
+        Point minePosition = NavigationUtil.goToMapPosition(mine.getPosition());
 
-        // Click on the silver mine at the center of the map
-        BufferedImage mineImage = ImageUtil.loadResource("player/watchtower/mine_silver.png");
-        robot.leftClick(minePosition, mineImage);
+        if (NavigationUtil.belongsToAnotherClan(minePosition)) {
+            log.info("Mine belong to another clan");
+            gameStateService.removeLocationAt(mine.getPosition());
+
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return;
+        }
+
+        robot.leftClick(minePosition);
 
         Point titleVillagePoint = Navigate.builder()
                 .resourceName("player/watchtower/title_village.png")

@@ -274,5 +274,17 @@
     "y" : 422,
     "width" : 522,
     "height" : 102
+  },
+  "MAIN_BUILD_BUTTON" : {
+    "x" : 677,
+    "y" : 565,
+    "width" : 388,
+    "height" : 205
+  },
+  "MAIN_TOAST_INFO" : {
+    "x" : 720,
+    "y" : 307,
+    "width" : 146,
+    "height" : 106
   }
 }

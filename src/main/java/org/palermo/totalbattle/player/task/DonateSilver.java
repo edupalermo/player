@@ -39,8 +39,7 @@ public class DonateSilver {
         
         NavigationUtil.zoomInIfNeeded();
 
-        Point position = NavigationUtil.goToMapPosition(silverRequest.getTarget().getPosition())
-                .move(0, -12);
+        Point position = NavigationUtil.goToMapPosition(silverRequest.getTarget().getPosition());
 
         robot.leftClick(position);
         robot.sleep(300);

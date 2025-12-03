@@ -84,8 +84,49 @@ public class NavigationUtil {
         robot.leftClick(buttonGoPoint, buttonGo);
         robot.sleep(2000);
         
-        return buttonGoPoint.move(buttonGo.getWidth() / 2, buttonGo.getWidth() / 2);
+        return buttonGoPoint.move(buttonGo.getWidth() / 2, buttonGo.getWidth() / 2).move(0, -12);
     }
+    
+    public static boolean belongsToAnotherClan(Point point) {
+        
+        return (isInsideAnotherClanArea(point.move(49, 25)) == 1) ||
+                (isInsideAnotherClanArea(point.move(-49, 25)) == 1) ||
+                (isInsideAnotherClanArea(point.move(49, -25)) == 1) ||
+                (isInsideAnotherClanArea(point.move(-49, -25)) == 1);
+    }
+    
+    private static int isInsideAnotherClanArea(Point point) {
+        BufferedImage buttonBuildImage = ImageUtil.loadResource("player/watchtower/button_build.png");
+
+        robot.leftClick(point);
+        Navigate buttonBuild = Navigate.builder()
+                .searchImage(buttonBuildImage)
+                .areaName(Area.MAIN_BUILD_BUTTON)
+                .waitLimit(1000)
+                .build();
+
+        int belongToAnotherClan = -1;
+        
+        if (buttonBuild.exist()) {
+            buttonBuild.leftClick();
+
+            Navigate iconBuild = Navigate.builder()
+                    .resourceName("player/watchtower/icon_info.png")
+                    .areaName(Area.MAIN_TOAST_INFO)
+                    .waitLimit(1000)
+                    .build();
+
+            belongToAnotherClan = iconBuild.exist() ? 1 : 0;
+        }
+
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+
+        return belongToAnotherClan;
+    }
+    
     
     public static Point spotSilverMinePositionPointInTheCenter() {
         BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");

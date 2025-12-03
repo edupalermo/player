@@ -68,7 +68,7 @@ public class Task {
             // (new Telescope(player)).evaluate();
 
             // (new AttackArena(player)).attackArena();
-            // (new MineSilver(player)).mine();
+             (new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
             // (new SummoningCircle(robot, player)).evaluate();
@@ -87,7 +87,7 @@ public class Task {
             //(new AttackArena(player)).attackArena();
 
             //(new Telescope(player)).findCitadels();
-            (new AttackCitadel(player)).attack();
+            //(new AttackCitadel(player)).attack();
             
             //(new Telescope(player)).findCrypts();
 

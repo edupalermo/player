@@ -252,16 +252,15 @@ public class Telescope {
                             .centralize(mine)
                             .move(0, -6);
                 }
-                
-                robot.mouseMove(minePoint);
-            
-                Point arenaCoordinate = readCoordinate();
-                
-                if(ClanTge.contains(arenaCoordinate)) {
-                    log.info("Mine belong to TGE clan area");
+
+                if (NavigationUtil.belongsToAnotherClan(minePoint)) {
+                    log.info("Mine belong to another clan");
                     mainLoopCount = mainLoopCount + 1;
                     continue;
                 }
+
+                robot.mouseMove(minePoint);
+                Point arenaCoordinate = readCoordinate();
 
                 robot.leftClick(minePoint);
                 robot.sleep(500);

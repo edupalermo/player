@@ -50,7 +50,7 @@ public class AttackCitadel {
 
         NavigationUtil.zoomInIfNeeded();
 
-        Point target = NavigationUtil.goToMapPosition(arenaLocation).move(0, -8);
+        Point target = NavigationUtil.goToMapPosition(arenaLocation);
         
         robot.leftClick(target);
 

@@ -195,7 +195,7 @@ public class ArmyService extends AbstractService {
 
         unitQuantities = addSpies(unitQuantities, player);
         
-        unitQuantities = addCatapults(unitQuantities, player);
+        unitQuantities = prepareForCitadel(unitQuantities, player);
 
         Army army = playerState.getArmy();
         army.getProductionOrder().clear();
@@ -266,18 +266,27 @@ public class ArmyService extends AbstractService {
     }
 
 
-    private List<UnitQuantity> addCatapults(List<UnitQuantity> input, Player player) {
+    private List<UnitQuantity> prepareForCitadel(List<UnitQuantity> input, Player player) {
 
         List<UnitQuantity> output = input;
 
         switch (player) {
             case PALERMO:
+                output = increase(output, Unit.G3_RANGED, 750);
+                output = increase(output, Unit.G4_RANGED, 500);
+                output = increase(output, Unit.G5_RANGED, 250);
                 output = increase(output, Unit.EC5_ENGINEER, 20);
                 break;
             case PETER, MIGHTSHAPER:
+                output = increase(output, Unit.G2_RANGED, 1500);
+                output = increase(output, Unit.G3_RANGED, 1000);
+                output = increase(output, Unit.G4_RANGED, 500);
                 output = increase(output, Unit.EC4_ENGINEER, 36);
                 break;
             case GRIRANA, ELANIN:
+                output = increase(output, Unit.G1_RANGED, 2000);
+                output = increase(output, Unit.G2_RANGED, 1500);
+                output = increase(output, Unit.G3_RANGED, 1000);
                 output = increase(output, Unit.EC2_ENGINEER, 290);
                 break;
 
