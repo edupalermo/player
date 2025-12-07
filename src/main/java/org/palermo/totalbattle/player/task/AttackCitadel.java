@@ -51,7 +51,12 @@ public class AttackCitadel {
                         .build()
         );
          */
-        
+
+        if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_NON_MONSTERS)) {
+            log.info("No indication that there are trainned troops");
+            return;
+        }
+
         Point citadelLocation = gameStateService
                 .getLocation(Citadel.class)
                 .filter((c) -> c.getLevel() == player.getCitadelLevel())
