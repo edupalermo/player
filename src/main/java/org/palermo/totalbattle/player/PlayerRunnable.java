@@ -102,7 +102,8 @@ public class PlayerRunnable implements Runnable {
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.contains("win")) {
                     try {
-                        Process killerProcess = new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
+                        Process killerProcess = new ProcessBuilder("powershell", "Stop-Process", "-Name", "chrome").start();
+                        // Process killerProcess = new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
                         killerProcess.waitFor();
                     } catch (IOException e) {
                         throw new RuntimeException(e);

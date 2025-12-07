@@ -757,6 +757,12 @@ public class ImageUtil {
                     return stringValue;
                 }
                 else {
+                    if (whitelist.equals(ImageUtil.WHITELIST_FOR_COUNTDOWN)) {
+                        stringValue = replaceLastDigitIfFive(stringValue);
+                        if (pattern.matcher(stringValue).matches()) {
+                            return stringValue;
+                        }
+                    }
                     log.info("Tesseract returned a string that doesn't match the given pattern: " + stringValue);
                 }
             }
@@ -779,6 +785,14 @@ public class ImageUtil {
         throw new RuntimeException("It was not possible to make ocr of the given image!");
     }
 
+    private static String replaceLastDigitIfFive(String text) {
+        // checks if the string ends with exactly 3 digits and the last one is 5
+        if (text.matches(".*\\d{2}5$")) {
+            return text.substring(0, text.length() - 1) + "s";
+        }
+        return text;
+    }
+    
     /**
      * Shows a modal popup with the given image, a text field, and a confirm button.
      * Returns the text the user typed, or null if the user cancelled/closed the dialog.

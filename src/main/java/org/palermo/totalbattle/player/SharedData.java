@@ -22,20 +22,12 @@ import java.util.Set;
 public enum SharedData {
 
     INSTANCE;
-
-    private final List<Point> arenas = new ArrayList<Point>();
-
+    
     // Prevent the user to be played automatically
     private final Set<String> lock = new HashSet<>();
 
     // Prevent the user to be played automatically
     private final Set<String> halt = new HashSet<>();
-
-    // Store scenarios when the user needs to wait for the activity
-    private final Map<String, Map<Scenario, LocalDateTime>> wait = new HashMap<>();
-
-    // Troop training target
-    private final Map<String, Map<Unit, Long>> troopTarget = new HashMap<>();
     
     public final MyRobot robot = MyRobot.INSTANCE;
 
