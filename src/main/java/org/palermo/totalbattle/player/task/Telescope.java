@@ -450,6 +450,10 @@ public class Telescope {
         BufferedImage buttonGo = ImageUtil.loadResource("player/watchtower/button_go.png");
         BufferedImage screen = robot.captureScreen();
         List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
+        
+        if (buttons.size() < 3) {
+            throw new RuntimeException("Found not buttons!");
+        } 
 
         robot.leftClick(buttons.get(index % 3), buttonGo); //Click GO Button
         robot.sleep(2000);
