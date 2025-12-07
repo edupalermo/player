@@ -47,16 +47,6 @@ public class BuildArmy {
     }
     
     public void buildArmy() {
-        //TODO Remove me!
-        armyService.setArmy(ArmyBean.builder()
-                        .leadership(3592)
-                        .dominance(878)
-                        .authority(1740)
-                        .waves(1)
-                        .goal("TEST")
-                        .player(player)
-                .build());
-        
         if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             return;
         }
