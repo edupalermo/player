@@ -9,9 +9,11 @@ import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
+import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.TroopQuantity;
+import org.palermo.totalbattle.player.task.shared.SpeedUp;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -45,7 +47,17 @@ public class BuildArmy {
     }
     
     public void buildArmy() {
-        if (lockService.isLocked(player, Scenario.TRAIN_TROOPS)) {
+        //TODO Remove me!
+        armyService.setArmy(ArmyBean.builder()
+                        .leadership(3592)
+                        .dominance(878)
+                        .authority(1740)
+                        .waves(1)
+                        .goal("TEST")
+                        .player(player)
+                .build());
+        
+        if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             return;
         }
 
@@ -128,8 +140,8 @@ public class BuildArmy {
                 }
 
                 if (armyService.shouldCheckTroopQuantities(player)) {
-                    updateTroopQuantities(titleBarracksPoint);
-                    armyService.checkedTroopQuantities(player);
+                    //updateTroopQuantities(titleBarracksPoint);
+                    //armyService.checkedTroopQuantities(player);
                 }
                 chooseTroopToBuild(titleBarracksPoint);
             }
@@ -160,61 +172,6 @@ public class BuildArmy {
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
         return ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
     }
-
-
-    private final List<SpeedUpBean> speedUps = new ArrayList<>();
-    {
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/1m.png"))
-                .seconds(Duration.ofMinutes(1).getSeconds())
-                .label("1m")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/15m.png"))
-                .seconds(Duration.ofMinutes(15).getSeconds())
-                .label("15m")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/1h.png"))
-                .seconds(Duration.ofHours(1).getSeconds())
-                .label("1h")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/3h.png"))
-                .seconds(Duration.ofHours(3).getSeconds())
-                .label("3h")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/8h.png"))
-                .seconds(Duration.ofHours(8).getSeconds())
-                .label("8h")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/15h.png"))
-                .seconds(Duration.ofHours(15).getSeconds())
-                .label("15h")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/1d.png"))
-                .seconds(Duration.ofDays(1).getSeconds())
-                .label("1d")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/3d.png"))
-                .seconds(Duration.ofDays(3).getSeconds())
-                .label("3d")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/7d.png"))
-                .seconds(Duration.ofDays(7).getSeconds())
-                .label("7d")
-                .build());
-        speedUps.add(SpeedUpBean.builder()
-                .image(ImageUtil.loadResource("player/speed_up/30d.png"))
-                .seconds(Duration.ofDays(30).getSeconds())
-                .label("30d")
-                .build());
-    }
     
     public void testSpeedUps() {
         BufferedImage screen = robot.captureScreen();
@@ -225,11 +182,11 @@ public class BuildArmy {
             throw new RuntimeException("Could not find speed up title");
         }
         
-        for (SpeedUpBean speedUpBean : speedUps) {
+        for (SpeedUpBean speedUpBean : SpeedUp.speedUps) {
             robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
             robot.sleep(500);
 
-            clickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
+            SpeedUp.clickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
         }
     }
 
@@ -263,7 +220,7 @@ public class BuildArmy {
     
                 SpeedUpBean bestSpeedUp = null;
     
-                for (SpeedUpBean bean : speedUps) {
+                for (SpeedUpBean bean : SpeedUp.speedUps) {
                     if (bean.getSeconds() < seconds) {
                         if (bestSpeedUp == null) {
                             bestSpeedUp = bean;
@@ -279,12 +236,12 @@ public class BuildArmy {
                     break;
                 }
     
-                if (!clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
-                    bestSpeedUp = speedUps.stream()
+                if (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+                    bestSpeedUp = SpeedUp.speedUps.stream()
                             .filter((sp) -> sp.getSeconds() == Duration.ofMinutes(15).getSeconds())
                             .findFirst()
-                            .orElseThrow(() -> new RuntimeException("15 m not found"));
-                    clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint());
+                            .orElseThrow(() -> new RuntimeException("15m not found"));
+                    SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint());
                     break;
                 }
                 seconds = seconds - bestSpeedUp.getSeconds();
@@ -297,54 +254,22 @@ public class BuildArmy {
         }
     }
 
-    private boolean clickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
-        log.info("Searching for {}", speedUpBean.getLabel());
-        
-        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
-        BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
-
-        Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
-
-        for (int i = 0; i < 3; i++) {
-            if (i == 0) {
-                robot.leftClick(scrollPoint);
-                robot.sleep(300);
-            }
-            BufferedImage screen = robot.captureScreen();
-            Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
-            if (speedUpPoint != null) {
-                Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
-                Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
-                if (buttonUsePoint == null) {
-                    log.info("Speed up {} not available", speedUpBean.getLabel());
-                    return false;
-                }
-                log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
-                robot.leftClick(buttonUsePoint, buttonUse);
-                robot.sleep(200);
-                return true;
-            }
-            else {
-                robot.mouseDrag(scrollPoint, 0, 150);
-                robot.sleep(150);
-                scrollPoint = scrollPoint.move(0, 150);
-            }
-        }
-        return false;
-    }
-
     private void chooseTroopToBuild(Point titleBarracksPoint) {
 
         List<TroopQuantity> list = armyService.getProductionList(player);
 
         boolean trainedSomething = false;
         
+        // I don't think I should check every thing.
         for (int i = 0; i < list.size(); i++) {
             TroopQuantity troopQuantity = list.get(i);
             int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
             armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
 
             if (currentSize < troopQuantity.getTarget()) {
+                if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
+                    lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                }
                 train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
                 trainedSomething = true;
                 break;
@@ -352,7 +277,7 @@ public class BuildArmy {
         }
 
         if (!trainedSomething) {
-            lockService.lock(player, Scenario.TRAIN_TROOPS, LocalDateTime.now().plusHours(1));
+            lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
             WhatsappUtil.send(player.getName() + " has finished building the army");
         }
     }

@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
-import org.palermo.totalbattle.player.SharedData;
-import org.palermo.totalbattle.player.clan.ClanTge;
 import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Mine;
@@ -357,14 +355,32 @@ public class Telescope {
         
     }
     
+    private static final int QTD_LEVEL_10_CITADEL = 10;
+    
     public void findCitadels() {
+        int levelTwoCount = gameStateService.countCitadels(10); 
+        if (levelTwoCount >= QTD_LEVEL_10_CITADEL) {
+            log.info("No need to look for new Citadels");
+            return;
+        }
+        
+        int counter = 0;
+        while (gameStateService.countCitadels(10) < QTD_LEVEL_10_CITADEL) {
+            findCitadel(counter);
+            counter++;
+        }
+        
+    }
+    
+    
+    private void findCitadel(int index) {
         Point titleWatchtowerPoint = openWatchtower().orElse(null);
 
         if (titleWatchtowerPoint == null) {
             System.out.println("Telescope is not activated");
             return;
         }
-        
+
         Transformation transformation = Transformation.builder()
                 .real(titleWatchtowerPoint)
                 .reference(Point.of(946, 323))
@@ -375,35 +391,69 @@ public class Telescope {
         robot.sleep(500);
 
         selectMonsters(titleWatchtowerPoint, new boolean[] {false, false, false, true, false, false});
-        
+
         selectRarity(titleWatchtowerPoint, new boolean[] {false, false, false, true});
-        
+
+        if (index == 0) {
+            BufferedImage screen = robot.captureScreen();
+            Area sliderArea = transformation.transform(Point.of(882, 536), Point.of(1338, 565));
+            BufferedImage slider = ImageUtil.loadResource("player/watchtower/monsters/slider.png");
+
+            List<Point> sliders = ImageUtil.searchMultiple(slider, screen, sliderArea, 0.07);
+            System.out.println("Sliders: " + sliders.size());
+            sliders = simplify(slider, sliders);
+            System.out.println("Sliders: " + sliders.size());
+            
+            if (sliders.size() != 2) {
+                throw new RuntimeException("Fail to get sliders");
+            }
+
+            final int shift = 6;
+
+            boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(10)).getX()) >= 5;
+            boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(10)).getX()) >= 5;
+
+            if (shouldMoveLeft) {
+                robot.leftClick(sliders.get(0), slider);
+                robot.mouseDrag(sliders.get(0).centralize(slider), transformation.transform(leftSlider.get(1)).move(-shift, 0));
+            }
+
+            if (shouldMoveRight) {
+                robot.leftClick(sliders.get(1), slider);
+                robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(35)).move(shift, 0));
+            }
+
+            if (shouldMoveLeft) {
+                robot.leftClick(sliders.get(0), slider);
+                robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(10)).move(shift, 0));
+            }
+
+            if (shouldMoveRight) {
+                robot.leftClick(sliders.get(1), slider);
+                robot.mouseDrag(transformation.transform(rightSlider.get(35)), transformation.transform(rightSlider.get(10)).move(-shift, 0));
+            }
+            robot.sleep(350);
+        }
+
+        final int SCROLL_PIXELS = 53;
+        Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 579));
+        robot.leftClick(initialPoint);
+        robot.sleep(150);
+        if (index / 3 > 0) {
+            robot.mouseDrag(initialPoint, 0, SCROLL_PIXELS * (index / 3));
+            robot.sleep(150);
+        }
+
+        Area buttonGoArea = Area.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1225, 509), Point.of(1284, 901));
+        BufferedImage buttonGo = ImageUtil.loadResource("player/watchtower/button_go.png");
         BufferedImage screen = robot.captureScreen();
-        Area sliderArea = transformation.transform(Point.of(882, 536), Point.of(1338, 565));
-        BufferedImage slider = ImageUtil.loadResource("player/watchtower/monsters/slider.png");
-        
-        List<Point> sliders = ImageUtil.searchMultiple(slider, screen, sliderArea, 0.07);
-        System.out.println("Sliders: " + sliders.size());
-        sliders = simplify(slider, sliders);
-        System.out.println("Sliders: " + sliders.size());
+        List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
 
-        final int shift = 6;
-        
-        robot.leftClick(sliders.get(0), slider);
-        robot.mouseDrag(sliders.get(0).centralize(slider), transformation.transform(leftSlider.get(1)).move(-shift, 0));
-        
-        robot.leftClick(sliders.get(1), slider);
-        robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(35)).move(shift, 0));
-
-        robot.leftClick(sliders.get(0), slider);
-        robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(10)).move(shift, 0));
-
-        robot.leftClick(sliders.get(1), slider);
-        robot.mouseDrag(transformation.transform(rightSlider.get(35)), transformation.transform(rightSlider.get(10)).move(-shift, 0));
-
-
-        robot.leftClick(transformation.transform(1248, 635)); //Click GO Button
+        robot.leftClick(buttons.get(index % 3), buttonGo); //Click GO Button
         robot.sleep(2000);
+        
+        
+        
         robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
         robot.sleep(3000);
 

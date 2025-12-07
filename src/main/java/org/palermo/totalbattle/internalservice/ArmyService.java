@@ -10,6 +10,7 @@ import org.palermo.totalbattle.player.state.ArmyTarget;
 import org.palermo.totalbattle.player.state.AutomationState;
 import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.state.TroopQuantity;
+import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Pool;
@@ -19,7 +20,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ArmyService extends AbstractService {
 
@@ -57,7 +60,7 @@ public class ArmyService extends AbstractService {
         }
         
         if (!lockService.isLocked(player, Scenario.BUILD_TROOPS_REEVALUATE)) {
-            this.evaluateProductionOrder(player);
+            this.setProductionOrder(player);
         }
 
         return army.getProductionOrder().size() > 0;
@@ -98,7 +101,7 @@ public class ArmyService extends AbstractService {
             troopQuantity.setCurrent(quantity);
         }
         
-        // Create a new List        
+        // Create a new List - it will remove troops that don't need to train anything        
         List<TroopQuantity> newList = new ArrayList();
         for (TroopQuantity troopOrder: army.getProductionOrder()) {
             if (troopOrder.getCurrent() < troopOrder.getTarget()) {
@@ -158,12 +161,12 @@ public class ArmyService extends AbstractService {
         playerState.getArmy().setTarget(armyTarget);
 
 
-        evaluateProductionOrder(player);
+        setProductionOrder(player);
 
         sharedData.saveAutomationState();
     }
     
-    private void evaluateProductionOrder(Player player) {
+    public void setProductionOrder(Player player) {
 
         PlayerState playerState = getPlayerState(player);
         ArmyTarget armyTarget = playerState.getArmy().getTarget();
@@ -271,25 +274,25 @@ public class ArmyService extends AbstractService {
         List<UnitQuantity> output = input;
 
         switch (player) {
-            case PALERMO:
-                output = increase(output, Unit.G3_RANGED, 750);
-                output = increase(output, Unit.G4_RANGED, 500);
-                output = increase(output, Unit.G5_RANGED, 250);
-                output = increase(output, Unit.EC5_ENGINEER, 20);
+            case PALERMO: // Should defeat Level 20 citadel
+                output = increase(output, Unit.G3_MELEE, 1500);
+                output = increase(output, Unit.G4_MELEE, 1000);
+                output = increase(output, Unit.G5_MELEE, 500);
+                output = increase(output, Unit.G5_GRIFFIN, 500);
+                output = increase(output, Unit.EC5_ENGINEER, 25);
                 break;
-            case PETER, MIGHTSHAPER:
-                output = increase(output, Unit.G2_RANGED, 1500);
-                output = increase(output, Unit.G3_RANGED, 1000);
-                output = increase(output, Unit.G4_RANGED, 500);
+            case PETER, MIGHTSHAPER:  // Should defeat Level 15 citadel
+                output = increase(output, Unit.G2_MOUNTED, 1500);
+                output = increase(output, Unit.G3_MOUNTED, 1000);
+                output = increase(output, Unit.G4_MOUNTED, 500);
                 output = increase(output, Unit.EC4_ENGINEER, 36);
                 break;
-            case GRIRANA, ELANIN:
-                output = increase(output, Unit.G1_RANGED, 2000);
-                output = increase(output, Unit.G2_RANGED, 1500);
-                output = increase(output, Unit.G3_RANGED, 1000);
+            case GRIRANA, ELANIN:   // Should defeat Level 10 citadel
+                output = increase(output, Unit.G1_RANGED, 1500);
+                output = increase(output, Unit.G2_RANGED, 1000);
+                output = increase(output, Unit.G3_RANGED, 500);
                 output = increase(output, Unit.EC2_ENGINEER, 290);
                 break;
-
             default:
                 throw new RuntimeException("Not Implemented");
         }
@@ -350,8 +353,46 @@ public class ArmyService extends AbstractService {
 
     }
 
+    public List<Unit> removeWeakPointForCitadel(List<Unit> units, int level) {
+        Set<Attribute> exclusions = getWeakPointsForMine(level);
+        
+        return units
+                .stream()
+                .filter(unit -> !unit.wasExcluded(exclusions))
+                .toList();
+    }
+    
+    private Set<Attribute> getWeakPointsForMine(int level) {
+        HashSet<Attribute> exclusions = new HashSet<>();
+        
+        switch (level) {
+            case 10:
+                exclusions.add(Attribute.MOUNTED);
+                exclusions.add(Attribute.MELEE);
+                exclusions.add(Attribute.ELEMENTAL);
+                exclusions.add(Attribute.DRAGON);
+                return exclusions;
+            default:
+                throw new RuntimeException("Not implemented");
+        }
+    }
 
-    private List<Unit> getUnits(Player player) {
+    public int getQtdSiegesForCitadel(Player player, int level) {
+        switch (level) {
+            case 10:
+                switch (player.getBestSiegeUnit()) {
+                    case EC2_ENGINEER:
+                        return 290;
+                    default:
+                        throw new RuntimeException("Not implemented");
+                }
+            default:
+                throw new RuntimeException("Not implemented");
+        }
+    }
+
+
+    public List<Unit> getUnits(Player player) {
 
         List<Unit> units = new ArrayList<>();
 

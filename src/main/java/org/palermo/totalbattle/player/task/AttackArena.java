@@ -25,7 +25,7 @@ public class AttackArena {
         this.player = player;
     }
 
-    public void attackArena() {
+    public void attack() {
         Point arenaLocation = gameStateService
                 .getLocation(Arena.class)
                 .map(Arena::getPosition)

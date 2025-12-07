@@ -1,7 +1,6 @@
 package org.palermo.totalbattle.player;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.WebDriver;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.task.*;
@@ -9,8 +8,6 @@ import org.palermo.totalbattle.player.task.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.palermo.totalbattle.internalservice.GameStateService.PROPERTY_NEXT;
 
 public class PlayerRunnable implements Runnable {
 
@@ -58,9 +55,9 @@ public class PlayerRunnable implements Runnable {
     
     
     private void play(Player player) {
-        WebDriver driver = null;
+        Process process = null;
         try {
-            driver = Task.openBrowser(player);
+            process = Task.openOrdinaryBrowser(player);
             Task.login(player);
 
             if (SharedData.INSTANCE.shouldHalt(player)) {
@@ -79,10 +76,12 @@ public class PlayerRunnable implements Runnable {
 
             (new Telescope(player)).findArena();
             (new Telescope(player)).findSilverMines();
+            (new Telescope(player)).findCitadels();
 
             (new BuildArmy(player)).buildArmy();
 
-            (new AttackArena(player)).attackArena();
+            (new AttackArena(player)).attack();
+            (new AttackCitadel(player)).attack();
             
             (new MineSilver(player)).mine();
 
@@ -98,8 +97,8 @@ public class PlayerRunnable implements Runnable {
             throw new RuntimeException(e);
         }
         finally {
-            if (driver != null) {
-                driver.quit();
+            if (process != null && process.isAlive()) {
+                process.destroy();
 
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.contains("win")) {
@@ -109,7 +108,6 @@ public class PlayerRunnable implements Runnable {
                         throw new RuntimeException(e);
                     }
                 }
-                // new ProcessBuilder("pkill", "chrome").start();
             }
         }
 

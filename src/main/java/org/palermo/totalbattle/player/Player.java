@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player;
 
 import lombok.Getter;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.stacking.Unit;
 
 import java.util.Optional;
 
@@ -12,64 +13,78 @@ public enum Player {
             .hasHelen(true)
             .miningLevel(25)
             .commonTarRequired(65800)
+            .citadelLevel(20)
             .profileFolder("chrome-profiles/palermo")
             .username("fp2268@gmail.com")
             .priority(1)
-            .position(380, 480)),
+            .position(380, 480)
+            .bestSiegeUnit(Unit.EC5_ENGINEER)),
     
     PETER(cfg("Peter")
             .hasHelen(false)
             .miningLevel(20)
             .commonTarRequired(34000)
+            .citadelLevel(15)
             .profileFolder("chrome-profiles/peter")
             .username("edupalermo@gmail.com")
             .priority(2)
-            .position(381, 479)),
+            .position(381, 479)
+            .bestSiegeUnit(Unit.EC4_ENGINEER)),
 
     MIGHTSHAPER(cfg("Mightshaper")
             .hasHelen(false)
             .miningLevel(20)
             .commonTarRequired(40000)
+            .citadelLevel(15)
             .profileFolder("chrome-profiles/mightshaper")
             .username("edupalermo+01@gmail.com")
             .priority(3)
-            .position(379, 481)),
+            .position(379, 481)
+            .bestSiegeUnit(Unit.EC4_ENGINEER)),
 
     GRIRANA(cfg("Grirana")
             .hasHelen(false)
             .miningLevel(10)
             .commonTarRequired(3700)
+            .citadelLevel(10)
             .profileFolder("chrome-profiles/grirana")
             .username("edupalermo+02@gmail.com")
             .priority(4)
-            .position(381, 481)),
+            .position(381, 481)
+            .bestSiegeUnit(Unit.EC2_ENGINEER)),
 
     ELANIN(cfg("Elanin")
             .hasHelen(false)
             .miningLevel(10)
             .commonTarRequired(3800)
+            .citadelLevel(10)
             .profileFolder("chrome-profiles/elanin")
             .username("edupalermo+03@gmail.com")
             .priority(5)
-            .position(379, 479)),
+            .position(379, 479)
+            .bestSiegeUnit(Unit.EC2_ENGINEER)),
 
     LORVEN(cfg("Lorven")
             .hasHelen(false)
             .miningLevel(5)
+            .citadelLevel(10)
             .profileFolder("chrome-profiles/lorven")
             .username("edupalermo+04@gmail.com")
             .priority(6)
-            .position(351, 485));
+            .position(351, 485)
+            .bestSiegeUnit(Unit.EC1_ENGINEER));
 
     private String name;
     private boolean hasHelen;
     private int miningLevel;
+    private int citadelLevel;
     private int commonTarRequired;
     private String profileFolder;
     private String username;
     private String password;
     private int priority;
     private Point position;
+    private Unit bestSiegeUnit;
 
     Player(Config cfg) {
         this.name = cfg.name;
@@ -81,6 +96,8 @@ public enum Player {
         this.password = System.getenv("TOTAL_BATTLE_PASSWORD");
         this.priority = cfg.priority;
         this.position = cfg.position;
+        this.citadelLevel = cfg.citadelLevel;
+        this.bestSiegeUnit = cfg.bestSiegeUnit;
     }
     
     boolean hasHelen() {
@@ -113,11 +130,13 @@ public enum Player {
         private final String name;
         private boolean hasHelen;
         private int miningLevel;
+        private int citadelLevel;
         private int commonTarRequired;
         private String profileFolder;
         private String username;
         private int priority;
         private Point position;
+        private Unit bestSiegeUnit;
 
         private Config(String name) {
             this.name = name;
@@ -155,6 +174,16 @@ public enum Player {
         
         Config commonTarRequired(int tarQtd) {
             this.commonTarRequired = tarQtd;
+            return this;
+        }
+
+        Config citadelLevel(int level) {
+            this.citadelLevel = level;
+            return this;
+        }
+        
+        Config bestSiegeUnit(Unit unit) {
+            this.bestSiegeUnit = unit;
             return this;
         }
     }

@@ -97,6 +97,7 @@ public enum MyRobot {
                 robot.mouseMove(newX, newY);
                 Thread.sleep(5); // Optional: control speed of drag
             }
+            Thread.sleep(200);
             robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
             Thread.sleep(getDelayBetweenTasks());
         } catch (InterruptedException e) {

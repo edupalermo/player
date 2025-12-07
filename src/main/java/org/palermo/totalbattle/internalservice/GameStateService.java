@@ -5,6 +5,7 @@ import org.palermo.totalbattle.player.message.Message;
 import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.AutomationState;
 import org.palermo.totalbattle.player.state.PlayerState;
+import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Location;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
@@ -23,6 +24,7 @@ public class GameStateService extends AbstractService {
 
     public void add(Location location) {
         AutomationState automationState = getAutomationState();
+        automationState.locations.removeIf((item) -> item.getPosition().equals(location.getPosition()));
         automationState.locations.add(location);
         saveGameState();
     }
@@ -88,15 +90,26 @@ public class GameStateService extends AbstractService {
         }
         saveGameState();
     }
-    
+
     public int countMines(MineType type) {
         AutomationState automationState = getAutomationState();
         List<Location> locations = automationState.getLocations();
-        
+
         return (int) locations.stream()
                 .filter(Mine.class::isInstance)
                 .map(Mine.class::cast)
                 .filter((loc) -> loc.getType() == MineType.SILVER)
+                .count();
+    }
+
+    public int countCitadels(int level) {
+        AutomationState automationState = getAutomationState();
+        List<Location> locations = automationState.getLocations();
+
+        return (int) locations.stream()
+                .filter(Citadel.class::isInstance)
+                .map(Citadel.class::cast)
+                .filter((loc) -> loc.getLevel() == level)
                 .count();
     }
 

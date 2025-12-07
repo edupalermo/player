@@ -48,6 +48,7 @@ public class NavigationUtil {
         Navigate iconZoomMinus = Navigate.builder()
                 .resourceName("player/icon_zoom_minus.png")
                 .area(Area.fromTwoPoints(1791, 1003, 1836, 1044))
+                .waitLimit(2000)
                 .build();
         for (int i = 0; i < 4; i++) {
             iconZoomMinus.leftClick();

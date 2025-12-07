@@ -286,5 +286,11 @@
     "y" : 307,
     "width" : 146,
     "height" : 106
+  },
+  "POPUP_ENEMY_START_MARCH_BUTTON" : {
+    "x" : 761,
+    "y" : 831,
+    "width" : 211,
+    "height" : 74
   }
 }

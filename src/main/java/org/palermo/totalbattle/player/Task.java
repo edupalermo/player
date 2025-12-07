@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -31,15 +32,35 @@ public class Task {
     private static final ArmyService armyService = new ArmyService();
 
     private static MyRobot robot = MyRobot.INSTANCE;
-    
+
+
     public static void main(String[] args) {
+        play(Player.PALERMO);
+        //play(Player.GRIRANA);
+    }
+
+
+    public static void play(Player player) {
         
-        Player player = Player.PETER;
         
-        WebDriver driver = null;
+        Process process = null;
         try {
-            driver = openBrowser(player);
+            process = openOrdinaryBrowser(player);
             login(player);
+
+            (new InfoGather(player)).evaluate();
+
+            (new Telescope(player)).findCitadels();
+
+            //(new BuildArmy(player)).buildArmy();
+
+            //(new AttackCitadel(player)).attack();
+
+            // (new AttackCitadel(player)).attack();
+
+            //(new ExploreCrypts(player)).explore();
+
+
 
             //Task.showPauseDialog("Click on the button to continue");
 
@@ -53,10 +74,6 @@ public class Task {
             // (new SummoningCircle(robot, player)).evaluate();
 
             // (new CaptainSelector(player)).updatePlayerState();
-
-            //new ClanContribution(player).helpClanMembers();
-            //new ClanContribution(player).collectChests();
-
             
             /*
             (new CaptainSelector(player)).select(CaptainSelector.CARTER);
@@ -68,7 +85,7 @@ public class Task {
             // (new Telescope(player)).evaluate();
 
             // (new AttackArena(player)).attackArena();
-             (new MineSilver(player)).mine();
+             //(new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
             // (new SummoningCircle(robot, player)).evaluate();
@@ -87,7 +104,6 @@ public class Task {
             //(new AttackArena(player)).attackArena();
 
             //(new Telescope(player)).findCitadels();
-            //(new AttackCitadel(player)).attack();
             
             //(new Telescope(player)).findCrypts();
 
@@ -96,13 +112,13 @@ public class Task {
 //             (new PayTaxes(player)).pay();
             //(new DonateSilver(player)).donate();
             
-            waitUntilWindowIsClosed(driver);
+            // waitUntilProcessIsRunning(process);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         finally {
-            if (driver != null) {
-                driver.quit();
+            if (process != null && process.isAlive()) {
+                process.destroy();
 
                 String os = System.getProperty("os.name").toLowerCase();
                 if (os.contains("win")) {
@@ -136,7 +152,43 @@ public class Task {
 
         return driver;
     }
-    
+
+    public static Process openOrdinaryBrowser(Player player) {
+        try {
+            String chromePath;
+            if (isLinux()) {
+                chromePath = "/usr/bin/google-chrome"; // Linux example
+            }
+            else {
+                chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+            }
+
+            String userDataDir = new File(player.getProfileFolder()).getAbsolutePath();
+            String url = AddressSelector.select(player);
+
+            ProcessBuilder pb = new ProcessBuilder(
+                    chromePath,
+                    "--start-maximized",
+                    "--no-default-browser-check",
+                    "--no-first-run",
+                    "--disable-default-apps",
+                    "--disable-popup-blocking",
+                    "--user-data-dir=" + userDataDir,
+                    "--profile-directory=Default",
+                    url
+            );
+
+            return pb.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean isLinux() {
+        return System.getProperty("os.name").toLowerCase().contains("linux");
+    }
+
+
     public static void login(Player player) {
         BufferedImage linkLoginImage = ImageUtil.loadResource("player/link_login.png");
         Area linkLoginImageArea = Area.fromTwoPoints(347, 459, 591, 548);
@@ -309,7 +361,7 @@ public class Task {
         }
         return false;
     }
-    
+
     public static void waitUntilWindowIsClosed(WebDriver driver) {
         System.out.println("Waiting browser to be closed...");
         while (true) {
@@ -326,6 +378,19 @@ public class Task {
         }
     }
     
+    public static void waitUntilProcessIsRunning(Process process) {
+        System.out.println("Waiting browser to be closed...");
+        while (true) {
+            try {
+                process.isAlive();
+                Thread.sleep(1000); // wait 1 second
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
     private static void waitPageToBeLoaded(WebDriver driver) {
         new WebDriverWait(driver, Duration.ofSeconds(30)).until(
                 (ExpectedCondition<Boolean>) wd ->

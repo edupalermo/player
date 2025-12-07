@@ -25,6 +25,7 @@ public class Area {
     public static final String PLAYERS_CITY_CARAVAN_BUTTON = "PLAYERS_CITY_CARAVAN_BUTTON";
     public static final String POPUP_SILVER_VILLAGE_CAPTURE_BUTTON = "POPUP_SILVER_VILLAGE_CAPTURE_BUTTON";
     public static final String POPUP_MINE_START_MARCH_BUTTON = "POPUP_MINE_START_MARCH_BUTTON";
+    public static final String POPUP_ENEMY_START_MARCH_BUTTON = "POPUP_ENEMY_START_MARCH_BUTTON";
     public static final String TELESCOPE_VILLAGE_TITLE = "TELESCOPE_VILLAGE_TITLE";
     public static final String TITLE_ELVEN_CITADEL = "TITLE_ELVEN_CITADEL";
     
