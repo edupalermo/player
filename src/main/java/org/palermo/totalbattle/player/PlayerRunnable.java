@@ -81,9 +81,8 @@ public class PlayerRunnable implements Runnable {
             (new BuildArmy(player)).buildArmy();
 
             (new AttackArena(player)).attack();
-            (new AttackCitadel(player)).attack();
-            
             (new MineSilver(player)).mine();
+            (new AttackCitadel(player)).attack();
 
             (new PayTaxes(player)).pay();
 

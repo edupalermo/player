@@ -358,6 +358,14 @@ public class Telescope {
     private static final int QTD_LEVEL_10_CITADEL = 2;
     
     public void findCitadels() {
+        Point titleWatchtowerPoint = openWatchtower().orElse(null);
+
+        if (titleWatchtowerPoint == null) {
+            System.out.println("Telescope is not activated");
+            return;
+        }
+
+
         int levelTwoCount = gameStateService.countCitadels(10); 
         if (levelTwoCount >= QTD_LEVEL_10_CITADEL) {
             log.info("No need to look for new Citadels");
@@ -366,20 +374,14 @@ public class Telescope {
         
         int counter = 0;
         while (gameStateService.countCitadels(10) < QTD_LEVEL_10_CITADEL) {
-            findCitadel(counter);
+            findCitadel(titleWatchtowerPoint, counter);
             counter++;
         }
         
     }
     
     
-    private void findCitadel(int index) {
-        Point titleWatchtowerPoint = openWatchtower().orElse(null);
-
-        if (titleWatchtowerPoint == null) {
-            System.out.println("Telescope is not activated");
-            return;
-        }
+    private void findCitadel(Point titleWatchtowerPoint, int index) {
 
         Transformation transformation = Transformation.builder()
                 .real(titleWatchtowerPoint)
