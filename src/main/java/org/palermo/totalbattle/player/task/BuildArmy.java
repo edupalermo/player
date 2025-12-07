@@ -277,6 +277,7 @@ public class BuildArmy {
         }
 
         if (!trainedSomething) {
+            lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
             lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
             WhatsappUtil.send(player.getName() + " has finished building the army");
         }
