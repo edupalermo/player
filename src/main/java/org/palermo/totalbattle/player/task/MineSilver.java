@@ -60,6 +60,7 @@ public class MineSilver {
 
         Point minePosition = NavigationUtil.goToMapPosition(mine.getPosition());
 
+        /*
         if (NavigationUtil.belongsToAnotherClan(minePosition)) {
             log.info("Mine belong to another clan");
             gameStateService.removeLocationAt(mine.getPosition());
@@ -68,6 +69,7 @@ public class MineSilver {
             robot.sleep(300);
             return;
         }
+         */
 
         robot.leftClick(minePosition);
 
