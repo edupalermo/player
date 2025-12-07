@@ -759,6 +759,7 @@ public class ImageUtil {
                 else {
                     if (whitelist.equals(ImageUtil.WHITELIST_FOR_COUNTDOWN)) {
                         stringValue = replaceLastDigitIfFive(stringValue);
+                        stringValue = replaceSExceptLast(stringValue);
                         if (pattern.matcher(stringValue).matches()) {
                             return stringValue;
                         }
@@ -791,6 +792,25 @@ public class ImageUtil {
             return text.substring(0, text.length() - 1) + "s";
         }
         return text;
+    }
+
+    public static String replaceSExceptLast(String text) {
+        if (text == null || text.isEmpty()) return text;
+
+        int lastIndex = text.length() - 1;
+        StringBuilder result = new StringBuilder(text.length());
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            // replace 's' unless it's the final character
+            if (c == 's' && i != lastIndex) {
+                result.append('5');
+            } else {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
     }
     
     /**
