@@ -136,7 +136,7 @@ public class Quests {
 
         Area topButtonArea = Area.of(refDailyJobsPoint, Point.of(980, 320), Point.of(1218, 391), Point.of(1298, 416));
         BufferedImage claimButton = ImageUtil.loadResource("player/button_dj_claim.png");
-        Point claimButtonPoint = ImageUtil.search(claimButton, screen, topButtonArea, 0.1).orElse(null);
+        Point claimButtonPoint = ImageUtil.search(claimButton, screen, topButtonArea, 0.35).orElse(null);
 
         if (claimButtonPoint != null) {
             robot.leftClick(claimButtonPoint, claimButton);
