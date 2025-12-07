@@ -229,75 +229,76 @@ public class Telescope {
             BufferedImage screen = robot.captureScreen();
             List<Point> buttons = ImageUtil.searchMultiple(buttonGo, screen, buttonGoArea, 0.1);
            
-                // Click on GO Button
-                robot.leftClick(buttons.get(mainLoopCount % 3)); // It seems that 4 buttons appear, but we use 3 
-                robot.sleep(1000);
+            // Click on GO Button
+            robot.leftClick(buttons.get(mainLoopCount % 3)); // It seems that 4 buttons appear, but we use 3 
+            robot.sleep(1000);
 
-                Navigate.builder()
-                        .resourceName("player/label_city.png")
-                        .areaName("MAIN_LABEL_CITY")
-                        .waitLimit(7500)
-                        .pressEscapeWhileWaiting(true)
-                        .build()
-                        .ensureExistence();
-                robot.sleep(2000);
-                
-                NavigationUtil.zoomInIfNeeded();
+            Navigate.builder()
+                    .resourceName("player/label_city.png")
+                    .areaName("MAIN_LABEL_CITY")
+                    .waitLimit(7500)
+                    .pressEscapeWhileWaiting(true)
+                    .build()
+                    .ensureExistence();
+            robot.sleep(2000);
             
-                if (minePoint == null) {
-                    BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
-                    minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter()
-                            .centralize(mine)
-                            .move(0, -6);
-                }
+            NavigationUtil.zoomInIfNeeded();
+        
+            if (minePoint == null) {
+                BufferedImage mine = ImageUtil.loadResource("player/watchtower/mine_silver.png");
+                minePoint = NavigationUtil.spotSilverMinePositionPointInTheCenter()
+                        .centralize(mine)
+                        .move(0, -6);
+            }
 
-                if (NavigationUtil.belongsToAnotherClan(minePoint)) {
-                    log.info("Mine belong to another clan");
-                    mainLoopCount = mainLoopCount + 1;
-                    continue;
-                }
+            robot.mouseMove(minePoint);
+            Point arenaCoordinate = readCoordinate();
 
-                robot.mouseMove(minePoint);
-                Point arenaCoordinate = readCoordinate();
+            robot.leftClick(minePoint);
 
-                robot.leftClick(minePoint);
-                robot.sleep(500);
-
-                Point titleVillagePoint = Navigate.builder()
-                        .resourceName("player/watchtower/title_village.png")
-                        .areaName("TELESCOPE_VILLAGE_TITLE")
-                        .waitLimit(10000)
-                        .build()
-                        .getPoint();
-                
-                Point buttonCapturePoint = Navigate.builder()
-                        .resourceName("player/watchtower/button_capture.png")
-                        .area(Area.of(titleVillagePoint, Point.of(969, 481), Point.of(933, 682), Point.of(1042, 724)))
-                        .build().search().orElse(null);
-                
-                if (buttonCapturePoint == null) {
-                    log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
-
-                    mainLoopCount = mainLoopCount + 1;
-
-                    // Close pop up window
-                    robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(300);
-                    continue;
-                }
-                    
-                log.info("Mine can be captured! {} {}", arenaCoordinate.getX(), arenaCoordinate.getY());
-                
-                gameStateService.add(Mine.builder()
-                        .position(arenaCoordinate)
-                        .type(MineType.SILVER)
-                        .build());
+            Point titleVillagePoint = Navigate.builder()
+                    .resourceName("player/watchtower/title_village.png")
+                    .areaName("TELESCOPE_VILLAGE_TITLE")
+                    .waitLimit(10000)
+                    .build()
+                    .getPoint();
+            
+            Point buttonCapturePoint = Navigate.builder()
+                    .resourceName("player/watchtower/button_capture.png")
+                    .area(Area.of(titleVillagePoint, Point.of(969, 481), Point.of(933, 682), Point.of(1042, 724)))
+                    .build().search().orElse(null);
+            
+            if (buttonCapturePoint == null) {
+                log.info("Mine is busy! " + arenaCoordinate.getX() + ", " + arenaCoordinate.getY());
 
                 mainLoopCount = mainLoopCount + 1;
-                
+
                 // Close pop up window
                 robot.type(KeyEvent.VK_ESCAPE);
                 robot.sleep(300);
+                continue;
+            }
+                
+
+            // Close pop up window
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+
+            if (NavigationUtil.belongsToAnotherClan(minePoint)) {
+                log.info("Mine belong to another clan");
+                mainLoopCount = mainLoopCount + 1;
+                continue;
+            }
+
+
+            log.info("Mine can be captured! {} {}", arenaCoordinate.getX(), arenaCoordinate.getY());
+            gameStateService.add(Mine.builder()
+                    .position(arenaCoordinate)
+                    .type(MineType.SILVER)
+                    .build());
+
+            mainLoopCount = mainLoopCount + 1;
+            
                 
         } while (gameStateService.countMines(MineType.SILVER) < 5);
 
