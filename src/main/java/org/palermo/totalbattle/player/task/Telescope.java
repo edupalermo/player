@@ -355,7 +355,7 @@ public class Telescope {
         
     }
     
-    private static final int QTD_LEVEL_10_CITADEL = 10;
+    private static final int QTD_LEVEL_10_CITADEL = 2;
     
     public void findCitadels() {
         int levelTwoCount = gameStateService.countCitadels(10); 
