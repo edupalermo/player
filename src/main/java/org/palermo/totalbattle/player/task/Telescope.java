@@ -300,7 +300,7 @@ public class Telescope {
             mainLoopCount = mainLoopCount + 1;
             
                 
-        } while (gameStateService.countMines(MineType.SILVER) < 5);
+        } while (gameStateService.countMines(MineType.SILVER) < 3);
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
@@ -317,6 +317,15 @@ public class Telescope {
             robot.leftClick(point, item);
             robot.sleep(300);
         }
+    }
+    
+    private boolean isTelescopeActivated() {
+        Navigate activeTelescope = Navigate.builder()
+                .areaName("ACTIVE_TELESCOPE")
+                .resourceName("player/icon_telescope.png")
+                .waitLimit(1500)
+                .build();
+        return activeTelescope.exist();
     }
     
     private Optional<Point> openWatchtower() {
@@ -359,13 +368,10 @@ public class Telescope {
     private static final int QTD_LEVEL_10_CITADEL = 2;
     
     public void findCitadels() {
-        Point titleWatchtowerPoint = openWatchtower().orElse(null);
-
-        if (titleWatchtowerPoint == null) {
-            System.out.println("Telescope is not activated");
+        if (!isTelescopeActivated()) {
+            log.info("Telescope is not activated");
             return;
         }
-
 
         int levelTwoCount = gameStateService.countCitadels(10); 
         if (levelTwoCount >= QTD_LEVEL_10_CITADEL) {
@@ -375,14 +381,20 @@ public class Telescope {
         
         int counter = 0;
         while (gameStateService.countCitadels(10) < QTD_LEVEL_10_CITADEL) {
-            findCitadel(titleWatchtowerPoint, counter);
+            findCitadel(counter);
             counter++;
         }
         
     }
     
     
-    private void findCitadel(Point titleWatchtowerPoint, int index) {
+    private void findCitadel(int index) {
+        Point titleWatchtowerPoint = openWatchtower().orElse(null);
+
+        if (titleWatchtowerPoint == null) {
+            System.out.println("Telescope is not activated");
+            return;
+        }
 
         Transformation transformation = Transformation.builder()
                 .real(titleWatchtowerPoint)
