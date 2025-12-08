@@ -220,6 +220,49 @@ public class ImageUtil {
 
 
     public static Optional<SearchResponse> realSearch(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
+        long itemCrc = crcImage(item);
+        long screenCrc = crcImage(screen);
+        
+        File searchFolder = createFolderIsThereIsNot(new File("."), "search");
+        File imageFolder =  createFolderIsThereIsNot(searchFolder, Long.toString(itemCrc));
+        
+        File itemFile = new File(imageFolder, itemCrc + ".png");
+        if (!itemFile.exists()) {
+            ImageUtil.write(item, itemFile);
+        }
+        
+        File positiveFolder =  createFolderIsThereIsNot(imageFolder, "positive");
+        File negativeFolder =  createFolderIsThereIsNot(imageFolder, "negative");
+        
+        SearchResponse searchResponse = internalRealSearch(item, screen, x, y, width, height, limit).orElse(null);
+        
+        if (searchResponse == null) {
+            File file = new File(negativeFolder, screenCrc + ".png");
+            if (!file.exists()) {
+                ImageUtil.write(ImageUtil.crop(screen, Area.of(x, y, width, height)), file);
+            }
+        }
+        else {
+            File file = new File(positiveFolder, screenCrc +".png");
+            if (!file.exists()) {
+                ImageUtil.write(ImageUtil.crop(screen, Area.of(x, y, width, height)), file);
+            }
+        }
+        return Optional.ofNullable(searchResponse);
+    }
+    
+    private static File createFolderIsThereIsNot(File parentFolder, String name) {
+        File file = new File(parentFolder, name);
+
+        if (!file.exists()) {
+            if (!file.mkdir()) {
+                throw new RuntimeException("Could not create folder " + name);
+            }
+        }
+        return file;
+    }
+
+    public static Optional<SearchResponse> internalRealSearch(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
         // Clock clock = Clock.start();
 
         long difference = Long.MAX_VALUE;
@@ -273,7 +316,6 @@ public class ImageUtil {
                 .difference(percentage)
                 .build());
     }
-
 
 
     /**
@@ -782,7 +824,14 @@ public class ImageUtil {
             throw new RuntimeException(e);
         }
         
-        ImageUtil.showImageFor5Seconds(image, "Fail to parse it as " + whitelist);
+        // ImageUtil.showImageFor5Seconds(image, "Fail to parse it as " + whitelist);
+        
+        File ocrFolder = createFolderIsThereIsNot(new File("."), "ocr");
+        File file = new File(ocrFolder, Long.toString(crcImage(image)));
+        if (!file.exists()) {
+            ImageUtil.write(image, file);
+        }
+        
         throw new RuntimeException("It was not possible to make ocr of the given image!");
     }
 

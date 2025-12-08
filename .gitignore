@@ -3,6 +3,8 @@ history.dat
 history_search_surroundings.dat
 *.log
 error_*.*
+ocr
+search
 
 
 target/

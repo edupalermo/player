@@ -574,20 +574,52 @@ public class Telescope {
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 556)));
         robot.sleep(500);
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        List<Point> topButtons = new ArrayList<>();
+        topButtons.add(Point.of(833,427)); // Common
+        topButtons.add(Point.of(962,427)); // Rare
+        topButtons.add(Point.of(1091,427)); // Epic
+        topButtons.add(Point.of(1219,427)); // Arenas
+        topButtons.add(Point.of(833,453)); // Others
+
+        boolean enabled[] = new boolean[] {false, false, false, true, false};
+
+        for (int i = 0; i < topButtons.size(); i++) {
+
+            Point topButton = topButtons.get(i);
+
+            Area area = Area.of(titleWatchtowerPoint, Point.of(946, 323), topButton, topButton.move(28, 17));
+
+            Navigate navigate = Navigate.builder()
+                    .area(area)
+                    .resourceName("player/watchtower/button_on.png")
+                    .build();
+
+            if (!enabled[i] && navigate.exist()) {
+                navigate.leftClick();
+            }
+            else if (enabled[i] && !navigate.exist()) {
+                robot.leftClick(topButton, area);
+                robot.sleep(500);
+            }
+        }
+
+        robot.sleep(500);
+
+
+
+
+
+
+
+
+
+
+
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
+    }
+    
+    private void configureCryptsAndArenas() {
+        
     }
 }

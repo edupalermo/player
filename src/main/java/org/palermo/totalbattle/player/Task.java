@@ -50,7 +50,9 @@ public class Task {
 
             (new InfoGather(player)).evaluate();
 
-            (new Telescope(player)).findCitadels();
+            (new Telescope(player)).findCrypts();
+
+            //(new Telescope(player)).findCitadels();
 
             //(new BuildArmy(player)).buildArmy();
 
