@@ -117,13 +117,15 @@ public class SummoningCircle {
         robot.sleep(750);
 
         screen = robot.captureScreen();
-        BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
-        Area buttonFreeArea = Area.fromTwoPoints(795, 759, 936, 807);
-        // ImageUtil.showImageAndWait(ImageUtil.crop(screen, buttonFreeArea));
-        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+        
+        Navigate buttonFree = Navigate.builder()
+                .resourceName("player/sc/button_free.png")
+                .area(Area.fromTwoPoints(795, 759, 936, 807))
+                .waitLimit(5000)
+                .build();
 
-        if (buttonFreePoint != null) {
-            robot.leftClick(buttonFreePoint, buttonFree);
+        if (buttonFree.exist()) {
+            buttonFree.leftClick();
             robot.sleep(7500);
             robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
@@ -212,13 +214,12 @@ public class SummoningCircle {
 
         if (buttonFreePoint != null) { // Button free is available
             robot.leftClick(buttonFreePoint, buttonFree);
-            robot.sleep(5500);
             robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
             Navigate navigateButtonReturn = Navigate.builder()
                     .resourceName("player/sc/button_return.png")
                     .area(Area.fromTwoPoints(784, 805, 932, 895))
-                    .waitLimit(10000)
+                    .waitLimit(12000)
                     .build();
             navigateButtonReturn.leftClick();
             robot.sleep(1000);
