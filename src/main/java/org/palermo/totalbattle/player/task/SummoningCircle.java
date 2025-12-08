@@ -193,7 +193,7 @@ public class SummoningCircle {
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
         Area buttonFreeArea = Area.fromTwoPoints(568, 771, 726, 811);
-        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+        Point buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.36, 20).orElse(null);
 
         if (buttonFreePoint != null) { // Common Artifact
             robot.leftClick(buttonFreePoint, buttonFree);
@@ -212,7 +212,7 @@ public class SummoningCircle {
         }
 
         buttonFreeArea = Area.fromTwoPoints(1084, 771, 1247, 811);
-        buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.1, 20).orElse(null);
+        buttonFreePoint = ImageUtil.searchSurroundings(buttonFree, screen, buttonFreeArea, 0.36, 20).orElse(null);
 
         if (buttonFreePoint != null) { // Button free is available
             robot.leftClick(buttonFreePoint, buttonFree);
