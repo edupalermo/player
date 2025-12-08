@@ -192,15 +192,17 @@ public class Task {
 
 
     public static void login(Player player) {
-        BufferedImage linkLoginImage = ImageUtil.loadResource("player/link_login.png");
-        Area linkLoginImageArea = Area.fromTwoPoints(347, 459, 591, 548);
-        BufferedImage screen = robot.captureScreen();
-        Point linkLoginPoint = ImageUtil.searchSurroundings(linkLoginImage, screen, linkLoginImageArea,0.1, 20).orElse(null);
-
-        if (linkLoginPoint != null) {
+        Navigate linkLogin = Navigate.builder()
+                .resourceName("player/link_login.png")
+                .area(Area.fromTwoPoints(347, 459, 591, 548))
+                .waitLimit(3000)
+                .build();
+        
+        if (linkLogin.exist()) {
             System.out.println("Login link found");
-            login(player, linkLoginImage, linkLoginPoint);
+            login(player, linkLogin);
         }
+        
         robot.sleep(5000);
         
         System.out.println("User already logged");
@@ -320,7 +322,7 @@ public class Task {
     }
 
 
-    private static void login(Player player, BufferedImage linkLogin, Point linkLoginPoint) {
+    private static void login(Player player, Navigate linkLogin) {
         // Search and click accept all cookies button
         Navigate.builder()
                 .resourceName("player/button_accept_cookies.png")
@@ -330,21 +332,21 @@ public class Task {
                 .leftClickIfExists();
 
         // Click on Login link
-        robot.leftClick(linkLoginPoint, linkLogin);
+        linkLogin.leftClick();
         robot.sleep(350);
 
         // Provide username
-        robot.leftClick(Point.of(linkLoginPoint, Point.of(450, 515), Point.of(358, 494)));
+        robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(358, 494)));
         robot.clearText();
         robot.typeString(player.getUsername());
 
         // Provide password
-        robot.leftClick(Point.of(linkLoginPoint, Point.of(450, 515), Point.of(358, 564)));
+        robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(358, 564)));
         robot.clearText();
         robot.typeString(player.getPassword());
 
         // Click on Login Button
-        robot.leftClick(Point.of(linkLoginPoint, Point.of(450, 515), Point.of(438, 650)));
+        robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(438, 650)));
         robot.sleep(3000);
         
         // Search and click 
