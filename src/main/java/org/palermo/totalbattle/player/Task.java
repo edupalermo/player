@@ -209,6 +209,7 @@ public class Task {
 
         BufferedImage labelClan = ImageUtil.loadResource("player/label_clan.png");
         BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
+        BufferedImage screen = robot.captureScreen();
         long start = System.currentTimeMillis();
         boolean found = false;
         do {
@@ -246,7 +247,6 @@ public class Task {
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
-
 
         // Turn music off
         Area controlsArea = Area.fromTwoPoints(1797, 1046, 1917, 1079);
