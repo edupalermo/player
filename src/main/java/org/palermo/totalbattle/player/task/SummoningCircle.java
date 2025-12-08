@@ -187,8 +187,6 @@ public class SummoningCircle {
     }
 
     private void collectCaptainFragments() {
-        BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-
         BufferedImage screen = robot.captureScreen();
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/sc/button_free.png");
@@ -200,14 +198,12 @@ public class SummoningCircle {
             robot.sleep(5500);
             robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
-            screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
+            Navigate navigateButtonReturn = Navigate.builder()
+                    .resourceName("player/sc/button_return.png")
+                    .area(Area.fromTwoPoints(784, 805, 932, 895))
+                    .waitLimit(10000)
+                    .build();
+            navigateButtonReturn.leftClick();
             robot.sleep(500);
         }
 
@@ -219,14 +215,12 @@ public class SummoningCircle {
             robot.sleep(5500);
             robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
-            screen = robot.captureScreen();
-            Area buttonReturnArea = Area.fromTwoPoints(784, 805, 932, 895);
-            Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
-
-            if (buttonReturnPoint == null) {
-                throw new RuntimeException("Button return icon not found!");
-            }
-            robot.leftClick(buttonReturnPoint, buttonReturn);
+            Navigate navigateButtonReturn = Navigate.builder()
+                    .resourceName("player/sc/button_return.png")
+                    .area(Area.fromTwoPoints(784, 805, 932, 895))
+                    .waitLimit(10000)
+                    .build();
+            navigateButtonReturn.leftClick();
             robot.sleep(1000);
         }
 
@@ -303,15 +297,13 @@ public class SummoningCircle {
         robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
 
 
-        screen = robot.captureScreen();
-        BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-        Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_RETURN_BUTTON", screen);
-        Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+        Navigate buttonReturn = Navigate.builder()
+                .resourceName("player/sc/button_return.png")
+                .area(RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_RETURN_BUTTON", screen))
+                .waitLimit(10000)
+                .build();
 
-        if (buttonReturnPoint == null) {
-            throw new RuntimeException("Button return icon not found!");
-        }
-        robot.leftClick(buttonReturnPoint, buttonReturn);
+        buttonReturn.leftClick();
         robot.sleep(500);
     }
 
@@ -331,15 +323,13 @@ public class SummoningCircle {
         robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
         
 
-        screen = robot.captureScreen();
-        BufferedImage buttonReturn = ImageUtil.loadResource("player/sc/button_return.png");
-        Area buttonReturnArea =  RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_RETRIEVED_RETURN_BUTTON", screen);
-        Point buttonReturnPoint = ImageUtil.searchSurroundings(buttonReturn, screen, buttonReturnArea, 0.1, 20).orElse(null);
+        Navigate buttonReturn = Navigate.builder()
+                .resourceName("player/sc/button_return.png")
+                .area(RegionSelector.selectArea("SUMMON_CIRCLE_ELITE_RETRIEVED_RETURN_BUTTON", screen))
+                .waitLimit(5000)
+                .build();
 
-        if (buttonReturnPoint == null) {
-            throw new RuntimeException("Button return icon not found!");
-        }
-        robot.leftClick(buttonReturnPoint, buttonReturn);
+        buttonReturn.leftClick();
         robot.sleep(500);
     }
 }
