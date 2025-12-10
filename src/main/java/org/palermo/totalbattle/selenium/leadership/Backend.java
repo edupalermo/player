@@ -162,7 +162,7 @@ public class Backend {
                     troops.add(Unit.G1_MOUNTED);
                 }
                 if (tiers >= 2) {
-                    //troops.add(Unit.S3_SWORDSMAN);
+                    troops.add(Unit.S2_SWORDSMAN);
                     troops.add(Unit.G2_RANGED);
                     troops.add(Unit.G2_MELEE);
                     troops.add(Unit.G2_MOUNTED);

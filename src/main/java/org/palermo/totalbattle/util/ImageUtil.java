@@ -827,7 +827,7 @@ public class ImageUtil {
         // ImageUtil.showImageFor5Seconds(image, "Fail to parse it as " + whitelist);
         
         File ocrFolder = createFolderIsThereIsNot(new File("."), "ocr");
-        File file = new File(ocrFolder, Long.toString(crcImage(image)));
+        File file = new File(ocrFolder, Long.toString(crcImage(image)) + ".png");
         if (!file.exists()) {
             ImageUtil.write(image, file);
         }

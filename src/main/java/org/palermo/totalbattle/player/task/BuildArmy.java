@@ -9,7 +9,6 @@ import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
-import org.palermo.totalbattle.player.bean.ArmyBean;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.TroopQuantity;
@@ -28,7 +27,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -110,7 +108,7 @@ public class BuildArmy {
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                     robot.sleep(350);
 
-                    speedUp(7, nextLocalDateTime);
+                    speedUp(8, nextLocalDateTime);
                 } catch (RuntimeException e) {
                     // Click of the speed-up button
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
