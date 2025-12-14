@@ -226,7 +226,7 @@ public class ImageUtil {
         File searchFolder = createFolderIsThereIsNot(new File("."), "search");
         File imageFolder =  createFolderIsThereIsNot(searchFolder, Long.toString(itemCrc));
         
-        File itemFile = new File(imageFolder, itemCrc + ".png");
+        File itemFile = new File(searchFolder, itemCrc + ".png");
         if (!itemFile.exists()) {
             ImageUtil.write(item, itemFile);
         }

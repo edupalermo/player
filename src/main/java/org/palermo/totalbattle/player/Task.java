@@ -175,6 +175,8 @@ public class Task {
                     "--no-first-run",
                     "--disable-default-apps",
                     "--disable-popup-blocking",
+                    "--disable-session-crashed-bubble",
+                    " --restore-last-session=false",
                     "--user-data-dir=" + userDataDir,
                     "--profile-directory=Default",
                     url
