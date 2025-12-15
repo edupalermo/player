@@ -87,43 +87,13 @@ public class Telescope {
             throw new RuntimeException("Could not find crypts and arenas label");
         }
         labelCryptsAndArenas.leftClick();
-        
-        List<Point> topButtons = new ArrayList<>();
-        topButtons.add(Point.of(833,427)); // Common
-        topButtons.add(Point.of(962,427)); // Rare
-        topButtons.add(Point.of(1091,427)); // Epic
-        topButtons.add(Point.of(1219,427)); // Arenas
-        topButtons.add(Point.of(833,453)); // Others
-        
-        boolean enabled[] = new boolean[] {false, false, false, true, false};
-        
-
-        for (int i = 0; i < topButtons.size(); i++) {
-
-            Point topButton = topButtons.get(i);
-            
-            Area area = Area.of(titleWatchtowerPoint, Point.of(946, 323), topButton, topButton.move(28, 17));
-
-            Navigate navigate = Navigate.builder()
-                    .area(area)
-                    .resourceName("player/watchtower/button_on.png")
-                    .build();
-            
-            if (!enabled[i] && navigate.exist()) {
-                navigate.leftClick();                
-            }
-            else if (enabled[i] && !navigate.exist()) {
-                robot.leftClick(topButton, area);
-                robot.sleep(500);
-            }
-        }
-
-        robot.sleep(500);
 
         Transformation transformation = Transformation.builder()
                 .real(titleWatchtowerPoint)
                 .reference(Point.of(946, 323))
                 .build();
+
+        configureCryptsAndArenasMenu(transformation, new boolean[] {false, false, false, true, false});
         configureCryptsAndArenasSlider(transformation, 5);
 
 
@@ -594,15 +564,11 @@ public class Telescope {
                 .reference(Point.of(946, 323))
                 .build();
         
-        configureCryptsAndArenasMenu(titleWatchtowerPoint);
-
+        configureCryptsAndArenasMenu(transformation, new boolean[] {true, false, false, false, false});
         configureCryptsAndArenasSlider(transformation, 10);
         
-        robot.sleep(500);
 
         Area area = transformation.transform(Point.of(832, 529), Point.of(888, 808));
-        // ImageUtil.showImageAndWait(screen, area);
-
 
 
         boolean found = false;
@@ -663,7 +629,7 @@ public class Telescope {
         robot.sleep(300);
     }
     
-    private void configureCryptsAndArenasMenu(Point titleWatchtowerPoint) {
+    private void configureCryptsAndArenasMenu(Transformation transformation, boolean enabled[]) {
         List<Point> topButtons = new ArrayList<>();
         topButtons.add(Point.of(833,427)); // Common
         topButtons.add(Point.of(962,427)); // Rare
@@ -671,14 +637,11 @@ public class Telescope {
         topButtons.add(Point.of(1219,427)); // Arenas
         topButtons.add(Point.of(833,453)); // Others
 
-        boolean enabled[] = new boolean[] {true, false, false, false, false};
-
         for (int i = 0; i < topButtons.size(); i++) {
 
             Point topButton = topButtons.get(i);
 
-            Area area = Area.of(titleWatchtowerPoint, Point.of(946, 323), topButton, topButton.move(28, 17));
-
+            Area area = transformation.transform(topButton, topButton.move(28, 17)); 
             Navigate navigate = Navigate.builder()
                     .area(area)
                     .resourceName("player/watchtower/button_on.png")
@@ -693,6 +656,7 @@ public class Telescope {
                 robot.sleep(300);
             }
         }
+        robot.sleep(1000);
     }
 
     private Map<Integer, Point> caLeftSlider = new HashMap<>(); // Crypts and Arena
@@ -746,7 +710,7 @@ public class Telescope {
             robot.leftClick(sliders.get(1), slider);
             robot.mouseDrag(transformation.transform(caRightSlider.get(35)), transformation.transform(caRightSlider.get(level)).move(-shift, 0));
         }
-        robot.sleep(350);
+        robot.sleep(1000);
     }
 
 }

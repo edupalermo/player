@@ -48,9 +48,11 @@ public class Task {
             login(player);
 
             //(new InfoGather(player)).evaluate();
+            (new Telescope(player)).findArena();
             (new Telescope(player)).findCrypts();
-            (new ExploreCrypt(player)).explore();
-            (new BuildArmy(player)).buildArmy();
+
+            //(new ExploreCrypt(player)).explore();
+            //(new BuildArmy(player)).buildArmy();
             
             // (new Telescope(player)).findArena();
 
