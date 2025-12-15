@@ -76,6 +76,8 @@ public class Telescope {
         if (!titleWatchtower.exist()) {
             throw new RuntimeException("Could not find watchtower title");
         }
+        
+        log.info("Watchtower title found at {} {}", titleWatchtower.getPoint().getX(), titleWatchtower.getPoint().getY());
 
         Navigate labelCryptsAndArenas = Navigate.builder()
                 .areaName("WATCHTOWER_LEFT_TAB_CRYPTS_AND_ARENAS_LABEL")
@@ -652,7 +654,7 @@ public class Telescope {
                 robot.sleep(300);
             }
             else if (enabled[i] && !navigate.exist()) {
-                robot.leftClick(topButton, area);
+                robot.leftClick(transformation.transform(topButton), area);
                 robot.sleep(300);
             }
         }
