@@ -103,6 +103,9 @@ public class SpeedUp {
                 return true;
             }
             else {
+                if (speedUpBean.getLabel().equals("1m")) {
+                    return false;
+                }
                 robot.mouseDrag(scrollPoint, 0, 150);
                 robot.sleep(150);
                 scrollPoint = scrollPoint.move(0, 150);

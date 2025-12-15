@@ -15,6 +15,7 @@ public class Area {
     public static final String BONUS_SALE_BUTTON_CLOSE = "BONUS_SALE_BUTTON_CLOSE";
     public static final String CAPITOL_ROYAL_TREASURY_TITLE = "CAPITOL_ROYAL_TREASURY_TITLE";
     public static final String CAPITOL_TITLE = "CAPITOL_TITLE";
+    public static final String CRYPT_TITLE = "CRYPT_TITLE";
     public static final String MAIN_ONGOING_OPERATIONS = "MAIN_ONGOING_OPERATIONS";
     public static final String MAIN_TOP_MENU = "MAIN_TOP_MENU";
     public static final String MAIN_TOAST_INFO = "MAIN_TOAST_INFO";

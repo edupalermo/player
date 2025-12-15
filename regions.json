@@ -292,5 +292,11 @@
     "y" : 831,
     "width" : 211,
     "height" : 74
+  },
+  "CRYPT_TITLE" : {
+    "x" : 909,
+    "y" : 287,
+    "width" : 247,
+    "height" : 98
   }
 }

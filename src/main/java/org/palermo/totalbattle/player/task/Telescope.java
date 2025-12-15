@@ -6,8 +6,10 @@ import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.player.state.location.Citadel;
+import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
+import org.palermo.totalbattle.player.state.location.Rarity;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -54,7 +56,7 @@ public class Telescope {
             return;
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             findArenaByIndex(activeTelescope, i);
         }
         
@@ -94,6 +96,7 @@ public class Telescope {
         topButtons.add(Point.of(833,453)); // Others
         
         boolean enabled[] = new boolean[] {false, false, false, true, false};
+        
 
         for (int i = 0; i < topButtons.size(); i++) {
 
@@ -116,7 +119,14 @@ public class Telescope {
         }
 
         robot.sleep(500);
-        
+
+        Transformation transformation = Transformation.builder()
+                .real(titleWatchtowerPoint)
+                .reference(Point.of(946, 323))
+                .build();
+        configureCryptsAndArenasSlider(transformation, 5);
+
+
         // Here we click on the GO
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1249, 591 + (index * 100))));
         
@@ -563,6 +573,11 @@ public class Telescope {
     }
     
     public void findCrypts() {
+        if (gameStateService.getCrypt(10).isPresent()) {
+            log.info("No need for more crypts");
+            return;
+        }
+        
         Point titleWatchtowerPoint = openWatchtower().orElse(null);
 
         if (titleWatchtowerPoint == null) {
@@ -572,8 +587,83 @@ public class Telescope {
 
         // Click on Crypt and Arenas let tab
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 556)));
+        robot.sleep(1000);
+
+        Transformation transformation = Transformation.builder()
+                .real(titleWatchtowerPoint)
+                .reference(Point.of(946, 323))
+                .build();
+        
+        configureCryptsAndArenasMenu(titleWatchtowerPoint);
+
+        configureCryptsAndArenasSlider(transformation, 10);
+        
         robot.sleep(500);
 
+        Area area = transformation.transform(Point.of(832, 529), Point.of(888, 808));
+        // ImageUtil.showImageAndWait(screen, area);
+
+
+
+        boolean found = false;
+        int counter = 0;
+
+
+        BufferedImage crypt = ImageUtil.loadResource("player/crypts/crypt_stone_range.png");
+
+
+        while (!found) {
+            
+            robot.leftClick(Point.of(1347, 535));
+            robot.sleep(300);
+            if (counter > 0) {
+                robot.mouseDrag(Point.of(1347, 535), 0, counter * 5);
+            }
+            
+            BufferedImage screen = robot.captureScreen();
+            List<Point> cryptPoints = ImageUtil.searchMultiple(crypt, screen, area, 0.07);
+
+            if (cryptPoints.size() > 0) {
+                // Here we click on the GO
+                robot.leftClick(cryptPoints.get(0).move(400, 31));
+
+                robot.sleep(2000);
+                robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
+                robot.sleep(3000);
+
+                NavigationUtil.zoomInIfNeeded();
+
+
+                BufferedImage cryptMap = ImageUtil.loadResource("player/crypts/crypt_stone_range_map.png");
+                Point cryptPoint = ArenaUtil.identifyCenter(cryptMap);
+
+                robot.mouseMove(cryptPoint.move(cryptMap.getWidth() / 2, cryptMap.getHeight() / 2));
+                robot.sleep(500);
+
+                Point arenaCoordinate = readCoordinate();
+                log.info("Crypt found at {}, {}", arenaCoordinate.getX(), arenaCoordinate.getY());
+
+                gameStateService.add(Crypt.builder()
+                        .position(arenaCoordinate)
+                        .rarity(Rarity.COMMON)
+                        .level(10)
+                        .build());
+
+                found = true;
+            }
+            counter = counter + 1;
+            
+            if (counter >= 10) {
+                found = true; // Just to stop loop!
+            }
+        }
+        
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+    }
+    
+    private void configureCryptsAndArenasMenu(Point titleWatchtowerPoint) {
         List<Point> topButtons = new ArrayList<>();
         topButtons.add(Point.of(833,427)); // Common
         topButtons.add(Point.of(962,427)); // Rare
@@ -581,7 +671,7 @@ public class Telescope {
         topButtons.add(Point.of(1219,427)); // Arenas
         topButtons.add(Point.of(833,453)); // Others
 
-        boolean enabled[] = new boolean[] {false, false, false, true, false};
+        boolean enabled[] = new boolean[] {true, false, false, false, false};
 
         for (int i = 0; i < topButtons.size(); i++) {
 
@@ -596,30 +686,67 @@ public class Telescope {
 
             if (!enabled[i] && navigate.exist()) {
                 navigate.leftClick();
+                robot.sleep(300);
             }
             else if (enabled[i] && !navigate.exist()) {
                 robot.leftClick(topButton, area);
-                robot.sleep(500);
+                robot.sleep(300);
             }
         }
-
-        robot.sleep(500);
-
-
-
-
-
-
-
-
-
-
-
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
     }
-    
-    private void configureCryptsAndArenas() {
+
+    private Map<Integer, Point> caLeftSlider = new HashMap<>(); // Crypts and Arena
+    private Map<Integer, Point> caRightSlider = new HashMap<>();
+    {
+        caLeftSlider.put(1, Point.of(893 + 16, 508));
+        caLeftSlider.put(5, Point.of(934 + 16, 508));
+        caLeftSlider.put(10, Point.of(989 + 16, 508));
         
+        caRightSlider.put(5, Point.of(968 + 16, 508));
+        caRightSlider.put(10, Point.of(1023 + 16, 508));
+
+        caRightSlider.put(35, Point.of(1290 + 19, 508));
+
     }
+
+
+    private void configureCryptsAndArenasSlider(Transformation transformation, int level) {
+        BufferedImage screen = robot.captureScreen();
+        Area sliderArea = transformation.transform(Point.of(878, 496), Point.of(1338, 518));
+        BufferedImage slider = ImageUtil.loadResource("player/watchtower/monsters/slider.png");
+
+        List<Point> sliders = ImageUtil.searchMultiple(slider, screen, sliderArea, 0.07);
+        sliders = simplify(slider, sliders);
+
+        if (sliders.size() != 2) {
+            throw new RuntimeException("Fail to get sliders");
+        }
+
+        final int shift = 6;
+
+        boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(caLeftSlider.get(level)).getX()) >= 5;
+        boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(caRightSlider.get(level)).getX()) >= 5;
+
+        if (shouldMoveLeft) {
+            robot.leftClick(sliders.get(0), slider);
+            robot.mouseDrag(sliders.get(0).centralize(slider), transformation.transform(caLeftSlider.get(1)).move(-shift, 0));
+        }
+
+        if (shouldMoveRight) {
+            robot.leftClick(sliders.get(1), slider);
+            robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(caRightSlider.get(35)).move(shift, 0));
+        }
+
+        if (shouldMoveLeft) {
+            robot.leftClick(sliders.get(0), slider);
+            robot.mouseDrag(transformation.transform(caLeftSlider.get(1)), transformation.transform(caLeftSlider.get(level)).move(shift, 0));
+        }
+
+        if (shouldMoveRight) {
+            robot.leftClick(sliders.get(1), slider);
+            robot.mouseDrag(transformation.transform(caRightSlider.get(35)), transformation.transform(caRightSlider.get(level)).move(-shift, 0));
+        }
+        robot.sleep(350);
+    }
+
 }

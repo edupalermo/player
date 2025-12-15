@@ -23,7 +23,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Slf4j
@@ -48,9 +47,12 @@ public class Task {
             process = openOrdinaryBrowser(player);
             login(player);
 
-            (new InfoGather(player)).evaluate();
-
+            //(new InfoGather(player)).evaluate();
             (new Telescope(player)).findCrypts();
+            (new ExploreCrypt(player)).explore();
+            (new BuildArmy(player)).buildArmy();
+            
+            // (new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();
 
@@ -176,7 +178,8 @@ public class Task {
                     "--disable-default-apps",
                     "--disable-popup-blocking",
                     "--disable-session-crashed-bubble",
-                    " --restore-last-session=false",
+                    "--restore-last-session=false",
+                    "--new-window",
                     "--user-data-dir=" + userDataDir,
                     "--profile-directory=Default",
                     url

@@ -105,16 +105,16 @@ public class CaptainSelector {
         // Remove captain from the spot
         switch(captain) {
             case CARTER:
-                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
                 robot.sleep(500);
-                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
                 robot.sleep(500);
                 break;
             case HELEN:
             case XI_GUIYING:
-                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
                 robot.sleep(500);
-                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(835, 902)));
+                robot.leftClick(Point.of(heroPoint, Point.of(591, 875), Point.of(739, 902)));
                 robot.sleep(500);
                 break;
             case STROR:

@@ -6,6 +6,7 @@ import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
@@ -163,5 +164,64 @@ public class NavigationUtil {
         Area arenaArea = RegionSelector.selectArea("MAP_CENTER", screen);
         Point point = ImageUtil.searchBestFit(new BufferedImage[] {image}, screen, arenaArea);
         return point.centralize(image);
+    }
+
+    public static void speedUpMarch() {
+        Navigate.builder()
+                .areaName(Area.MAIN_ONGOING_OPERATIONS)
+                .resourceName("player/icon_expand_ongoing_operations.png")
+                .build()
+                .leftClickIfExists();
+
+        Navigate march = Navigate.builder()
+                .areaName(Area.MAIN_ONGOING_OPERATIONS)
+                .resourceName("player/ongoing_tasks/label_march.png")
+                .waitLimit(1000)
+                .build();
+
+        if (!march.exist()) {
+            return;
+        }
+
+        // Clicar no SpeedUps
+        robot.leftClick(march.getPoint().move(255, 8));
+        robot.sleep(300);
+
+
+        Navigate speedUpsTitle = Navigate.builder()
+                .resourceName("player/speed_up/title_speed_ups.png")
+                .area(Area.fromTwoPoints(910, 325, 1066, 361))
+                .waitLimit(1000)
+                .build();
+
+        if (!speedUpsTitle.exist()) {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+
+        Transformation transformation = Transformation.builder()
+                .real(speedUpsTitle.getPoint())
+                .reference(Point.of(958, 346))
+                .build();
+
+        Navigate speedUp = Navigate.builder()
+                .area(transformation.transform(Point.of(755, 483), Point.of(798, 638)))
+                .resourceName("player/ongoing_tasks/speed_up_50_perc.png")
+                .waitLimit(1000)
+                .build();
+
+        for (int i = 0; i < 5; i++) {
+            if (speedUp.searchAgain().isPresent()) {
+                robot.leftClick(speedUp.getPoint().move(402, 57));
+                robot.sleep(300);
+            }
+            else {
+                break;
+            }
+        }
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
     }
 }

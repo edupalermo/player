@@ -21,4 +21,11 @@ public class ArenaUtil {
         Area arenaArea = RegionSelector.selectArea("MAP_CENTER", screen);
         return ImageUtil.searchBestFit(arenas, screen, arenaArea);
     }
+
+    public static Point identifyCenter(BufferedImage ... images) {
+        BufferedImage screen = robot.captureScreen();
+        Area arenaArea = RegionSelector.selectArea("MAP_CENTER", screen);
+        return ImageUtil.searchBestFit(images, screen, arenaArea);
+    }
+    
 }

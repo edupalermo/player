@@ -11,7 +11,7 @@ public enum Player {
 
     PALERMO(cfg("Palermo")
             .hasHelen(true)
-            .miningLevel(25)
+            .commonCryptLevel(25)
             .commonTarRequired(65800)
             .citadelLevel(20)
             .profileFolder("chrome-profiles/palermo")
@@ -22,7 +22,7 @@ public enum Player {
     
     PETER(cfg("Peter")
             .hasHelen(false)
-            .miningLevel(20)
+            .commonCryptLevel(20)
             .commonTarRequired(34000)
             .citadelLevel(15)
             .profileFolder("chrome-profiles/peter")
@@ -33,7 +33,7 @@ public enum Player {
 
     MIGHTSHAPER(cfg("Mightshaper")
             .hasHelen(false)
-            .miningLevel(20)
+            .commonCryptLevel(20)
             .commonTarRequired(40000)
             .citadelLevel(15)
             .profileFolder("chrome-profiles/mightshaper")
@@ -44,7 +44,7 @@ public enum Player {
 
     GRIRANA(cfg("Grirana")
             .hasHelen(false)
-            .miningLevel(10)
+            .commonCryptLevel(10)
             .commonTarRequired(3700)
             .citadelLevel(10)
             .profileFolder("chrome-profiles/grirana")
@@ -55,7 +55,7 @@ public enum Player {
 
     ELANIN(cfg("Elanin")
             .hasHelen(false)
-            .miningLevel(10)
+            .commonCryptLevel(10)
             .commonTarRequired(3800)
             .citadelLevel(10)
             .profileFolder("chrome-profiles/elanin")
@@ -66,7 +66,7 @@ public enum Player {
 
     LORVEN(cfg("Lorven")
             .hasHelen(false)
-            .miningLevel(5)
+            .commonCryptLevel(5)
             .citadelLevel(10)
             .profileFolder("chrome-profiles/lorven")
             .username("edupalermo+04@gmail.com")
@@ -76,8 +76,8 @@ public enum Player {
 
     private String name;
     private boolean hasHelen;
-    private int miningLevel;
     private int citadelLevel;
+    private int commonCryptLevel;
     private int commonTarRequired;
     private String profileFolder;
     private String username;
@@ -89,7 +89,7 @@ public enum Player {
     Player(Config cfg) {
         this.name = cfg.name;
         this.hasHelen = cfg.hasHelen;
-        this.miningLevel = cfg.miningLevel;
+        this.commonCryptLevel = cfg.commonCryptLevel;
         this.commonTarRequired = cfg.commonTarRequired;
         this.profileFolder = cfg.profileFolder;
         this.username = cfg.username;
@@ -129,7 +129,7 @@ public enum Player {
     private static class Config {
         private final String name;
         private boolean hasHelen;
-        private int miningLevel;
+        private int commonCryptLevel;
         private int citadelLevel;
         private int commonTarRequired;
         private String profileFolder;
@@ -147,8 +147,8 @@ public enum Player {
             return this;
         }
 
-        Config miningLevel(int miningLevel) {
-            this.miningLevel = miningLevel;
+        Config commonCryptLevel(int commonCryptLevel) {
+            this.commonCryptLevel = commonCryptLevel;
             return this;
         }
 

@@ -108,7 +108,7 @@ public class BuildArmy {
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                     robot.sleep(350);
 
-                    speedUp(8, nextLocalDateTime);
+                    speedUp(15, nextLocalDateTime);
                 } catch (RuntimeException e) {
                     // Click of the speed-up button
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));

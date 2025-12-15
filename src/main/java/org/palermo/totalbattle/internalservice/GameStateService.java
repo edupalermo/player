@@ -6,6 +6,7 @@ import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.AutomationState;
 import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.state.location.Citadel;
+import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.state.location.Location;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
@@ -36,6 +37,18 @@ public class GameStateService extends AbstractService {
         for (Location location : locations) {
             if (clazz.isInstance(location)) {
                 return Optional.of(clazz.cast(location));
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Crypt> getCrypt(int level) {
+        AutomationState automationState = getAutomationState();
+        List<Location> locations = automationState.getLocations();
+
+        for (Location location : locations) {
+            if (location instanceof Crypt) {
+                return Optional.of((Crypt) location);
             }
         }
         return Optional.empty();

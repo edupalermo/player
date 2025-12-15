@@ -77,12 +77,14 @@ public class PlayerRunnable implements Runnable {
             (new Telescope(player)).findArena();
             (new Telescope(player)).findSilverMines();
             (new Telescope(player)).findCitadels();
+            (new Telescope(player)).findCrypts();
 
             (new BuildArmy(player)).buildArmy();
 
             (new AttackArena(player)).attack();
             (new MineSilver(player)).mine();
             (new AttackCitadel(player)).attack();
+            (new ExploreCrypt(player)).explore();
 
             (new PayTaxes(player)).pay();
 
