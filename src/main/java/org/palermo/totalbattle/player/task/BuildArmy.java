@@ -52,6 +52,11 @@ public class BuildArmy {
         if (!armyService.shouldBuildArmy(player)) {
             return;
         }
+
+        Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
+        if (!playerStateService.hasCaptain(player, captain)) {
+            (new CaptainSelector(player)).select(captain);
+        }
         
         BufferedImage screen = robot.captureScreen();
         BufferedImage labelArmy = ImageUtil.loadResource("player/barracks/label_army.png");
@@ -222,6 +227,8 @@ public class BuildArmy {
                     break;
                 }
     
+                log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
+                
                 while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
                     int index = findIndex(bestSpeedUp);
                     
@@ -251,6 +258,22 @@ public class BuildArmy {
             }
         }
         throw new RuntimeException("Speed up not found!");
+    }
+    
+    private String secondsToReadable(long input) {
+        
+        if (input < 60) {
+            return input + "s";
+        }
+        else if (input < 60 * 60) {
+            return (input / 60) + "m" + (input % 60) + "s";
+        }
+        else if (input < 60 * 60 * 24) {
+            return (input / (60 * 60)) + "h" + ((input % (60*60)) / 60) + "m" + (input % 60) + "s";
+        }
+        else {
+            return (input / (60 * 60 * 24)) + "d" + ((input % (60 * 60 * 24)) / (60 * 60)) + "h" + ((input % (60 * 60)) / 60) + "m" + (input % 60) + "s";
+        }
     }
 
     private void chooseTroopToBuild(Point titleBarracksPoint) {
@@ -360,11 +383,6 @@ public class BuildArmy {
             }
             
             if (isSilverEnough && isResourceEnough(foodArea)) {
-
-                Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
-                if (!playerStateService.hasCaptain(player, captain)) {
-                    (new CaptainSelector(player)).select(captain);                    
-                }
                 
                 // Click on train button
                 robot.leftClick(trainButtonPoint);

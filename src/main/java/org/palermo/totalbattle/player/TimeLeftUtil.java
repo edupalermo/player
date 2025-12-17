@@ -15,12 +15,15 @@ public class TimeLeftUtil {
         int hours = 0;
         int minutes = 0;
         int seconds = 0;
+        
+        int error = 0;
 
         boolean parsed = false;
 
         if (matcher.matches()) {
             hours = Integer.parseInt(matcher.group(1));
             minutes = Integer.parseInt(matcher.group(2));
+            error = 59;
             parsed = true;
         }
 
@@ -59,6 +62,7 @@ public class TimeLeftUtil {
             if (matcher.matches()) {
                 days = Integer.parseInt(matcher.group(1));
                 hours = Integer.parseInt(matcher.group(2));
+                error = (59 * 60) + 59;
                 parsed = true;
             }
         }
@@ -71,7 +75,8 @@ public class TimeLeftUtil {
                 .plusDays(days)
                 .plusHours(hours)
                 .plusMinutes(minutes)
-                .plusSeconds(seconds);
+                .plusSeconds(seconds)
+                .plusSeconds(error);
 
         return Optional.of(answer);
     }

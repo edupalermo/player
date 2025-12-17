@@ -97,7 +97,7 @@ public class SpeedUp {
                     log.info("Speed up {} not available", speedUpBean.getLabel());
                     return false;
                 }
-                log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
+                //log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
                 robot.leftClick(buttonUsePoint, buttonUse);
                 robot.sleep(200);
                 return true;

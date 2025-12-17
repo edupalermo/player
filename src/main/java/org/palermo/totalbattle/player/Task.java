@@ -9,6 +9,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.internalservice.PlayerStateService;
+import org.palermo.totalbattle.player.state.Army;
+import org.palermo.totalbattle.player.state.ArmyTarget;
+import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
@@ -27,8 +31,9 @@ import java.util.Optional;
 
 @Slf4j
 public class Task {
-    
+
     private static final ArmyService armyService = new ArmyService();
+    private static final PlayerStateService playerStateService = new PlayerStateService();
 
     private static MyRobot robot = MyRobot.INSTANCE;
 
@@ -41,18 +46,27 @@ public class Task {
 
     public static void play(Player player) {
         
+        playerStateService.getState(player).getArmy().setTarget(ArmyTarget.builder()
+                        .leadership(104000)
+                        .dominance(26200)
+                        .authority(52000)
+                        .goal("any")
+                        .waves(1)
+                .build());
         
         Process process = null;
         try {
             process = openOrdinaryBrowser(player);
             login(player);
 
-            //(new InfoGather(player)).evaluate();
-            (new Telescope(player)).findArena();
-            (new Telescope(player)).findCrypts();
+            (new InfoGather(player)).evaluate();
+            //(new Telescope(player)).findArena();
+            //(new Telescope(player)).findCrypts();
 
             //(new ExploreCrypt(player)).explore();
-            //(new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
             
             // (new Telescope(player)).findArena();
 
