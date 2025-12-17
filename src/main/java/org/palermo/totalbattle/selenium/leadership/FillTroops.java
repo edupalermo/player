@@ -351,7 +351,7 @@ public class FillTroops {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "leadership_text.png");
         
-        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.LINE_OF_PRINTED_TEXT);
         leadershipText = leadershipText.replaceAll(",", "");
         int slashIndex = leadershipText.indexOf("/");
         

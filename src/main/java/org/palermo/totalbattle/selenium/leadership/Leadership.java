@@ -44,7 +44,7 @@ public class Leadership {
             ImageIO.write(croppedImage, "png", new File("debug05.png"));
 
             
-            System.out.println("ReadImage: " + ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH, ImageUtil.SINGLE_LINE_MODE));
+            System.out.println("ReadImage: " + ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.SINGLE_LINE_MODE));
             
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -272,14 +272,21 @@ public class Backend {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "leadership_text.png");
 
-        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.LINE_OF_PRINTED_TEXT);
         leadershipText = leadershipText.replaceAll(",", "");
         int slashIndex = leadershipText.indexOf("/");
 
         if (slashIndex == -1) {
             throw new RuntimeException("Invalid format! " + leadershipText);
         }
-        return Integer.parseInt(leadershipText.substring(slashIndex + 1).trim());
+        leadershipText = leadershipText.substring(slashIndex + 1);
+        int multiplier = 1;
+        if (leadershipText.charAt(leadershipText.length() - 1) == 'K') {
+            multiplier = 1000;
+            leadershipText = leadershipText.substring(0, leadershipText.length() - 1);
+        }
+        
+        return (int) Math.round(Double.parseDouble(leadershipText) * multiplier);
     }
 
     private static void enableDragon(MyRobot robot, BufferedImage screen) {

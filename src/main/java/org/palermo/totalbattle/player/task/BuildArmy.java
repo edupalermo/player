@@ -194,10 +194,8 @@ public class BuildArmy {
                 if (r == 0) {
                     speedUpsTitle.ensureExistence();
                 }
-                else {
-                    if (speedUpsTitle.searchAgain().isEmpty()) {
-                        return;
-                    }
+                else if (speedUpsTitle.searchAgain().isEmpty()) {
+                    return;
                 }
     
                 if (r != 0) {
@@ -224,14 +222,17 @@ public class BuildArmy {
                     break;
                 }
     
-                if (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
-                    bestSpeedUp = SpeedUp.speedUps.stream()
-                            .filter((sp) -> sp.getSeconds() == Duration.ofMinutes(15).getSeconds())
-                            .findFirst()
-                            .orElseThrow(() -> new RuntimeException("15m not found"));
-                    SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint());
-                    break;
+                while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+                    int index = findIndex(bestSpeedUp);
+                    
+                    if (index == 0) {
+                        bestSpeedUp = SpeedUp.speedUps.get(1); // Should use 15m
+                    }
+                    else if  (index > 1) {
+                        bestSpeedUp = SpeedUp.speedUps.get(index - 1); // Should use 15m
+                    }
                 }
+                
                 seconds = seconds - bestSpeedUp.getSeconds();
                 
             }
@@ -240,6 +241,16 @@ public class BuildArmy {
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
         }
+    }
+    
+    private int findIndex(SpeedUpBean speedUpBean) {
+        for (int i = 0; i <= speedUpBean.getSeconds(); i++) {
+            SpeedUpBean it = SpeedUp.speedUps.get(0);
+            if (it.getLabel().equals(speedUpBean.getLabel())) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Speed up not found!");
     }
 
     private void chooseTroopToBuild(Point titleBarracksPoint) {

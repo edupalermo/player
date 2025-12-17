@@ -48,7 +48,7 @@ public class ImageUtil {
     public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
     public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
-    public static final String WHITELIST_FOR_NUMBERS_AND_SLASH = "0123456789,/";
+    public static final String WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER = "0123456789,./K";
     public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
     public static final String WHITELIST_FOR_NUMBERS = "0123456789,";
     public static final int PSM_DEFAULT = 3;
