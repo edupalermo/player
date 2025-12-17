@@ -245,7 +245,7 @@ public class BuildArmy {
     
     private int findIndex(SpeedUpBean speedUpBean) {
         for (int i = 0; i <= speedUpBean.getSeconds(); i++) {
-            SpeedUpBean it = SpeedUp.speedUps.get(0);
+            SpeedUpBean it = SpeedUp.speedUps.get(i);
             if (it.getLabel().equals(speedUpBean.getLabel())) {
                 return i;
             }
