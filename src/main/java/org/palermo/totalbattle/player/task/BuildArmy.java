@@ -194,7 +194,7 @@ public class BuildArmy {
                 .waitLimit(1000)
                 .build();
 
-            for (int r = 0; r < turns; r++) {
+            outer: for (int r = 0; r < turns; r++) {
                 
                 if (r == 0) {
                     speedUpsTitle.ensureExistence();
@@ -229,7 +229,14 @@ public class BuildArmy {
     
                 log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
                 
+                int counter = 0;
+                
                 while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+
+                    if (speedUpsTitle.searchAgain().isEmpty()) {
+                        break outer;
+                    }
+                    
                     int index = findIndex(bestSpeedUp);
                     
                     if (index == 0) {
