@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.concurrent.ThreadLocalRandom;
 
 public enum MyRobot {
     
@@ -30,7 +31,7 @@ public enum MyRobot {
     }
     
     private long getDelayBetweenTasks() {
-        return 150;
+        return ThreadLocalRandom.current().nextInt(125, 451);
     }
 
     public void leftClick(int x, int y) {
