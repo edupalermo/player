@@ -246,9 +246,11 @@ public class Task {
                         .resourceName("player/button_bonus_sales_close.png")
                         .areaName(Area.BONUS_SALE_BUTTON_CLOSE)
                         .build();
-                if (buttonCloseNavigate.exist()) {
+                if (buttonCloseNavigate.exist()) { // Sometimes the left click on close doesn't work!
                     buttonCloseNavigate.leftClick();
                     robot.sleep(500);
+                    robot.type(KeyEvent.VK_ESCAPE);
+                    robot.sleep(300);
                 }
                 else {
                     System.out.println("Trying to hit scape to close initial pop-ups");
