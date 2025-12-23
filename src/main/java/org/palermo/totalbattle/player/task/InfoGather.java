@@ -27,18 +27,23 @@ public class InfoGather {
 
     public void evaluate() {
         gatherCommonTarAmount();
-
         gatherLumberAmount();
         gatherIronAmount();
         gatherStoneAmount();
         gatherSilverAmount();
+
+        log.info("Lumber {}, Iron {}, Stone {}", playerStateService.getState(player).getLumber(),
+                playerStateService.getState(player).getIron(),
+                playerStateService.getState(player).getStone());
+
+        log.info("Tar {}, Silver {}", playerStateService.getState(player).getCommonTar(),
+                playerStateService.getState(player).getSilver());
     }
     
     private void gatherCommonTarAmount() {
         Navigate iconCommonTar = selectTopMenuIcon("player/top_menu/icon_common_tar.png", true);
         BufferedImage screen = robot.captureScreen();
         Area commonTarAmountArea = Area.of(iconCommonTar.getPoint(), Point.of(767, 190), Point.of(858,281), Point.of(931, 300));
-        log.info("Tar: {}", ocr(ImageUtil.crop(screen, commonTarAmountArea)));
         playerStateService.getState(player).setCommonTar(Integer.parseInt(ocr(ImageUtil.crop(screen, commonTarAmountArea))));
     }
 
@@ -46,7 +51,6 @@ public class InfoGather {
         Navigate iconSilver = selectTopMenuIcon("player/top_menu/icon_silver.png", true);
         BufferedImage screen = robot.captureScreen();
         Area silverAmountArea = Area.of(iconSilver.getPoint(), Point.of(1141, 179), Point.of(1222,271), Point.of(1316, 290));
-        log.info("Silver: {}", ocr(ImageUtil.crop(screen, silverAmountArea)));
         playerStateService.getState(player).setSilver(Integer.parseInt(ocr(ImageUtil.crop(screen, silverAmountArea))));
     }
 
@@ -54,7 +58,6 @@ public class InfoGather {
         Navigate iconSilver = selectTopMenuIcon("player/top_menu/icon_lumber.png", true);
         BufferedImage screen = robot.captureScreen();
         Area area = Area.of(iconSilver.getPoint(), Point.of(764, 170), Point.of(849,261), Point.of(944, 281));
-        log.info("Lumber: {}", ocr(ImageUtil.crop(screen, area)));
         playerStateService.getState(player).setLumber(Integer.parseInt(ocr(ImageUtil.crop(screen, area))));
     }
 
@@ -62,7 +65,6 @@ public class InfoGather {
         Navigate iconSilver = selectTopMenuIcon("player/top_menu/icon_iron.png", true);
         BufferedImage screen = robot.captureScreen();
         Area area = Area.of(iconSilver.getPoint(), Point.of(859, 170), Point.of(943,261), Point.of(1035, 281));
-        log.info("Iron: {}", ocr(ImageUtil.crop(screen, area)));
         playerStateService.getState(player).setIron(Integer.parseInt(ocr(ImageUtil.crop(screen, area))));
     }
 
@@ -70,7 +72,6 @@ public class InfoGather {
         Navigate iconSilver = selectTopMenuIcon("player/top_menu/icon_stone.png", true);
         BufferedImage screen = robot.captureScreen();
         Area area = Area.of(iconSilver.getPoint(), Point.of(953, 170), Point.of(1046,261), Point.of(1129, 281));
-        log.info("Stone: {}", ocr(ImageUtil.crop(screen, area)));
         playerStateService.getState(player).setStone(Integer.parseInt(ocr(ImageUtil.crop(screen, area))));
     }
 

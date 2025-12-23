@@ -15,6 +15,7 @@ import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.state.Army;
 import org.palermo.totalbattle.player.state.ArmyTarget;
 import org.palermo.totalbattle.player.state.PlayerState;
+import org.palermo.totalbattle.player.state.Resources;
 import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.task.*;
@@ -47,7 +48,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.GRIRANA);
+        play(Player.PALERMO);
         //play(Player.GRIRANA);
     }
 
@@ -63,6 +64,13 @@ public class Task {
                         .waves(1)
                 .build());
         */
+
+        playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
+                .lumber(19_000_000)
+                .stone(19_000_000)
+                .iron(19_000_000)
+                .build());
+
 
         gameStateService.add(Citadel.builder()
                 .level(15)
@@ -101,7 +109,7 @@ public class Task {
 
             //(new ExploreCrypt(player)).explore();
             //(new BuildArmy(player)).buildArmy();
-            // (new Telescope(player)).findArena();
+            (new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();
 
@@ -111,7 +119,7 @@ public class Task {
 
             // (new AttackCitadel(player)).attack();
 
-            (new ExploreCrypt(player)).explore();
+            //(new ExploreCrypt(player)).explore();
 
 
 

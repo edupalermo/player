@@ -8,6 +8,7 @@ import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.state.ArmyTarget;
 import org.palermo.totalbattle.player.state.Resources;
 import org.palermo.totalbattle.player.task.*;
+import org.slf4j.MDC;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,35 +33,6 @@ public class PlayerRunnable implements Runnable {
     @Override
     public void run() {
         log.info("Player Thread running");
-        
-        //DELETE ME!!!
-        playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
-                .leadership(29550)
-                .dominance(7328)
-                .authority(14184)
-                .goal("any")
-                .waves(3)
-                .build());
-        playerStateService.getState(Player.MIGHTSHAPER).getArmy().setTarget(ArmyTarget.builder()
-                .leadership(14774)
-                .dominance(3770)
-                .authority(7490)
-                .goal("any")
-                .waves(3)
-                .build());
-        playerStateService.getState(Player.GRIRANA).getArmy().setTarget(ArmyTarget.builder()
-                .leadership(5839)
-                .dominance(1424)
-                .authority(2840)
-                .goal("any")
-                .waves(3)
-                .build());
-
-        playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
-                        .lumber(19_000_000)
-                        .stone(19_000_000)
-                        .iron(19_000_000)
-                .build());
 
         int counter = 0;
         
@@ -91,6 +63,7 @@ public class PlayerRunnable implements Runnable {
     private void play(Player player) {
         Process process = null;
         try {
+            MDC.put("playerName", player.getName());
             process = Task.openOrdinaryBrowser(player);
             Task.login(player);
 

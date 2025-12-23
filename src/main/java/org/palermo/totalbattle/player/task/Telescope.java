@@ -706,8 +706,9 @@ public class Telescope {
         }
 
         if (shouldMoveRight) {
+            int sign = (int) Math.signum(caRightSlider.get(level).getX() - sliders.get(1).getX());
             robot.leftClick(sliders.get(1), slider);
-            robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(caRightSlider.get(level)).move(shift, 0));
+            robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(caRightSlider.get(level)).move(sign * shift, 0));
         }
 
         if (shouldMoveLeft) {

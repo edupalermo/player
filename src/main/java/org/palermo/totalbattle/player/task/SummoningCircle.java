@@ -7,11 +7,10 @@ import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
-import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
@@ -129,8 +128,6 @@ public class SummoningCircle {
         robot.leftClick(iconArtifactPoint, iconArtifact);
         robot.sleep(750);
 
-        screen = robot.captureScreen();
-        
         Navigate buttonFree = Navigate.builder()
                 .resourceName("player/sc/button_free.png")
                 .area(Area.fromTwoPoints(795, 759, 936, 807))
@@ -162,6 +159,8 @@ public class SummoningCircle {
         if (iconKeyAreaPoint != null) {
             Area fragmentsQtdArea = Area.of(iconKeyAreaPoint.getX() + 25, iconKeyAreaPoint.getY() + 3, 36, 17);
             fragments =  getArtifactQuantity(ImageUtil.crop(screen, fragmentsQtdArea));
+
+            log.info("Fragments: {}", fragments);
         }
         
         if (fragments == 0) {
@@ -248,12 +247,13 @@ public class SummoningCircle {
         int eliteArtifactQtd = 0;
 
         if (iconArtifactPoint != null) {
-
             Area commonArtifactQtdArea = Area.of(iconArtifactPoint, Point.of(918, 180), Point.of(947, 183), Point.of(979, 199));
             commonArtifactQtd = getArtifactQuantity(ImageUtil.crop(screen, commonArtifactQtdArea));
 
             Area eliteArtifactQtdArea = Area.of(iconArtifactPoint, Point.of(918, 180), Point.of(1037, 183), Point.of(1067, 199));
             eliteArtifactQtd = getArtifactQuantity(ImageUtil.crop(screen, eliteArtifactQtdArea));
+            
+            log.info("Common Fragments: {}, Elite Fragments {}", commonArtifactQtd, eliteArtifactQtd);
         }
 
         if (commonArtifactQtd == 0) {
