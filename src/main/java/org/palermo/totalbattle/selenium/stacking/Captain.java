@@ -10,6 +10,7 @@ public enum Captain {
     
     EMPTY,
     UNKNOW,
+    ALEXANDER("alexander"),
     AYDAE("aydae"),
     MINAMOTO("minamoto"),
     CARTER("carter"),

@@ -44,14 +44,14 @@ public enum Player {
 
     GRIRANA(cfg("Grirana")
             .hasHelen(false)
-            .commonCryptLevel(10)
-            .commonTarRequired(3700)
-            .citadelLevel(10)
+            .commonCryptLevel(15)
+            .commonTarRequired(13400)
+            .citadelLevel(15)
             .profileFolder("chrome-profiles/grirana")
             .username("edupalermo+02@gmail.com")
             .priority(4)
             .position(381, 481)
-            .bestSiegeUnit(Unit.EC2_ENGINEER)),
+            .bestSiegeUnit(Unit.EC3_ENGINEER)),
 
     ELANIN(cfg("Elanin")
             .hasHelen(false)

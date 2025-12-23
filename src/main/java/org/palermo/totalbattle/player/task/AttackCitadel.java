@@ -7,7 +7,6 @@ import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.Scenario;
-import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -15,15 +14,14 @@ import org.palermo.totalbattle.selenium.leadership.Backend;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
+import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,24 +41,17 @@ public class AttackCitadel {
     }
     
     public void attack() {
-        /*
-        gameStateService.add(
-                Citadel.builder()
-                        .level(10)
-                        .position(Point.of(407, 503))
-                        .build()
-        );
-         */
-
         if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_NON_MONSTERS)) {
-            log.info("No indication that there are trainned troops");
+            log.info("Aborting Citadel attack because there are no NO troops trained");
             return;
         }
 
         Point citadelLocation = gameStateService
                 .getLocation(Citadel.class)
+                .stream()
                 .filter((c) -> c.getLevel() == player.getCitadelLevel())
                 .map(Citadel::getPosition)
+                .findAny()
                 .orElse(null);
         if (citadelLocation == null) {
             log.info("No citadel is available");
@@ -102,6 +93,9 @@ public class AttackCitadel {
             case 10:
                 captainConfigured = (new CaptainSelector(player)).select(Captain.AYDAE, Captain.MINAMOTO, Captain.UNKNOW);
                 break;
+            case 15:
+                captainConfigured = (new CaptainSelector(player)).select(Captain.AYDAE, Captain.ALEXANDER, Captain.UNKNOW);
+                break;
             default:
                 throw new RuntimeException("Not implemented");
         }
@@ -112,6 +106,13 @@ public class AttackCitadel {
             return;            
         }
 
+        if (!checkMinimumRequirements()) {
+            log.info("Minium group of hero and captains cannot be selected, maybe some of them are on a march");
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return;
+        }
+        
         int[] headCount = Backend.getHeadCount(robot);
         
         // System.out.println(headCount[0] + " - " + headCount[1] + " - " + headCount[2]);
@@ -166,6 +167,34 @@ public class AttackCitadel {
         armyService.setProductionOrder(player);
     }
     
+    private boolean checkMinimumRequirements() {
+        Navigate heroLabel = Navigate.builder()
+                .resourceName("player/watchtower/label_hero.png")
+                .areaName(Area.POPUP_ENEMY_START_HERO_LABEL)
+                .waitLimit(3000)
+                .build().ensureExistence();
+        
+        Transformation transformation = Transformation.builder()
+                .real(heroLabel.getPoint())
+                .reference(Point.of(561, 418))
+                .build();
+        
+        Area areas[] = new Area[3];
+        areas[0] = transformation.transform(Point.of(579, 526),Point.of(605, 552));
+        areas[1] = transformation.transform(Point.of(689, 526),Point.of(715, 552));
+        areas[2] = transformation.transform(Point.of(799, 526),Point.of(824, 552));
+        
+        for (Area area : areas) {
+            Navigate navigate = Navigate.builder()
+                    .area(area)
+                    .resourceName("player/watchtower/icon_checkmark.png")
+                    .build();
+            if (!navigate.exist()) {
+                return false;
+            }
+        }
+        return true;
+    }
    
     private int[] hardcodeFirst(int[] qtd, int firstValue) {
         int[] answer = new int[qtd.length + 1];

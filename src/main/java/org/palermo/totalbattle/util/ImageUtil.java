@@ -71,8 +71,12 @@ public class ImageUtil {
         if (cachedImage != null) {
             return cachedImage;
         }
-        try (InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(resourceName)) {
+        try (InputStream is = Thread.currentThread()
+                .getContextClassLoader().getResourceAsStream(resourceName)) {
             if (is == null) {
+                if (resourceName.charAt(0) != '/') {
+                    return loadResource("/" + resourceName);
+                }
                 throw new RuntimeException("Resource not found: " + resourceName);
             }
             BufferedImage imageRead = ImageIO.read(is);
@@ -82,7 +86,7 @@ public class ImageUtil {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static BufferedImage load(File file) {
         if (!file.exists()) {
             throw new RuntimeException("File does not exist: " + file.getAbsolutePath());
@@ -92,6 +96,10 @@ public class ImageUtil {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static BufferedImage load(String path) {
+        return load(new File(path));
     }
 
     public static void write(BufferedImage image, String filename) {

@@ -298,6 +298,9 @@ public class BuildArmy {
             if (currentSize < troopQuantity.getTarget()) {
                 if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
                     lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                    if (player == Player.PALERMO) {
+                        WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
+                    }
                 }
                 train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
                 trainedSomething = true;

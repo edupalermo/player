@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GameStateService extends AbstractService {
 
@@ -30,28 +31,22 @@ public class GameStateService extends AbstractService {
         saveGameState();
     }
 
-    public <T> Optional<T> getLocation(Class<T> clazz) {
+    public <T> List<T> getLocation(Class<T> clazz) {
         AutomationState automationState = getAutomationState();
         List<Location> locations = automationState.getLocations();
-
-        for (Location location : locations) {
-            if (clazz.isInstance(location)) {
-                return Optional.of(clazz.cast(location));
-            }
-        }
-        return Optional.empty();
+        return locations.stream().filter(clazz::isInstance)
+                .map(clazz::cast)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Optional<Crypt> getCrypt(int level) {
         AutomationState automationState = getAutomationState();
         List<Location> locations = automationState.getLocations();
 
-        for (Location location : locations) {
-            if (location instanceof Crypt) {
-                return Optional.of((Crypt) location);
-            }
-        }
-        return Optional.empty();
+        return locations.stream().filter(Crypt.class::isInstance)
+                .map(Crypt.class::cast)
+                .filter((crypt) -> crypt.getLevel() == level)
+                .findFirst();
     }
 
     public Optional<Mine> getMine(MineType type) {

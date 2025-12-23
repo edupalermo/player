@@ -45,18 +45,17 @@ public class CaptainSelector {
         if (captain == Captain.UNKNOW || captain == Captain.EMPTY) {
             return true;
         }
-        if (captain != Captain.UNKNOW && captain != Captain.EMPTY) {
-            Navigate firstNavigate = Navigate.builder()
-                    .area(getCaptainArea(heroPoint, slot))
-                    .searchImage(captain.getImage66())
-                    .build();
+        Navigate navigate = Navigate.builder()
+                .area(getCaptainArea(heroPoint, slot))
+                .searchImage(captain.getImage66())
+                .build();
 
-            if (!firstNavigate.exist()) {
-                removeCaptainAndSelectSpot(slot, heroPoint);
-                selectCaptain(heroPoint, captain);
-            }
+        if (!navigate.exist()) {
+            removeCaptainAndSelectSpot(slot, heroPoint);
+            selectCaptain(heroPoint, captain);
         }
-        return true;
+
+        return navigate.searchAgain().isPresent();
     }
     
 

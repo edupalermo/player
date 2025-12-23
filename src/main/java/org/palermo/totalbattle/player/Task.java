@@ -9,10 +9,14 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.palermo.totalbattle.internalservice.ArmyService;
+import org.palermo.totalbattle.internalservice.GameStateService;
+import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.state.Army;
 import org.palermo.totalbattle.player.state.ArmyTarget;
 import org.palermo.totalbattle.player.state.PlayerState;
+import org.palermo.totalbattle.player.state.location.Citadel;
+import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.util.ImageUtil;
@@ -27,6 +31,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -34,18 +40,21 @@ public class Task {
 
     private static final ArmyService armyService = new ArmyService();
     private static final PlayerStateService playerStateService = new PlayerStateService();
+    private static final GameStateService gameStateService = new GameStateService();
+    private static final LockService lockService = new LockService();
 
     private static MyRobot robot = MyRobot.INSTANCE;
 
 
     public static void main(String[] args) {
-        play(Player.PALERMO);
+        play(Player.GRIRANA);
         //play(Player.GRIRANA);
     }
 
 
     public static void play(Player player) {
         
+        /*
         playerStateService.getState(player).getArmy().setTarget(ArmyTarget.builder()
                         .leadership(104000)
                         .dominance(26200)
@@ -53,32 +62,56 @@ public class Task {
                         .goal("any")
                         .waves(1)
                 .build());
-        
+        */
+
+        gameStateService.add(Citadel.builder()
+                .level(15)
+                .position(Point.of(341, 523))
+                .build());
+
+        gameStateService.add(Crypt.builder()
+                .level(15)
+                .position(Point.of(396, 510))
+                .build());
+
+        lockService.lock(Player.GRIRANA, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+
         Process process = null;
         try {
             process = openOrdinaryBrowser(player);
+
+            // Fechar TABS!
+            robot.sleep(1000);
+            robot.leftClick(Point.of(560, 52));
+            robot.sleep(1000);
+            robot.leftClick(Point.of(560, 52));
+            robot.sleep(1000);
+            robot.leftClick(Point.of(560, 52));
+            robot.sleep(1000);
+            
             login(player);
 
-            (new InfoGather(player)).evaluate();
+            //(new FixBrokenArmor(player)).fix();
+            
+            //(new InfoGather(player)).evaluate();
+            //(new Telescope(player)).findCitadels();
+
             //(new Telescope(player)).findArena();
             //(new Telescope(player)).findCrypts();
 
             //(new ExploreCrypt(player)).explore();
-            (new BuildArmy(player)).buildArmy();
-            (new BuildArmy(player)).buildArmy();
-            (new BuildArmy(player)).buildArmy();
-            
+            //(new BuildArmy(player)).buildArmy();
             // (new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();
 
             //(new BuildArmy(player)).buildArmy();
 
-            //(new AttackCitadel(player)).attack();
+            // (new AttackCitadel(player)).attack();
 
             // (new AttackCitadel(player)).attack();
 
-            //(new ExploreCrypts(player)).explore();
+            (new ExploreCrypt(player)).explore();
 
 
 
@@ -132,7 +165,7 @@ public class Task {
 //             (new PayTaxes(player)).pay();
             //(new DonateSilver(player)).donate();
             
-            // waitUntilProcessIsRunning(process);
+            waitUntilProcessIsRunning(process);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -191,6 +224,7 @@ public class Task {
                     "--start-maximized",
                     "--no-default-browser-check",
                     "--no-first-run",
+                    "--disable-extensions",
                     "--disable-default-apps",
                     "--disable-popup-blocking",
                     "--disable-session-crashed-bubble",
@@ -200,7 +234,7 @@ public class Task {
                     "--profile-directory=Default",
                     url
             );
-
+            
             return pb.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -255,7 +289,7 @@ public class Task {
                 else {
                     System.out.println("Trying to hit scape to close initial pop-ups");
                     robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(500);
+                    robot.sleep(1000);
                 }
             }
         } while (!found && (System.currentTimeMillis() - start) < 60000);

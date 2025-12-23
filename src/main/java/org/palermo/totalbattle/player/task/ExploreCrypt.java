@@ -11,9 +11,11 @@ import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.selenium.stacking.Captain;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 @Slf4j
 public class ExploreCrypt {
@@ -34,19 +36,21 @@ public class ExploreCrypt {
         if  (location == null) {
             if (playerStateService.getState(player).getCommonTar() < player.getCommonTarRequired() &&
                     playerStateService.getState(player).getExploringCrypt() == null) {
-                log.info("Not enough common tar");
+                log.info("Not enough common tar {}/{}",  playerStateService.getState(player).getCommonTar(), player.getCommonTarRequired());
                 return;
             }
 
             location = gameStateService
                     .getLocation(Crypt.class)
-                    .filter((c) -> c.getLevel() == player.getCommonCryptLevel())         //TODO Delete me
+                    .stream()
+                    .filter((c) -> c.getLevel() == player.getCommonCryptLevel())
                     .map(Crypt::getPosition)
+                    .findAny()
                     .orElse(null);
         }
 
         if (location == null) {
-            log.info("No Crypt is available");
+            log.info("There is not Crypt Level {} available", player.getCommonCryptLevel());
             return;
         }
 
@@ -58,7 +62,6 @@ public class ExploreCrypt {
 
         if (!captainConfigured) {
             log.info("Carter not available");
-
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
         }
@@ -87,9 +90,25 @@ public class ExploreCrypt {
                 .build();
 
 
+        //BufferedImage screen = robot.captureScreen();
+        //ImageUtil.showImageAndWait(screen, transformation.transform(Point.of(867, 712), Point.of(893, 738)));
+        
         // Select Carter
         robot.leftClick(transformation.transform(Point.of(879, 722)));
         robot.sleep(300);
+
+        Navigate secondCaptain = Navigate.builder()
+                .area(transformation.transform(Point.of(867, 712), Point.of(893, 738)))
+                .resourceName("player/watchtower/icon_checkmark.png")
+                .build();
+
+        if (!secondCaptain.exist()) {
+            log.info("Carter is not available for Crypt exploration");
+
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return;
+        }
 
         // Click on Explore
         robot.leftClick(transformation.transform(Point.of(1170, 867)));

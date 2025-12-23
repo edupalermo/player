@@ -298,5 +298,23 @@
     "y" : 287,
     "width" : 247,
     "height" : 98
+  },
+  "MANAGE_CAPTAINS_CLOSE_BUTTON" : {
+    "x" : 1358,
+    "y" : 280,
+    "width" : 161,
+    "height" : 117
+  },
+  "MANAGE_CAPTAINS_EQUIPMENT_TITLE" : {
+    "x" : 744,
+    "y" : 283,
+    "width" : 367,
+    "height" : 100
+  },
+  "POPUP_ENEMY_START_HERO_LABEL" : {
+    "x" : 473,
+    "y" : 375,
+    "width" : 178,
+    "height" : 80
   }
 }

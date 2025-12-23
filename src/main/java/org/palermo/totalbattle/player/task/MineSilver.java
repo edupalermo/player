@@ -29,7 +29,7 @@ public class MineSilver {
     public void mine() {
         Mine mine = gameStateService.getMine(MineType.SILVER).orElse(null);
         if (mine == null) {
-            log.info("No mine available");
+            log.info("No Mine available");
             return;
         }
 
@@ -50,7 +50,7 @@ public class MineSilver {
                         .resourceName("player/ongoing_tasks/label_resource_gathering.png")
                         .build()
                         .exist()) {
-            log.info("Stror is busy");
+            log.info("Stror is busy, he can't Mine");
             return;
         }
 
@@ -151,13 +151,13 @@ public class MineSilver {
         }
         
         if (!iconCheckmark.exist()) {
-            log.info("Stror is not available!");
+            log.info("Stror is build and cannot Mine");
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
             return;
         }
         
-        // Scroll to the botton!
+        // Scroll to the bottom!
         
         robot.mouseDrag(Point.of(buttonStartMarch.getPoint(), Point.of(1090, 877), Point.of(1216, 426)), 0, 310);
         robot.sleep(1000);
@@ -169,7 +169,7 @@ public class MineSilver {
                 .build();
         
         if (!meleeUnit.exist()) {
-            log.info("Melee units not found");
+            log.info("No Melee units available to Mine");
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
             return;

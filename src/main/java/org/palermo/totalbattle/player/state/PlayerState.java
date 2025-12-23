@@ -21,9 +21,15 @@ public class PlayerState {
 
     private int commonTar;
     private int silver;
+    private int lumber;
+    private int iron;
+    private int stone;
+
     private Point exploringCrypt;
     
     private Army army = new Army();
+    
+    private Resources resourcesTarget;
     
     private Map<Scenario, LocalDateTime> locks = new HashMap<>();
     

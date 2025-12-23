@@ -282,12 +282,18 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.EC5_ENGINEER, 25);
                 break;
             case PETER, MIGHTSHAPER:  // Should defeat Level 15 citadel
-                output = increase(output, Unit.G2_MOUNTED, 1500);
-                output = increase(output, Unit.G3_MOUNTED, 1000);
-                output = increase(output, Unit.G4_MOUNTED, 500);
-                output = increase(output, Unit.EC4_ENGINEER, 36);
+                output = increase(output, Unit.G2_MOUNTED, 750);
+                output = increase(output, Unit.G3_MOUNTED, 500);
+                output = increase(output, Unit.G4_MOUNTED, 270);
+                output = increase(output, Unit.EC4_ENGINEER, 167);
                 break;
-            case GRIRANA, ELANIN:   // Should defeat Level 10 citadel
+            case GRIRANA:  // Should defeat Level 15 citadel
+                output = increase(output, Unit.G1_MOUNTED, 750);
+                output = increase(output, Unit.G2_MOUNTED, 500);
+                output = increase(output, Unit.G3_MOUNTED, 540);
+                output = increase(output, Unit.EC3_ENGINEER, 350);
+                break;
+            case ELANIN:   // Should defeat Level 10 citadel
                 output = increase(output, Unit.G1_RANGED, 1500);
                 output = increase(output, Unit.G2_RANGED, 1000);
                 output = increase(output, Unit.G3_RANGED, 500);
@@ -372,6 +378,11 @@ public class ArmyService extends AbstractService {
                 exclusions.add(Attribute.ELEMENTAL);
                 exclusions.add(Attribute.DRAGON);
                 return exclusions;
+            case 15:
+                exclusions.add(Attribute.RANGED);
+                exclusions.add(Attribute.DRAGON);
+                exclusions.add(Attribute.MELEE);
+                return exclusions;
             default:
                 throw new RuntimeException("Not implemented");
         }
@@ -383,6 +394,15 @@ public class ArmyService extends AbstractService {
                 switch (player.getBestSiegeUnit()) {
                     case EC2_ENGINEER:
                         return 290;
+                    default:
+                        throw new RuntimeException("Not implemented");
+                }
+            case 15:
+                switch (player.getBestSiegeUnit()) {
+                    case EC3_ENGINEER:
+                        return 380;
+                    case EC4_ENGINEER:
+                        return 167;
                     default:
                         throw new RuntimeException("Not implemented");
                 }

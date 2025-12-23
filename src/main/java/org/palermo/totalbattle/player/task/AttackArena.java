@@ -28,10 +28,12 @@ public class AttackArena {
     public void attack() {
         Point arenaLocation = gameStateService
                 .getLocation(Arena.class)
+                .stream()
                 .map(Arena::getPosition)
+                .findFirst()
                 .orElse(null);
         if (arenaLocation == null) {
-            log.info("No arena is available");
+            log.info("No Arena is available");
             return;
         }
 
@@ -68,7 +70,7 @@ public class AttackArena {
                 .orElse(null);
 
         if (iconCheckmarkPoint == null) {
-            System.out.println("Hero is not available");
+            log.info("Hero is not available to fight in a Arena");
             robot.type(KeyEvent.VK_ESCAPE);
         }
         else {

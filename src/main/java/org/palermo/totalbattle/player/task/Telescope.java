@@ -35,14 +35,14 @@ public class Telescope {
     
     private final GameStateService gameStateService = new GameStateService();
     
-    private final int MINE_COUNT_TARGET = 3;
+    private final int MINE_COUNT_TARGET = 1;
 
     public Telescope(Player player) {
         this.player = player;
     }
     
     public void findArena() {
-        if (gameStateService.getLocation(Arena.class).isPresent()) {
+        if (!gameStateService.getLocation(Arena.class).isEmpty()) {
             log.info("No need for more arenas");
             return;
         }
@@ -56,9 +56,9 @@ public class Telescope {
             return;
         }
 
-        for (int i = 0; i < 2; i++) {
-            findArenaByIndex(activeTelescope, i);
-        }
+        // for (int i = 0; i < 2; i++) {
+            findArenaByIndex(activeTelescope, 0);
+        //}
         
     }
     
@@ -170,14 +170,18 @@ public class Telescope {
         
         int mainLoopCount = 0;
 
+        Navigate activeTelescope = Navigate.builder()
+                .areaName("ACTIVE_TELESCOPE")
+                .resourceName("player/icon_telescope.png")
+                .build();
+        
+        if (!activeTelescope.exist()) {
+            log.info("Telescope is not activated");
+            return;
+        }
+
         do {
-
-            Point titleWatchtowerPoint = openWatchtower().orElse(null);
-
-            if (titleWatchtowerPoint == null) {
-                System.out.println("Telescope is not activated");
-                return;
-            }
+            Point titleWatchtowerPoint = openWatchtower(activeTelescope);
 
             // Click on Mines let tab
             robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 613)));
@@ -194,7 +198,7 @@ public class Telescope {
             clickIfFindIt(ImageUtil.loadResource("player/watchtower/icon_tar_on.png"), resourcesArea);
 
 
-            final int SCROLL_PIXELS = 10;
+            final int SCROLL_PIXELS = 8;
             Point initialPoint = Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(1347, 523));
             robot.leftClick(initialPoint);
             robot.sleep(150);
@@ -310,14 +314,9 @@ public class Telescope {
         return activeTelescope.exist();
     }
     
-    private Optional<Point> openWatchtower() {
-        Navigate activeTelescope = Navigate.builder()
-                .areaName("ACTIVE_TELESCOPE")
-                .resourceName("player/icon_telescope.png")
-                .build();
+    private Point openWatchtower(Navigate activeTelescope) {
         if (!activeTelescope.exist()) {
-            System.out.println("Telescope is not activated");
-            return Optional.empty();
+            throw new RuntimeException("Telescope is not activated");
         }
         activeTelescope.leftClick();
 
@@ -331,7 +330,7 @@ public class Telescope {
         if (!titleWatchtower.exist()) {
             throw new RuntimeException("Could not find watchtower title");
         }
-        return Optional.ofNullable(titleWatchtowerPoint);
+        return titleWatchtowerPoint;
     }
 
 
@@ -339,44 +338,40 @@ public class Telescope {
     private Map<Integer, Point> rightSlider = new HashMap<>();
     {
         leftSlider.put(1, Point.of(893 + 16, 551));
-        
         leftSlider.put(10, Point.of(968 + 16, 551));
-        rightSlider.put(10, Point.of(1002 + 16, 551));
+        leftSlider.put(15, Point.of(1006 + 16, 551));
         
+        
+        rightSlider.put(10, Point.of(1002 + 16, 551));
+        rightSlider.put(15, Point.of(1040 + 16, 551));
         rightSlider.put(35, Point.of(1290 + 19, 551));
         
     }
     
-    private static final int QTD_LEVEL_10_CITADEL = 2;
-    
     public void findCitadels() {
-        if (!isTelescopeActivated()) {
+        Navigate activeTelescope = Navigate.builder()
+                .areaName("ACTIVE_TELESCOPE")
+                .resourceName("player/icon_telescope.png")
+                .build();
+        
+        if (!activeTelescope.exist()) {
             log.info("Telescope is not activated");
             return;
         }
-
-        int levelTwoCount = gameStateService.countCitadels(10); 
-        if (levelTwoCount >= QTD_LEVEL_10_CITADEL) {
-            log.info("No need to look for new Citadels");
-            return;
-        }
         
-        int counter = 0;
-        while (gameStateService.countCitadels(10) < QTD_LEVEL_10_CITADEL) {
-            findCitadel(counter);
-            counter++;
-        }
-        
+        handleCitadel(10, activeTelescope);
+        handleCitadel(15, activeTelescope);
     }
     
-    
-    private void findCitadel(int index) {
-        Point titleWatchtowerPoint = openWatchtower().orElse(null);
-
-        if (titleWatchtowerPoint == null) {
-            System.out.println("Telescope is not activated");
-            return;
+    private void handleCitadel(int citadelLevel, Navigate activeTelescope) {
+        int count = gameStateService.countCitadels(citadelLevel);
+        if (count == 0) {
+            findCitadel(0, citadelLevel, activeTelescope);
         }
+    }
+    
+    private void findCitadel(int index, int citadelLevel, Navigate activeTelescope) {
+        Point titleWatchtowerPoint = openWatchtower(activeTelescope);
 
         Transformation transformation = Transformation.builder()
                 .real(titleWatchtowerPoint)
@@ -407,8 +402,8 @@ public class Telescope {
 
             final int shift = 6;
 
-            boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(10)).getX()) >= 5;
-            boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(10)).getX()) >= 5;
+            boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(citadelLevel)).getX()) >= 5;
+            boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(citadelLevel)).getX()) >= 5;
 
             if (shouldMoveLeft) {
                 robot.leftClick(sliders.get(0), slider);
@@ -417,18 +412,20 @@ public class Telescope {
 
             if (shouldMoveRight) {
                 robot.leftClick(sliders.get(1), slider);
-                robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(35)).move(shift, 0));
+                robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(citadelLevel)).move(shift, 0));
             }
 
             if (shouldMoveLeft) {
                 robot.leftClick(sliders.get(0), slider);
-                robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(10)).move(shift, 0));
+                robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(citadelLevel)).move(shift, 0));
             }
 
+            /*
             if (shouldMoveRight) {
                 robot.leftClick(sliders.get(1), slider);
                 robot.mouseDrag(transformation.transform(rightSlider.get(35)), transformation.transform(rightSlider.get(10)).move(-shift, 0));
             }
+            */
             robot.sleep(350);
         }
 
@@ -469,7 +466,7 @@ public class Telescope {
 
         gameStateService.add(Citadel.builder()
                 .position(mapCoordinates)
-                .level(10)
+                .level(citadelLevel)
                 .build());
     }
     
@@ -545,17 +542,28 @@ public class Telescope {
     }
     
     public void findCrypts() {
-        if (gameStateService.getCrypt(10).isPresent()) {
-            log.info("No need for more crypts");
-            return;
-        }
+        Navigate activeTelescope = Navigate.builder()
+                .areaName("ACTIVE_TELESCOPE")
+                .resourceName("player/icon_telescope.png")
+                .build();
         
-        Point titleWatchtowerPoint = openWatchtower().orElse(null);
-
-        if (titleWatchtowerPoint == null) {
-            System.out.println("Telescope is not activated");
+        if (!activeTelescope.exist()) {
+            log.info("Telescope is not activated");
             return;
         }
+
+        if (gameStateService.getCrypt(10).isEmpty()) {
+            handleCrypt(10, activeTelescope);
+        }
+
+        if (gameStateService.getCrypt(15).isEmpty()) {
+            handleCrypt(15, activeTelescope);
+        }
+    }
+    
+    private void handleCrypt(int cryptLevel, Navigate activeTelescope) {
+        Point titleWatchtowerPoint = openWatchtower(activeTelescope);
+        robot.sleep(1000);
 
         // Click on Crypt and Arenas let tab
         robot.leftClick(Point.of(titleWatchtowerPoint, Point.of(946, 323), Point.of(715, 556)));
@@ -565,13 +573,11 @@ public class Telescope {
                 .real(titleWatchtowerPoint)
                 .reference(Point.of(946, 323))
                 .build();
-        
+
         configureCryptsAndArenasMenu(transformation, new boolean[] {true, false, false, false, false});
-        configureCryptsAndArenasSlider(transformation, 10);
-        
+        configureCryptsAndArenasSlider(transformation, cryptLevel);
 
         Area area = transformation.transform(Point.of(832, 529), Point.of(888, 808));
-
 
         boolean found = false;
         int counter = 0;
@@ -581,13 +587,13 @@ public class Telescope {
 
 
         while (!found) {
-            
+
             robot.leftClick(Point.of(1347, 535));
             robot.sleep(300);
             if (counter > 0) {
                 robot.mouseDrag(Point.of(1347, 535), 0, counter * 5);
             }
-            
+
             BufferedImage screen = robot.captureScreen();
             List<Point> cryptPoints = ImageUtil.searchMultiple(crypt, screen, area, 0.07);
 
@@ -614,18 +620,18 @@ public class Telescope {
                 gameStateService.add(Crypt.builder()
                         .position(arenaCoordinate)
                         .rarity(Rarity.COMMON)
-                        .level(10)
+                        .level(cryptLevel)
                         .build());
 
                 found = true;
             }
             counter = counter + 1;
-            
+
             if (counter >= 10) {
                 found = true; // Just to stop loop!
             }
         }
-        
+
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
@@ -667,10 +673,11 @@ public class Telescope {
         caLeftSlider.put(1, Point.of(893 + 16, 508));
         caLeftSlider.put(5, Point.of(934 + 16, 508));
         caLeftSlider.put(10, Point.of(989 + 16, 508));
+        caLeftSlider.put(15, Point.of(1044 + 16, 508));
         
-        caRightSlider.put(5, Point.of(968 + 16, 508));
+        caRightSlider.put(5, Point.of(964 + 16, 508));
         caRightSlider.put(10, Point.of(1023 + 16, 508));
-
+        caRightSlider.put(15, Point.of(1078 + 16, 508));
         caRightSlider.put(35, Point.of(1290 + 19, 508));
 
     }
@@ -700,7 +707,7 @@ public class Telescope {
 
         if (shouldMoveRight) {
             robot.leftClick(sliders.get(1), slider);
-            robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(caRightSlider.get(35)).move(shift, 0));
+            robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(caRightSlider.get(level)).move(shift, 0));
         }
 
         if (shouldMoveLeft) {
@@ -708,10 +715,12 @@ public class Telescope {
             robot.mouseDrag(transformation.transform(caLeftSlider.get(1)), transformation.transform(caLeftSlider.get(level)).move(shift, 0));
         }
 
+        /*
         if (shouldMoveRight) {
             robot.leftClick(sliders.get(1), slider);
             robot.mouseDrag(transformation.transform(caRightSlider.get(35)), transformation.transform(caRightSlider.get(level)).move(-shift, 0));
         }
+         */
         robot.sleep(1000);
     }
 

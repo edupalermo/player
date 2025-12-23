@@ -1,18 +1,24 @@
 package org.palermo.totalbattle.player;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
+import org.palermo.totalbattle.internalservice.PlayerStateService;
+import org.palermo.totalbattle.player.state.ArmyTarget;
+import org.palermo.totalbattle.player.state.Resources;
 import org.palermo.totalbattle.player.task.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class PlayerRunnable implements Runnable {
 
     private LockService lockService = new LockService();
     private GameStateService gameStateService = new GameStateService();
+    private PlayerStateService playerStateService = new PlayerStateService();
     
     private static List<Player> players = new ArrayList<>();
     static {
@@ -25,8 +31,37 @@ public class PlayerRunnable implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Player Thread running");
+        log.info("Player Thread running");
         
+        //DELETE ME!!!
+        playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
+                .leadership(29550)
+                .dominance(7328)
+                .authority(14184)
+                .goal("any")
+                .waves(3)
+                .build());
+        playerStateService.getState(Player.MIGHTSHAPER).getArmy().setTarget(ArmyTarget.builder()
+                .leadership(14774)
+                .dominance(3770)
+                .authority(7490)
+                .goal("any")
+                .waves(3)
+                .build());
+        playerStateService.getState(Player.GRIRANA).getArmy().setTarget(ArmyTarget.builder()
+                .leadership(5839)
+                .dominance(1424)
+                .authority(2840)
+                .goal("any")
+                .waves(3)
+                .build());
+
+        playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
+                        .lumber(19_000_000)
+                        .stone(19_000_000)
+                        .iron(19_000_000)
+                .build());
+
         int counter = 0;
         
         while (true) {
@@ -46,8 +81,7 @@ public class PlayerRunnable implements Runnable {
                 }
                     
             } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
             counter++;
         }
@@ -65,6 +99,7 @@ public class PlayerRunnable implements Runnable {
                 SharedData.INSTANCE.removeHalt(player);
             }
 
+            (new FixBrokenArmor(player)).fix();
             (new CaptainSelector(player)).updatePlayerState();
             (new InfoGather(player)).evaluate();
 
@@ -81,18 +116,15 @@ public class PlayerRunnable implements Runnable {
 
             (new BuildArmy(player)).buildArmy();
 
+            (new AttackCitadel(player)).attack();
             (new AttackArena(player)).attack();
             (new MineSilver(player)).mine();
-            (new AttackCitadel(player)).attack();
             (new ExploreCrypt(player)).explore();
 
             (new PayTaxes(player)).pay();
-
             (new DonateSilver(player)).donate();
-
-            if (!isSummoningCircleFree(player)) {
-                (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
-            }
+            
+            (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -115,12 +147,5 @@ public class PlayerRunnable implements Runnable {
                 }
             }
         }
-
-    }
-
-    public boolean isSummoningCircleFree(Player player) {
-        return lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
-                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
-                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
     }
 }

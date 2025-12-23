@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.Player;
@@ -17,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
+@Slf4j
 public class SummoningCircle {
 
     private final MyRobot robot;
@@ -31,6 +33,11 @@ public class SummoningCircle {
     }
 
     public void evaluate() {
+
+        if (!isSummoningCircleFree(player)) {
+            log.info("Summoning Circle is on halt");
+        }
+        
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
@@ -95,6 +102,12 @@ public class SummoningCircle {
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(150);
+    }
+
+    private boolean isSummoningCircleFree(Player player) {
+        return lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
+                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
+                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
     }
 
     private void collectArtifacts() {
