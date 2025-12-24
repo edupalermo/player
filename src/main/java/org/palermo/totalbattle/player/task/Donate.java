@@ -151,6 +151,9 @@ public class Donate {
         if (playerState.getResourcesTarget().getStone() > playerState.getStone()) {
             resources.add(Resource.STONE);
         }
+        if (playerState.getResourcesTarget().getSilver() > playerState.getSilver()) {
+            resources.add(Resource.SILVER);
+        }
 
         return resources.get(ThreadLocalRandom.current().nextInt(resources.size()));
     }

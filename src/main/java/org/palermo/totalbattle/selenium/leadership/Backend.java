@@ -115,9 +115,7 @@ public class Backend {
                     troops.add(Unit.G2_MOUNTED);
                 }
                 if (tiers >= 2) {
-                    if (player == Player.PETER) {
-                        troops.add(Unit.S3_SWORDSMAN);
-                    }
+                    troops.add(Unit.S3_SWORDSMAN);
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);

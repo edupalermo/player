@@ -481,6 +481,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G2_MELEE);
                 units.add(Unit.G2_MOUNTED);
 
+                units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
                 units.add(Unit.G3_MOUNTED);
