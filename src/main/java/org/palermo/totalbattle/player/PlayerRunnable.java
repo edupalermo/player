@@ -8,6 +8,7 @@ import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.state.ArmyTarget;
 import org.palermo.totalbattle.player.state.Resources;
 import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.util.WhatsappUtil;
 import org.slf4j.MDC;
 
 import java.io.IOException;
@@ -72,6 +73,11 @@ public class PlayerRunnable implements Runnable {
                 SharedData.INSTANCE.removeHalt(player);
             }
 
+            if ((new CheckHeroHealth(player)).isDead()) {
+                WhatsappUtil.send(String.format("Player %s is dead", player.name()));
+                return;
+            }
+
             (new FixBrokenArmor(player)).fix();
             (new CaptainSelector(player)).updatePlayerState();
             (new InfoGather(player)).evaluate();
@@ -93,9 +99,10 @@ public class PlayerRunnable implements Runnable {
             (new AttackArena(player)).attack();
             (new MineSilver(player)).mine();
             (new ExploreCrypt(player)).explore();
+            (new Donate(player)).donate();
 
             (new PayTaxes(player)).pay();
-            (new DonateSilver(player)).donate();
+            // (new DonateSilver(player)).donate();
             
             (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
 

@@ -15,7 +15,7 @@ public abstract class AbstractService {
                 .computeIfAbsent((player), k -> new PlayerState());
     }
 
-    protected void saveGameState() {
+    public void saveGameState() {
         sharedData.saveAutomationState();
     }         
     

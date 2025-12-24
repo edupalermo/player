@@ -133,13 +133,17 @@ public class Navigate {
         robot.sleep(500);
     }
 
-    public void leftClickIfExists() {
+    public boolean leftClickIfExists() {
         if (point == null) {
             point = search().orElse(null);
         }
         if (point != null) {
             robot.leftClick(point, searchImage);
             robot.sleep(500);
+            return true;
+        }
+        else {
+            return false;
         }
     }
 

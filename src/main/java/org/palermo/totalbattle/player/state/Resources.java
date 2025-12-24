@@ -16,4 +16,5 @@ public class Resources {
     private int lumber;
     private int iron;
     private int stone;
+    private int silver;
 }

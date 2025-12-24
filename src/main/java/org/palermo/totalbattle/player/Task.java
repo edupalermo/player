@@ -48,7 +48,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.PALERMO);
+        play(Player.LORVEN);
         //play(Player.GRIRANA);
     }
 
@@ -69,6 +69,13 @@ public class Task {
                 .lumber(19_000_000)
                 .stone(19_000_000)
                 .iron(19_000_000)
+                .silver(2_000_000)
+                .build());
+        
+        playerStateService.getState(Player.LORVEN).setResourcesTarget(Resources.builder()
+                .lumber(250_000)
+                .stone(250_000)
+                .iron(250_000)
                 .build());
 
 
@@ -91,17 +98,20 @@ public class Task {
             // Fechar TABS!
             robot.sleep(1000);
             robot.leftClick(Point.of(560, 52));
-            robot.sleep(1000);
+            robot.sleep(3000);
             robot.leftClick(Point.of(560, 52));
-            robot.sleep(1000);
-            robot.leftClick(Point.of(560, 52));
-            robot.sleep(1000);
+            robot.sleep(3000);
             
             login(player);
 
             //(new FixBrokenArmor(player)).fix();
             
-            //(new InfoGather(player)).evaluate();
+            // (new InfoGather(player)).evaluate();
+            if ((new CheckHeroHealth(player)).isDead()) {
+                log.info("Hero is dead!");
+            }
+
+            (new Donate(player)).donate();
             //(new Telescope(player)).findCitadels();
 
             //(new Telescope(player)).findArena();
@@ -109,7 +119,7 @@ public class Task {
 
             //(new ExploreCrypt(player)).explore();
             //(new BuildArmy(player)).buildArmy();
-            (new Telescope(player)).findArena();
+            //(new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();
 
