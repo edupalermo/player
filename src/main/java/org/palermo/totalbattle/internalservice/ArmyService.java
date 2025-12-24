@@ -291,7 +291,7 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G1_MOUNTED, 750);
                 output = increase(output, Unit.G2_MOUNTED, 500);
                 output = increase(output, Unit.G3_MOUNTED, 540);
-                output = increase(output, Unit.EC3_ENGINEER, 350);
+                output = increase(output, Unit.EC3_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
                 output = increase(output, Unit.G1_RANGED, 1500);
