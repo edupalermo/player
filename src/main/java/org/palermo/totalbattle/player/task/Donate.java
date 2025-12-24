@@ -43,7 +43,6 @@ public class Donate {
         }
         
         Resource resource = selectResourceToDonate(target);
-        resource = Resource.SILVER;
         log.info("Trying to donate {} to {}", resource.name(), target.name());
 
         NavigationUtil.switchToMapIfNeeded();
