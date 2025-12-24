@@ -10,7 +10,6 @@ import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
-import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.TroopQuantity;
 import org.palermo.totalbattle.player.task.shared.SpeedUp;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -377,7 +376,6 @@ public class BuildArmy {
         int target;
         int counter = 0;
         boolean continueTrying = true;
-        boolean requestSilverFromOthers = false;
 
         do {
             target = Math.max((int) Math.round(quantity / Math.pow(2, counter)), 1);
@@ -392,10 +390,6 @@ public class BuildArmy {
             counter = counter + 1;
             
             boolean isSilverEnough = isResourceEnough(silverArea); 
-            
-            if (!isSilverEnough) {
-                requestSilverFromOthers = true;
-            }
             
             if (isSilverEnough && isResourceEnough(foodArea)) {
                 
@@ -416,13 +410,6 @@ public class BuildArmy {
             }
             
         } while(continueTrying);
-
-        if (requestSilverFromOthers) { // not enough resources
-            gameStateService.publishMessage(SilverRequest.builder()
-                    .target(player)
-                    .expirationDate(LocalDateTime.now().plusHours(3))
-                    .build());
-        }
     }
 
     private boolean isResourceEnough(Area area) {

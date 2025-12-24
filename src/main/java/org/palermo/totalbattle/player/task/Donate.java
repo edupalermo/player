@@ -1,11 +1,9 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.agent.builder.AgentBuilder;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.Player;
-import org.palermo.totalbattle.player.message.SilverRequest;
 import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.player.task.shared.Resource;
@@ -88,7 +86,7 @@ public class Donate {
         
         for (int i = 0; i < 3; i++) {
             if (i > 0) {
-                Point lastPosition = transformation.transform(buttonStartMarch.getPoint()).move(126,-452).move(0, (i - 1) * verticalScroll);
+                Point lastPosition = transformation.transform(buttonStartMarch.getPoint()).move(126,-450).move(0, (i - 1) * verticalScroll);
                 robot.leftClick(lastPosition);
                 robot.mouseDrag(lastPosition, 0, i * verticalScroll);
             }

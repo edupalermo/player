@@ -79,12 +79,14 @@ public class InfoGather {
 
         selectTopMenuIcon(Resource.SILVER, Operation.NOTHING);
 
-        log.info("Lumber {}, Iron {}, Stone {}", playerStateService.getState(player).getLumber(),
-                playerStateService.getState(player).getIron(),
-                playerStateService.getState(player).getStone());
+        log.info("Lumber {}, Iron {}, Stone {}",
+                String.format("%,d", playerStateService.getState(player).getLumber()),
+                String.format("%,d", playerStateService.getState(player).getIron()),
+                String.format("%,d", playerStateService.getState(player).getStone()));
 
-        log.info("Tar {}, Silver {}", playerStateService.getState(player).getCommonTar(),
-                playerStateService.getState(player).getSilver());
+        log.info("Tar {}, Silver {}",
+                String.format("%,d", playerStateService.getState(player).getCommonTar()),
+                String.format("%,d", playerStateService.getState(player).getSilver()));
     }
     
     private void gatherCommonTarAmount() {
