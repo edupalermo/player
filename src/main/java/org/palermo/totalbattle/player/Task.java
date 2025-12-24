@@ -76,11 +76,12 @@ public class Task {
                 .iron(250_000)
                 .build());
 
-
+        /*
         gameStateService.add(Citadel.builder()
                 .level(15)
                 .position(Point.of(341, 523))
                 .build());
+         */
 
         gameStateService.add(Crypt.builder()
                 .level(15)
@@ -107,13 +108,13 @@ public class Task {
             // (new InfoGather(player)).evaluate();
 
             //(new Donate(player)).donate();
-            //(new Telescope(player)).findCitadels();
+            (new Telescope(player)).findCitadels();
 
             //(new Telescope(player)).findArena();
             //(new Telescope(player)).findCrypts();
 
             //(new ExploreCrypt(player)).explore();
-            (new BuildArmy(player)).buildArmy();
+            //(new BuildArmy(player)).buildArmy();
             //(new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();

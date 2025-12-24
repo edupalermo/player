@@ -342,7 +342,7 @@ public class Telescope {
         leftSlider.put(15, Point.of(1006 + 16, 551));
         
         
-        rightSlider.put(10, Point.of(1002 + 16, 551));
+        rightSlider.put(10, Point.of(1001 + 16, 551));
         rightSlider.put(15, Point.of(1040 + 16, 551));
         rightSlider.put(35, Point.of(1290 + 19, 551));
         
@@ -402,8 +402,8 @@ public class Telescope {
 
             final int shift = 6;
 
-            boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(citadelLevel)).getX()) >= 5;
-            boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(citadelLevel)).getX()) >= 5;
+            boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(citadelLevel)).getX()) >= 2;
+            boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(citadelLevel)).getX()) >= 2;
 
             if (shouldMoveLeft) {
                 robot.leftClick(sliders.get(0), slider);
@@ -411,8 +411,9 @@ public class Telescope {
             }
 
             if (shouldMoveRight) {
+                int sign = (int) Math.signum(caRightSlider.get(citadelLevel).getX() - sliders.get(1).getX());
                 robot.leftClick(sliders.get(1), slider);
-                robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(citadelLevel)).move(shift, 0));
+                robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(citadelLevel)).move(sign * shift, 0));
             }
 
             if (shouldMoveLeft) {
