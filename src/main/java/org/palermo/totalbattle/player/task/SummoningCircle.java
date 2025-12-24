@@ -35,6 +35,7 @@ public class SummoningCircle {
 
         if (!isSummoningCircleFree(player)) {
             log.info("Summoning Circle is on halt");
+            return;
         }
         
         robot.type(KeyEvent.VK_ESCAPE);
