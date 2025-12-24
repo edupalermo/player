@@ -88,6 +88,7 @@ public class Donate {
             if (i > 0) {
                 Point lastPosition = transformation.transform(buttonStartMarch.getPoint()).move(126,-450).move(0, (i - 1) * verticalScroll);
                 robot.leftClick(lastPosition);
+                robot.sleep(350);
                 robot.mouseDrag(lastPosition, 0, i * verticalScroll);
             }
 
