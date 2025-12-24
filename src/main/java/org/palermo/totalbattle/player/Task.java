@@ -48,22 +48,20 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.LORVEN);
+        play(Player.PALERMO);
         //play(Player.GRIRANA);
     }
 
 
     public static void play(Player player) {
         
-        /*
-        playerStateService.getState(player).getArmy().setTarget(ArmyTarget.builder()
-                        .leadership(104000)
-                        .dominance(26200)
-                        .authority(52000)
+        playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
+                        .leadership(30613)
+                        .dominance(7576)
+                        .authority(14715)
                         .goal("any")
-                        .waves(1)
+                        .waves(3)
                 .build());
-        */
 
         playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
                 .lumber(19_000_000)
@@ -107,18 +105,15 @@ public class Task {
             //(new FixBrokenArmor(player)).fix();
             
             // (new InfoGather(player)).evaluate();
-            if ((new CheckHeroHealth(player)).isDead()) {
-                log.info("Hero is dead!");
-            }
 
-            (new Donate(player)).donate();
+            //(new Donate(player)).donate();
             //(new Telescope(player)).findCitadels();
 
             //(new Telescope(player)).findArena();
             //(new Telescope(player)).findCrypts();
 
             //(new ExploreCrypt(player)).explore();
-            //(new BuildArmy(player)).buildArmy();
+            (new BuildArmy(player)).buildArmy();
             //(new Telescope(player)).findArena();
 
             //(new Telescope(player)).findCitadels();

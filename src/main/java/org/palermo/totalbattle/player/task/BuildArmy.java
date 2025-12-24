@@ -27,7 +27,10 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 public class BuildArmy {
@@ -83,22 +86,26 @@ public class BuildArmy {
             throw new RuntimeException("Couldn't find Barracks title!");
         }
 
-
-        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
-
-        BufferedImage buttonHelp = ImageUtil.loadResource("player/barracks/button_help.png");
-        Point buttonHelpPoint = ImageUtil.search(buttonHelp, screen, buttonArea, 0.1).orElse(null);
-        if (buttonHelpPoint != null) {
-            robot.leftClick(buttonHelpPoint, buttonHelp);
+        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));         
+        Navigate navigateHelpButton = Navigate.builder()
+                .resourceName("player/barracks/button_help.png")
+                .area(buttonArea)
+                .waitLimit(1500)
+                .build();
+        
+        if (navigateHelpButton.exist()) {
+            navigateHelpButton.leftClick();
             robot.sleep(200);
         }
         else {
-            BufferedImage iconHourglass = ImageUtil.loadResource("player/barracks/icon_hourglass.png");
-            Area iconHourglassArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397));
-            Point iconHourglassPoint = ImageUtil.searchSurroundings(iconHourglass, screen, iconHourglassArea, 0.1, 20).orElse(null);
-
-            if (iconHourglassPoint != null) {
-                BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(iconHourglassPoint, 18, -2, 92, 18));
+            Navigate navigateHourglass = Navigate.builder()
+                    .area(Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397)))
+                    .resourceName("player/barracks/icon_hourglass.png")
+                    .waitLimit(1500)
+                    .build();
+            
+            if (navigateHourglass.exist()) {
+                BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(navigateHourglass.getPoint(), 18, -2, 92, 18));
 
                 try {
                     String timeLeftAsText = treatTimeLeft(timeLeft);
@@ -123,21 +130,20 @@ public class BuildArmy {
                     speedUp(1, LocalDateTime.now().plusMinutes(20));
                 }
             }
-            else { // No Hourglass and No Help button
-                BufferedImage buttonComplete = ImageUtil.loadResource("player/barracks/button_complete.png");
-                Point buttonCompletePoint = ImageUtil.search(buttonComplete, screen, buttonArea, 0.1).orElse(null);
+            
+            if (navigateHelpButton.searchAgain().isEmpty() &&
+                    navigateHourglass.searchAgain().isEmpty()) {
+                
+                Navigate.builder()
+                        .resourceName("player/barracks/button_complete.png")
+                        .area(buttonArea)
+                        .waitLimit(1500)
+                        .build()
+                        .leftClickIfExists();
 
-                if (buttonCompletePoint != null) {
-                    robot.leftClick(buttonCompletePoint, buttonComplete);
-                    robot.sleep(200);
-                }
-
-                if (armyService.shouldCheckTroopQuantities(player)) {
-                    //updateTroopQuantities(titleBarracksPoint);
-                    //armyService.checkedTroopQuantities(player);
-                }
                 chooseTroopToBuild(titleBarracksPoint);
             }
+            
         }
 
         robot.type(KeyEvent.VK_ESCAPE);
@@ -193,70 +199,69 @@ public class BuildArmy {
                 .area(Area.fromTwoPoints(910, 325, 1066, 361))
                 .waitLimit(1000)
                 .build();
+        
+        Set<String> exclusionSet = new HashSet<>();
 
-            outer: for (int r = 0; r < turns; r++) {
-                
-                if (r == 0) {
-                    speedUpsTitle.ensureExistence();
-                }
-                else if (speedUpsTitle.searchAgain().isEmpty()) {
-                    return;
-                }
-    
-                if (r != 0) {
-                    // Scroll up
-                    robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
-                    robot.sleep(500);
-                }
-    
-                SpeedUpBean bestSpeedUp = null;
-    
-                for (SpeedUpBean bean : SpeedUp.speedUps) {
-                    if (bean.getSeconds() < seconds) {
-                        if (bestSpeedUp == null) {
-                            bestSpeedUp = bean;
-                        }
-                        else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
-                            bestSpeedUp = bean;
-                        }
-                    }
-                }
-    
-                if (bestSpeedUp == null) {
-                    System.out.println("Shouldn't use speed ups!");
-                    break;
-                }
-    
-                log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
-                
-                int counter = 0;
-                
-                while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
-
-                    if (speedUpsTitle.searchAgain().isEmpty()) {
-                        break outer;
-                    }
-                    
-                    int index = findIndex(bestSpeedUp);
-                    
-                    if (index == 0) {
-                        bestSpeedUp = SpeedUp.speedUps.get(1); // Should use 15m
-                    }
-                    else if  (index > 1) {
-                        bestSpeedUp = SpeedUp.speedUps.get(index - 1); // Should use 15m
-                    }
-                }
-                
-                seconds = seconds - bestSpeedUp.getSeconds();
-                
+        outer: for (int r = 0; r < turns; r++) {
+            
+            if (r == 0) {
+                speedUpsTitle.ensureExistence();
             }
+            else if (speedUpsTitle.searchAgain().isEmpty()) {
+                return;
+            }
+
+            if (r != 0) {
+                // Scroll up
+                robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
+                robot.sleep(500);
+            }
+
+            SpeedUpBean bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
+
+            if (bestSpeedUp == null) {
+                System.out.println("Shouldn't use speed ups!");
+                break;
+            }
+
+            // log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
+            
+            while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+                if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
+                    break outer;
+                }
+
+                exclusionSet.add(bestSpeedUp.getLabel());
+                bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
+            }
+            
+            seconds = seconds - bestSpeedUp.getSeconds();
+        }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
         }
     }
-    
+
+    private static Optional<SpeedUpBean> findBestSpeedUp(long seconds, Set<String> exclusionSet) {
+        SpeedUpBean bestSpeedUp = null;
+        for (SpeedUpBean bean : SpeedUp.speedUps) {
+            if (exclusionSet.contains(bean.getLabel())) {
+                continue;
+            }
+            if (bean.getSeconds() < seconds) {
+                if (bestSpeedUp == null) {
+                    bestSpeedUp = bean;
+                }
+                else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
+                    bestSpeedUp = bean;
+                }
+            }
+        }
+        return Optional.ofNullable(bestSpeedUp);
+    }
+
     private int findIndex(SpeedUpBean speedUpBean) {
         for (int i = 0; i <= speedUpBean.getSeconds(); i++) {
             SpeedUpBean it = SpeedUp.speedUps.get(i);

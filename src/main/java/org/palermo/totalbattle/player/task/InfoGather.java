@@ -65,11 +65,10 @@ public class InfoGather {
 
             if (playerStateService.getState(player).getLumber() >= playerStateService.getState(player).getResourcesTarget().getLumber() &&
                     playerStateService.getState(player).getIron() >= playerStateService.getState(player).getResourcesTarget().getIron() &&
-                    playerStateService.getState(player).getStone() >= playerStateService.getState(player).getResourcesTarget().getStone()
+                    playerStateService.getState(player).getStone() >= playerStateService.getState(player).getResourcesTarget().getStone() &&
+                    shouldSendMessage()
             ) {
-                if (shouldSendMessage()) {
-                    WhatsappUtil.send(String.format("Player %s has the resources to upgrade a building", player.getName()));
-                }
+                WhatsappUtil.send(String.format("Player %s has the resources to upgrade a building", player.getName()));
             }
         }
         
