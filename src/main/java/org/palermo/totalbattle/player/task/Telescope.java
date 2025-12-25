@@ -334,15 +334,16 @@ public class Telescope {
     }
 
 
+    // Used for Monsters and Citadels
     private Map<Integer, Point> leftSlider = new HashMap<>();
     private Map<Integer, Point> rightSlider = new HashMap<>();
     {
         leftSlider.put(1, Point.of(893 + 16, 551));
-        leftSlider.put(10, Point.of(968 + 16, 551));
+        leftSlider.put(10, Point.of(969 + 16, 551));
         leftSlider.put(15, Point.of(1006 + 16, 551));
         
         
-        rightSlider.put(10, Point.of(1001 + 16, 551));
+        rightSlider.put(10, Point.of(1003 + 16, 551));
         rightSlider.put(15, Point.of(1040 + 16, 551));
         rightSlider.put(35, Point.of(1290 + 19, 551));
         
@@ -364,9 +365,16 @@ public class Telescope {
     }
     
     private void handleCitadel(int citadelLevel, Navigate activeTelescope) {
-        int count = gameStateService.countCitadels(citadelLevel);
-        if (count == 0) {
-            findCitadel(0, citadelLevel, activeTelescope);
+        try {
+            int count = gameStateService.countCitadels(citadelLevel);
+            if (count == 0) {
+                findCitadel(0, citadelLevel, activeTelescope);
+            }
+        }
+        catch(Exception e) {
+            log.error(e.getMessage() ,e);
+            robot.type(KeyEvent.VK_ESCAPE); // Sometimes the bonus sale is shown
+            robot.sleep(3000);
         }
     }
     
@@ -383,7 +391,6 @@ public class Telescope {
         robot.sleep(500);
 
         selectMonsters(titleWatchtowerPoint, new boolean[] {false, false, false, true, false, false});
-
         selectRarity(titleWatchtowerPoint, new boolean[] {false, false, false, true});
 
         if (index == 0) {
@@ -400,30 +407,34 @@ public class Telescope {
                 throw new RuntimeException("Fail to get sliders");
             }
 
-            final int shift = 6;
+            final int shift = 7;
 
             boolean shouldMoveLeft = Math.abs(sliders.get(0).centralize(slider).getX() - transformation.transform(leftSlider.get(citadelLevel)).getX()) >= 2;
             boolean shouldMoveRight = Math.abs(sliders.get(1).centralize(slider).getX() - transformation.transform(rightSlider.get(citadelLevel)).getX()) >= 2;
 
             if (shouldMoveLeft) {
                 robot.leftClick(sliders.get(0), slider);
+                robot.sleep(300);
                 robot.mouseDrag(sliders.get(0).centralize(slider), transformation.transform(leftSlider.get(1)).move(-shift, 0));
             }
 
             if (shouldMoveRight) {
                 int sign = (int) Math.signum(caRightSlider.get(citadelLevel).getX() - sliders.get(1).getX());
                 robot.leftClick(sliders.get(1), slider);
+                robot.sleep(300);
                 robot.mouseDrag(sliders.get(1).centralize(slider), transformation.transform(rightSlider.get(citadelLevel)).move(sign * shift, 0));
             }
 
             if (shouldMoveLeft) {
                 robot.leftClick(sliders.get(0), slider);
+                robot.sleep(300);
                 robot.mouseDrag(transformation.transform(leftSlider.get(1)), transformation.transform(leftSlider.get(citadelLevel)).move(shift, 0));
             }
 
             /*
             if (shouldMoveRight) {
                 robot.leftClick(sliders.get(1), slider);
+                robot.sleep(300);
                 robot.mouseDrag(transformation.transform(rightSlider.get(35)), transformation.transform(rightSlider.get(10)).move(-shift, 0));
             }
             */
