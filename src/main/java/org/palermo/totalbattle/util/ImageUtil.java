@@ -38,6 +38,8 @@ public class ImageUtil {
 
     private static final int GRAY_THRESHOLD = 20;
 
+
+    public static final Pattern PATTERN_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = Pattern.compile("^(\\d{1,3})(,\\d{3})*$");
     public static final Pattern PATTERN_FOR_ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
     public static final Pattern PATTERN_FOR_NUMBERS_WITH_MULTIPLIER = Pattern.compile("^[0-9]+(\\.[0-9]+)?[KM]?$");
     public static final Pattern PATTERN_FOR_COUNTDOWN = Pattern.compile("^(?:\\d{1,2}d:?\\d{1,2}h|" +
@@ -49,6 +51,7 @@ public class ImageUtil {
     public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
     public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
+    public static final String WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = "0123456789,";
     public static final String WHITELIST_FOR_NUMBERS_AND_MULTIPLIER = "0123456789.KM";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER = "0123456789,./K";
     public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");

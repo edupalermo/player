@@ -9,6 +9,10 @@ import java.awt.image.BufferedImage;
 public class Test {
 
     public static void main(String[] args) {
+        System.out.println(Integer.parseInt("2147483648"));
+    }
+
+    public static void main2(String[] args) {
         BufferedImage image = ImageUtil.loadResource("test.png");
         //image = ImageUtil.toGrayscale(image);
         // image = ImageUtil.toGrayscale(image);

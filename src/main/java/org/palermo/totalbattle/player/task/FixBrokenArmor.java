@@ -2,16 +2,13 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.Player;
-import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 @Slf4j
 public class FixBrokenArmor {
@@ -65,7 +62,9 @@ public class FixBrokenArmor {
             }
 
             robot.leftClick(navigate.getPoint().move(14, 0));
-            handleArmor(transformation);
+            
+            handleArmor(transformation, transformation.transform(Point.of(958, 393), Point.of(1039, 674)));
+            handleArmor(transformation, transformation.transform(Point.of(529, 393), Point.of(669, 674)));
             
             count = count + 1;
         }
@@ -74,9 +73,9 @@ public class FixBrokenArmor {
         robot.sleep(300);
     }
     
-    private void handleArmor(Transformation transformation) {
+    private void handleArmor(Transformation transformation, Area area) {
         Navigate navigate = Navigate.builder()
-                .area(transformation.transform(Point.of(958, 393), Point.of(1039, 674)))
+                .area(area)
                 .resourceName("player/hero/broken_armor_66.png")
                 .comparationLimit(0.05)
                 .build();
