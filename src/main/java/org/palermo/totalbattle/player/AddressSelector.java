@@ -44,6 +44,7 @@ public class AddressSelector {
 
 
     private static final String[] ONE_TIME_BONUS = new String[] {
+            "https://totalbattle.com/en/?present=merry_christmas_2025",
             "https://totalbattle.com/en/?present=ref3_december_25_u2R8",
             "https://totalbattle.com/en/?present=ref2_december_25_FYWg",
             "https://totalbattle.com/en/?present=ref1_december_25_fJzr",

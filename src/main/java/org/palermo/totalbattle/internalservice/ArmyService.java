@@ -288,9 +288,9 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.EC4_ENGINEER, 167);
                 break;
             case GRIRANA:  // Should defeat Level 15 citadel
-                output = increase(output, Unit.G1_MOUNTED, 750);
-                output = increase(output, Unit.G2_MOUNTED, 500);
-                output = increase(output, Unit.G3_MOUNTED, 540);
+                output = increase(output, Unit.G1_MOUNTED, 1500);
+                output = increase(output, Unit.G2_MOUNTED, 1000);
+                output = increase(output, Unit.G3_MOUNTED, 550);
                 output = increase(output, Unit.EC3_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
