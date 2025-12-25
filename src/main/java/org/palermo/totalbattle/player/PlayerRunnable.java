@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.state.ArmyTarget;
-import org.palermo.totalbattle.player.state.Resources;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.util.WhatsappUtil;
 import org.slf4j.MDC;
@@ -99,7 +97,7 @@ public class PlayerRunnable implements Runnable {
             (new AttackArena(player)).attack();
             (new MineSilver(player)).mine();
             (new ExploreCrypt(player)).explore();
-            (new Donate(player)).donate();
+            (new Donate(player)).evaluate();
 
             (new PayTaxes(player)).pay();
             // (new DonateSilver(player)).donate();

@@ -48,7 +48,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.MIGHTSHAPER);
+        play(Player.LORVEN);
         //play(Player.GRIRANA);
     }
 
@@ -105,9 +105,9 @@ public class Task {
 
             //(new FixBrokenArmor(player)).fix();
             
-            (new InfoGather(player)).evaluate();
+            //(new InfoGather(player)).evaluate();
 
-            //(new Donate(player)).donate();
+            (new Donate(player)).evaluate();
             // (new Telescope(player)).findCitadels();
 
             //(new Telescope(player)).findArena();

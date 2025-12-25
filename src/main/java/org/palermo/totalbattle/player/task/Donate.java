@@ -11,9 +11,11 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +34,7 @@ public class Donate {
         this.player = player;
     }
     
-    public void donate() {
+    public void evaluate() {
         
         Player target = playerInNeed().orElse(null);
         if (target == null) {
@@ -40,6 +42,13 @@ public class Donate {
             return;
         }
         
+        while (donate(target)) {
+            
+        }
+        
+    }
+    
+    private boolean donate(Player target) {
         Resource resource = selectResourceToDonate(target);
         log.info("Trying to donate {} to {}", resource.name(), target.name());
 
@@ -50,7 +59,7 @@ public class Donate {
 
         robot.leftClick(position);
         robot.sleep(300);
-        
+
         Navigate.builder()
                 .resourceName("player/friend/title_players_city.png")
                 .areaName(Area.PLAYERS_CITY_TITLE)
@@ -70,20 +79,20 @@ public class Donate {
                 .waitLimit(3000)
                 .build()
                 .ensureExistence();
-        
+
         Transformation transformation = Transformation.builder()
                 .real(buttonStartMarch.getPoint())
                 .reference(Point.of(1090, 877))
                 .build();
-        
+
         Navigate icon = Navigate.builder()
                 .resourceName(resource.getResource())
                 .area(transformation.transform(Point.of(786, 400), Point.of(885, 805)))
                 .waitLimit(1000)
                 .build();
-        
+
         int verticalScroll = 215;
-        
+
         for (int i = 0; i < 3; i++) {
             if (i > 0) {
                 Point lastPosition = transformation.transform(buttonStartMarch.getPoint()).move(126,-450).move(0, (i - 1) * verticalScroll);
@@ -96,17 +105,32 @@ public class Donate {
                 break;
             }
         }
-        
+
         if (!icon.exist()) {
             log.info("Resource not found!");
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
-            
+
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
-            return;
+            return false;
         }
-        
+
+        Navigate navigateCheckmark = Navigate.builder()
+                .resourceName("player/watchtower/icon_checkmark.png")
+                .area(transformation.transform(Point.of(872, 526), Point.of(1118,553)))
+                .waitLimit(1000)
+                .build();
+        if (!navigateCheckmark.exist()) {
+            log.info("No Captain available to donate resources!");
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            return false;
+        }
+
         robot.mouseDrag(icon.getPoint().move(88, 36), 314, 0);
         robot.sleep(200);
 
@@ -117,6 +141,8 @@ public class Donate {
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
+        
+        return true;
     }
 
     private Optional<Player> playerInNeed() {
