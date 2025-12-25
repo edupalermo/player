@@ -91,7 +91,7 @@ public class Donate {
                 .waitLimit(1000)
                 .build();
 
-        int verticalScroll = 215;
+        int verticalScroll = 220;
 
         for (int i = 0; i < 3; i++) {
             if (i > 0) {
