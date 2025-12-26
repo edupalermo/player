@@ -65,10 +65,12 @@ public class PlayerRunnable implements Runnable {
         try {
             MDC.put("playerName", player.getName());
             process = Task.openOrdinaryBrowser(player);
-            Task.login(player);
-            
+
             SharedData.INSTANCE.robot.sleep(1500);
             CdpUtil.closeAllTabsExceptOne();
+
+            Task.login(player);
+            
 
             if (SharedData.INSTANCE.shouldHalt(player)) {
                 Task.showPauseDialog("Click on the button to continue");
