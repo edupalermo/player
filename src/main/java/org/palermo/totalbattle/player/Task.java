@@ -243,9 +243,9 @@ public class Task {
                     "--disable-popup-blocking",
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
-                    "--new-window",
+                    //"--new-window",
                     "--user-data-dir=" + userDataDir,
-                    "--profile-directory=Default",
+                    // "--profile-directory=Default",
                     url
             );
             
