@@ -20,6 +20,7 @@ import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.palermo.totalbattle.util.OcrUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
 
 import java.awt.event.KeyEvent;
@@ -163,12 +164,12 @@ public class BuildArmy {
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
-        if (timeLeft.getHeight() < ImageUtil.OCR_HEIGHT) {
-            timeLeft = ImageUtil.resize(timeLeft, ImageUtil.OCR_HEIGHT);
+        if (timeLeft.getHeight() < OcrUtil.OCR_HEIGHT) {
+            timeLeft = ImageUtil.resize(timeLeft, OcrUtil.OCR_HEIGHT);
         }
         // ImageUtil.showImageAndWait(timeLeft);
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        return ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
+        return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
     }
     
     public void testSpeedUps() {
@@ -675,7 +676,7 @@ public class BuildArmy {
         }
 
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String quantityAsString = ImageUtil.ocr(quantityImage, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
+        String quantityAsString = OcrUtil.ocr(quantityImage, OcrUtil.WHITELIST_FOR_ONLY_NUMBERS, OcrUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
         System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
 
         return Integer.parseInt(quantityAsString);

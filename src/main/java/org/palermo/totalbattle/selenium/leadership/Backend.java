@@ -7,6 +7,7 @@ import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -219,7 +220,7 @@ public class Backend {
         BufferedImage linearNormalized = ImageUtil.linearNormalization(invertedGray);
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
 
-        return ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_USERNAME, ImageUtil.SINGLE_LINE_MODE);
+        return OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_USERNAME, OcrUtil.SINGLE_LINE_MODE);
     }
 
     public static int[] getHeadCount(MyRobot robot) {
@@ -270,7 +271,7 @@ public class Backend {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "leadership_text.png");
 
-        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String leadershipText = OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, OcrUtil.LINE_OF_PRINTED_TEXT);
         leadershipText = leadershipText.replaceAll(",", "");
         int slashIndex = leadershipText.indexOf("/");
 

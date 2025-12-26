@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.selenium.leadership;
 
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.image.BufferedImage;
 
@@ -37,7 +38,7 @@ public class Working {
         BufferedImage linearNormalized = ImageUtil.linearNormalization(invertedGray);
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
 
-        return ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_USERNAME, ImageUtil.SINGLE_LINE_MODE);
+        return OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_USERNAME, OcrUtil.SINGLE_LINE_MODE);
     }
     
     private static int[] getHeadCount(BufferedImage screen) {
@@ -60,7 +61,7 @@ public class Working {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "leadership_text.png");
 
-        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String leadershipText = OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, OcrUtil.LINE_OF_PRINTED_TEXT);
         leadershipText = leadershipText.replaceAll(",", "");
         int slashIndex = leadershipText.indexOf("/");
 

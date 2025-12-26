@@ -14,6 +14,7 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.palermo.totalbattle.util.OcrUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
 
 import java.awt.event.KeyEvent;
@@ -285,12 +286,12 @@ public class InfoGather {
         image = ImageUtil.linearNormalization(image);
         image =ImageUtil.cropText(image);
         image = ImageUtil.linearNormalization(image);
-        if (image.getHeight() < ImageUtil.OCR_HEIGHT) {
-            image = ImageUtil.resize(image, ImageUtil.OCR_HEIGHT);
+        if (image.getHeight() < OcrUtil.OCR_HEIGHT) {
+            image = ImageUtil.resize(image, OcrUtil.OCR_HEIGHT);
         }
 
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String asString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, ImageUtil.PATTERN_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, manualOcr);
+        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, OcrUtil.PATTERN_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, manualOcr);
         asString = asString.replace(",", "");
         return Integer.parseInt(asString);
     }
@@ -300,12 +301,12 @@ public class InfoGather {
         image = ImageUtil.linearNormalization(image);
         image =ImageUtil.cropText(image);
         image = ImageUtil.linearNormalization(image);
-        if (image.getHeight() < ImageUtil.OCR_HEIGHT) {
-            image = ImageUtil.resize(image, ImageUtil.OCR_HEIGHT);
+        if (image.getHeight() < OcrUtil.OCR_HEIGHT) {
+            image = ImageUtil.resize(image, OcrUtil.OCR_HEIGHT);
         }
 
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String asString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, ImageUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, manualOcr);
+        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, OcrUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, manualOcr);
 
         return toNumberWithMultiplier(asString);
         

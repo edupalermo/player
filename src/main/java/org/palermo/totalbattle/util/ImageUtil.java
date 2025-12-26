@@ -2,10 +2,6 @@ package org.palermo.totalbattle.util;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
-import org.palermo.totalbattle.dao.OcrDao;
-import org.palermo.totalbattle.entity.ProcessedImage;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
@@ -19,18 +15,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 @Slf4j
@@ -38,38 +27,10 @@ public class ImageUtil {
 
     private static final int GRAY_THRESHOLD = 20;
 
-
-    public static final Pattern PATTERN_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = Pattern.compile("^(\\d{1,3})(,\\d{3})*$");
-    public static final Pattern PATTERN_FOR_ONLY_NUMBERS = Pattern.compile("^[0-9]+$");
-    public static final Pattern PATTERN_FOR_NUMBERS_WITH_MULTIPLIER = Pattern.compile("^[0-9]+(\\.[0-9]+)?[KM]?$");
-    public static final Pattern PATTERN_FOR_COUNTDOWN = Pattern.compile("^(?:\\d{1,2}d:?\\d{1,2}h|" +
-            "\\d{1,2}h:?\\d{1,2}m|" +
-            "(?:\\d{1,2}m:?)?\\d{1,2}s)$");
-
-    public static final int OCR_HEIGHT = 70;
-
-    public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
-    public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
-    public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
-    public static final String WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = "0123456789,";
-    public static final String WHITELIST_FOR_NUMBERS_AND_MULTIPLIER = "0123456789.KM";
-    public static final String WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER = "0123456789,./K";
-    public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
-    public static final String WHITELIST_FOR_NUMBERS = "0123456789,";
-    public static final int PSM_DEFAULT = 3;
-    public static final int LINE_OF_PRINTED_TEXT = 6;
-    public static final int SINGLE_LINE_MODE = 7;
-    public static final int SINGLE_WORD_MODE = 8;
-    public static final int PSM_SINGLE_CHARACTER = 10;
-    public static final int PSM_SPARSE_TEXT = 11;
-    
-    public static final String LANGUAGE_TB = "tb";
     
     private static final String HOSTNAME_NOTEBOOK = "eduardo-XPS-15-9500";
 
     private static Map<String, BufferedImage> imageCache = new HashMap<>();
-    
-    private static OcrDao ocrDao = new OcrDao();
     
     public static BufferedImage loadResource(String resourceName) {
         BufferedImage cachedImage = imageCache.get(resourceName);
@@ -788,232 +749,9 @@ public class ImageUtil {
                 Math.min((maxY - minY + MARGIN), height - minY));
     }
 
-    public static String ocr(BufferedImage image, String whitelist, int pageSegMode) {
-        return ocr(image, whitelist, pageSegMode, null);
-    }
-
-    public static String ocr(BufferedImage image, String whitelist, Pattern pattern, boolean manualOcr) {
-
-        try {
-            List<ProcessedImage> list =  ocrDao.retrieve(image.getWidth(), image.getHeight(), whitelist);
-            ProcessedImage databaseAnswer = list.stream()
-                    .filter((pi) -> compare(pi.getImage(), image, 0.05))
-                    .findAny()
-                    .orElse(null);
-            if (databaseAnswer != null) {
-                if (pattern.matcher(databaseAnswer.getText()).matches()) {
-                    return databaseAnswer.getText();
-                }
-            }
-
-            String stringValue = ocrBestMethod(image, whitelist);
-            if (stringValue != null && stringValue.length() > 0) {
-                if (pattern.matcher(stringValue).matches()) {
-                    return stringValue;
-                }
-                else {
-                    if (whitelist.equals(ImageUtil.WHITELIST_FOR_COUNTDOWN)) {
-                        stringValue = replaceLastDigitIfFive(stringValue);
-                        stringValue = replaceSExceptLast(stringValue);
-                        if (pattern.matcher(stringValue).matches()) {
-                            return stringValue;
-                        }
-                    }
-                    log.info("Tesseract returned a string that doesn't match the given pattern: " + stringValue);
-                }
-            }
-            
-            if (manualOcr || HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
-                stringValue = askManualOcr(image);
-                
-                if (stringValue != null && stringValue.length() > 0) {
-                    if (pattern.matcher(stringValue).matches()) {
-                        ocrDao.persist(image, stringValue, whitelist);
-                        return stringValue;
-                    }
-                }
-            }
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-        
-        // ImageUtil.showImageFor5Seconds(image, "Fail to parse it as " + whitelist);
-        
-        File ocrFolder = createFolderIsThereIsNot(new File("."), "ocr");
-        File file = new File(ocrFolder, Long.toString(crcImage(image)) + ".png");
-        if (!file.exists()) {
-            ImageUtil.write(image, file);
-        }
-        
-        throw new RuntimeException("It was not possible to make ocr of the given image!");
-    }
-
-    private static String replaceLastDigitIfFive(String text) {
-        // checks if the string ends with exactly 3 digits and the last one is 5
-        if (text.matches(".*\\d{2}5$")) {
-            return text.substring(0, text.length() - 1) + "s";
-        }
-        return text;
-    }
-
-    public static String replaceSExceptLast(String text) {
-        if (text == null || text.isEmpty()) return text;
-
-        int lastIndex = text.length() - 1;
-        StringBuilder result = new StringBuilder(text.length());
-
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            // replace 's' unless it's the final character
-            if (c == 's' && i != lastIndex) {
-                result.append('5');
-            } else {
-                result.append(c);
-            }
-        }
-
-        return result.toString();
-    }
-    
-    /**
-     * Shows a modal popup with the given image, a text field, and a confirm button.
-     * Returns the text the user typed, or null if the user cancelled/closed the dialog.
-     */
-    public static String askManualOcr(BufferedImage image) {
-        // Panel with image and text field
-        JLabel imageLabel = new JLabel(new ImageIcon(image));
-
-        JTextField textField = new JTextField(20);
-
-        JPanel content = new JPanel(new BorderLayout(10, 10));
-        content.add(imageLabel, BorderLayout.CENTER);
-
-        JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
-        bottomPanel.add(new JLabel("OCR text:"), BorderLayout.WEST);
-        bottomPanel.add(textField, BorderLayout.CENTER);
-        content.add(bottomPanel, BorderLayout.SOUTH);
-
-        // Custom button text
-        String[] options = { "Confirm", "Cancel" };
-
-        int result = JOptionPane.showOptionDialog(
-                null,
-                content,
-                "Manual OCR",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-
-        if (result == JOptionPane.OK_OPTION) {
-            return textField.getText();
-        } else {
-            return null; // user cancelled or closed
-        }
-    }
-
-
-    public static String ocrBestMethod(BufferedImage image, String whitelist) {
-        
-        String result = ocr(image, whitelist, SINGLE_LINE_MODE, null);
-
-        String temp = ocr(image, whitelist, SINGLE_WORD_MODE, null);
-        if (temp.length() > result.length()) {
-            result = temp;
-        }
-
-        temp = ocr(image, whitelist, PSM_SINGLE_CHARACTER, null);
-        if (temp.length() > result.length()) {
-            result = temp;
-        }
-        return result;
-    }
-
-    public static String ocr(BufferedImage image, String whitelist, int pageSegMode, String language) {
-        Tesseract tesseract = new Tesseract();
-        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
-
-        if (isWindows) {
-            tesseract.setDatapath("C:\\Program Files\\Tesseract-OCR\\tessdata");
-        } else {
-            tesseract.setDatapath("/usr/share/tesseract-ocr/5/tessdata");
-        }
-        if (language != null) {
-            tesseract.setLanguage(language);
-        }
-        tesseract.setTessVariable("tessedit_char_whitelist", whitelist);
-        tesseract.setPageSegMode(pageSegMode); // single line mode
-        tesseract.setOcrEngineMode(1); // 1 = LSTM only
-        try {
-            return tesseract.doOCR(image).trim(); // Using BufferedImage directly
-        } catch (TesseractException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static BufferedImage crop(BufferedImage image, Area area) {
         return image.getSubimage(area.getX(), area.getY(), area.getWidth(), area.getHeight());
     }
-
-    public static String buildWhitelist(String... inputs) {
-        Set<Character> uniqueChars = new LinkedHashSet<>();
-        for (String input : inputs) {
-            for (char c : input.toCharArray()) {
-                uniqueChars.add(c);
-            }
-        }
-
-        StringBuilder result = new StringBuilder();
-        for (char c : uniqueChars) {
-            result.append(c);
-        }
-
-        return result.toString();
-    }
-
-    /*
-    public static void savePngWithDPI(BufferedImage image, File output, int dpi) throws Exception {
-        // Converter DPI para pixels por milímetro
-        double inchesPerMillimeter = 1.0 / 25.4;
-        double pixelsPerMillimeter = dpi * inchesPerMillimeter;
-
-        // Criar o escritor de imagem
-        Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("png");
-        ImageWriter writer = writers.next();
-
-        // Criar o stream de saída
-        try (ImageOutputStream ios = ImageIO.createImageOutputStream(output)) {
-            writer.setOutput(ios);
-
-            // Criar metadados com DPI
-            IIOMetadata metadata = writer.getDefaultImageMetadata(ImageIO.getImageTypeSpecifier(image), null);
-            if (metadata.isReadOnly() || !metadata.isStandardMetadataFormatSupported()) {
-                throw new IllegalArgumentException("Não foi possível modificar os metadados.");
-            }
-
-            IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
-            IIOMetadataNode dimension = new IIOMetadataNode("Dimension");
-
-            IIOMetadataNode horizontalPixelSize = new IIOMetadataNode("HorizontalPixelSize");
-            horizontalPixelSize.setAttribute("value", Double.toString(1.0 / pixelsPerMillimeter));
-
-            IIOMetadataNode verticalPixelSize = new IIOMetadataNode("VerticalPixelSize");
-            verticalPixelSize.setAttribute("value", Double.toString(1.0 / pixelsPerMillimeter));
-
-            dimension.appendChild(horizontalPixelSize);
-            dimension.appendChild(verticalPixelSize);
-            root.appendChild(dimension);
-            metadata.mergeTree("javax_imageio_1.0", root);
-
-            // Salvar imagem com metadados
-            writer.write(null, new javax.imageio.IIOImage(image, null, metadata), null);
-        }
-
-        writer.dispose();
-    }
-     */
 
     public static long crcImage(BufferedImage image) {
         CRC32 crc = new CRC32();
@@ -1135,106 +873,6 @@ public class ImageUtil {
         return answer;
     }
 
-    public static LocalDateTime ocrTimer(BufferedImage image, boolean invert) {
-        BufferedImage timeLeft = ImageUtil.toGrayscale(image);
-        if (invert) {
-            timeLeft = ImageUtil.invertGrayscale(timeLeft);
-        }
-        timeLeft = ImageUtil.linearNormalization(timeLeft);
-        
-        if (timeLeft.getHeight() < 50) {
-            timeLeft = ImageUtil.resize(timeLeft, 50);
-        }
-        
-        String timeLeftAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.LINE_OF_PRINTED_TEXT);
-        System.out.println("Time Left: " + timeLeftAsText);
-
-        LocalDateTime localDateTime = null;
-        try {
-            localDateTime = calculateNext(timeLeftAsText).orElse(null);
-        } catch (Exception e) {
-            showImageFor5Seconds(image, "Fail to parse timer");
-            throw e;
-        }
-
-        return localDateTime;
-    }
-
-    public static int ocrNumber(BufferedImage image, boolean invert) {
-        BufferedImage timeLeft = ImageUtil.toGrayscale(image);
-        if (invert) {
-            timeLeft = ImageUtil.invertGrayscale(timeLeft);
-        }
-        timeLeft = ImageUtil.linearNormalization(timeLeft);
-
-        if (timeLeft.getHeight() < 50) {
-            timeLeft = ImageUtil.resize(timeLeft, 50);
-        }
-
-        String numberAsText = ImageUtil.ocr(timeLeft, ImageUtil.WHITELIST_FOR_NUMBERS, ImageUtil.LINE_OF_PRINTED_TEXT);
-        return Integer.parseInt(numberAsText);
-    }
-
-    private static Optional<LocalDateTime> calculateNext(String input) {
-        Pattern pattern = Pattern.compile("(\\d+)h[:]?([\\d+]+)m");
-        Matcher matcher = pattern.matcher(input.trim());
-
-        int days = 0;
-        int hours = 0;
-        int minutes = 0;
-        int seconds = 0;
-
-        boolean parsed = false;
-
-        if (matcher.matches()) {
-            hours = Integer.parseInt(matcher.group(1));
-            minutes = Integer.parseInt(matcher.group(2));
-            parsed = true;
-        }
-
-        if (!parsed) {
-            pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)5");
-            matcher = pattern.matcher(input.trim());
-            if (matcher.matches()) {
-                minutes = Integer.parseInt(matcher.group(1));
-                seconds = Integer.parseInt(matcher.group(2));
-                parsed = true;
-            }
-        }
-
-        if (!parsed) {
-            pattern = Pattern.compile("(\\d+)m[:]?([\\d+]+)s");
-            matcher = pattern.matcher(input.trim());
-            if (matcher.matches()) {
-                minutes = Integer.parseInt(matcher.group(1));
-                seconds = Integer.parseInt(matcher.group(2));
-                parsed = true;
-            }
-        }
-
-        if (!parsed) {
-            pattern = Pattern.compile("(\\d+)d[:]?([\\d+]+)h");
-            matcher = pattern.matcher(input.trim());
-            if (matcher.matches()) {
-                days = Integer.parseInt(matcher.group(1));
-                hours = Integer.parseInt(matcher.group(2));
-                parsed = true;
-            }
-        }
-
-        if (!parsed) {
-            throw new RuntimeException("Impossible to parse " + input);
-        }
-
-        LocalDateTime answer = LocalDateTime.now()
-                .plusDays(days)
-                .plusHours(hours)
-                .plusMinutes(minutes)
-                .plusSeconds(seconds);
-
-        return Optional.of(answer);
-    }
-    
     public static BufferedImage resize(BufferedImage input, int height) {
         double scale = height / (double) input.getHeight();
 
@@ -1266,33 +904,4 @@ public class ImageUtil {
         // Pack into 0xRRGGBB 
         return (0xFF << 24) | (r << 16) | (g << 8) | b;
     }
-
-    
-    private static void test(String input) {
-        System.out.println(input + " " + PATTERN_FOR_COUNTDOWN.matcher(input).matches());
-    }
-    
-
-    public static void main(String[] args) {
-
-        test("12h3m");
-        test("12d3h");
-        test("3m3s");
-
-
-        test("12h:3m");
-        test("12d:3h");
-        test("3m:3s");
-        test("52s");
-
-
-        test("12h:3ss");
-        test("122d:3h");
-        test("3m:333");
-        test("525");
-
-
-
-    }
-    
 }

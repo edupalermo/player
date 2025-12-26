@@ -2,13 +2,14 @@ package org.palermo.totalbattle;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.image.BufferedImage;
 
 @Slf4j
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main3(String[] args) {
         System.out.println(Integer.parseInt("2147483648"));
     }
 
@@ -23,6 +24,6 @@ public class Test {
 
         //image = ImageUtil.increaseContrast(image);
         ImageUtil.showImageAndWait(image);
-        System.out.println(ImageUtil.ocrBestMethod(image, ImageUtil.WHITELIST_FOR_SPEED_UPS));
+        System.out.println(OcrUtil.ocrBestMethod(image, OcrUtil.WHITELIST_FOR_SPEED_UPS));
     }
 }

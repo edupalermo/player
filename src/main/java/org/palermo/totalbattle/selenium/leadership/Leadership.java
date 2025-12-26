@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.selenium.leadership;
 
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,7 +45,7 @@ public class Leadership {
             ImageIO.write(croppedImage, "png", new File("debug05.png"));
 
             
-            System.out.println("ReadImage: " + ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.SINGLE_LINE_MODE));
+            System.out.println("ReadImage: " + OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, OcrUtil.SINGLE_LINE_MODE));
             
         } catch (IOException e) {
             throw new RuntimeException(e);

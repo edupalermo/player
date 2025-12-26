@@ -17,6 +17,7 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -155,7 +156,7 @@ public class Telescope {
             image = ImageUtil.resize(image, 100);
         }
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String quantityAsString = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
+        String quantityAsString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_ONLY_NUMBERS, OcrUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
         return Integer.parseInt(quantityAsString);
     }
     

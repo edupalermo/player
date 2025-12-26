@@ -8,6 +8,7 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -92,7 +93,7 @@ public class FreeSale {
                 next = ImageUtil.toGrayscale(next);
                 next = ImageUtil.invertGrayscale(next);
                 next = ImageUtil.linearNormalization(next);
-                String nextAsText = ImageUtil.ocr(next, ImageUtil.WHITELIST_FOR_COUNTDOWN, ImageUtil.LINE_OF_PRINTED_TEXT);
+                String nextAsText = OcrUtil.ocr(next, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.LINE_OF_PRINTED_TEXT);
                 LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText).orElse(null);
                 if (nextLocalDateTime != null) {
                     lockService.lock(player, Scenario.BONUS_SALES_FREE, nextLocalDateTime);

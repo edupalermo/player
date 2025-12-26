@@ -7,6 +7,7 @@ import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -328,7 +329,7 @@ public class FillTroops {
         BufferedImage linearNormalized = ImageUtil.linearNormalization(currentImage);
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         //ImageUtil.write(croppedImage, "set" + (counter++) + ".png");
-        String numberAsText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS, ImageUtil.SINGLE_LINE_MODE);
+        String numberAsText = OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_NUMBERS, OcrUtil.SINGLE_LINE_MODE);
         numberAsText = numberAsText.replaceAll(",", "").replaceAll(" ", "");
         if (numberAsText.isEmpty()) {
             System.out.println("Fail to parse quantity for : " + troopQuantity.getUnit().name() + " expected " + troopQuantity.getQuantity());
@@ -351,7 +352,7 @@ public class FillTroops {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "leadership_text.png");
         
-        String leadershipText = ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, ImageUtil.LINE_OF_PRINTED_TEXT);
+        String leadershipText = OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER, OcrUtil.LINE_OF_PRINTED_TEXT);
         leadershipText = leadershipText.replaceAll(",", "");
         int slashIndex = leadershipText.indexOf("/");
         
@@ -554,6 +555,6 @@ public class FillTroops {
         BufferedImage croppedImage = ImageUtil.cropText(linearNormalized);
         ImageUtil.write(croppedImage, "name.png");
 
-        return ImageUtil.ocr(croppedImage, ImageUtil.WHITELIST_FOR_USERNAME, ImageUtil.SINGLE_LINE_MODE);
+        return OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_USERNAME, OcrUtil.SINGLE_LINE_MODE);
     }
 }

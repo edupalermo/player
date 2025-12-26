@@ -12,6 +12,7 @@ import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -176,7 +177,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
         }
     }
 
@@ -192,7 +193,7 @@ public class SummoningCircle {
             }
 
             boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-            String numberAsText = ImageUtil.ocr(image, ImageUtil.WHITELIST_FOR_ONLY_NUMBERS, ImageUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
+            String numberAsText = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_ONLY_NUMBERS, OcrUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
             qtd = Integer.parseInt(numberAsText);
         } catch (NumberFormatException e) {
             ImageUtil.showImageFor5Seconds(input, "Fail to parse artifact quantity!");
@@ -269,7 +270,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
 
         }
         else {
@@ -288,7 +289,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, ImageUtil.ocrTimer(timerImage, true));
+            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
         }
         else {
             collectEliteCaptainFragments(eliteArtifactQtd);

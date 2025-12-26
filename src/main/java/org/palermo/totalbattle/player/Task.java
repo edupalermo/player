@@ -103,9 +103,9 @@ public class Task {
             
             login(player);
 
-            //(new FixBrokenArmor(player)).fix();
+            (new FixBrokenArmor(player)).fix();
             
-            //(new InfoGather(player)).evaluate();
+            (new InfoGather(player)).evaluate();
 
             (new Donate(player)).evaluate();
             // (new Telescope(player)).findCitadels();
@@ -155,7 +155,7 @@ public class Task {
              //(new MineSilver(player)).mine();
                 // attackArena(SharedData.INSTANCE.getArena().get());
 
-            // (new SummoningCircle(robot, player)).evaluate();
+             (new SummoningCircle(robot, player)).evaluate();
 
             // (new FreeSale(player)).freeSale();
             
