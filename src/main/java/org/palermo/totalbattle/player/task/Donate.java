@@ -51,7 +51,6 @@ public class Donate {
     
     private boolean donate(Player target) {
         Resource resource = selectResourceToDonate(target);
-        resource = Resource.IRON;
         log.info("Trying to donate {} to {}", resource.name(), target.name());
 
         NavigationUtil.switchToMapIfNeeded();
