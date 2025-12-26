@@ -153,7 +153,7 @@ public class OcrUtil {
 
             String query = String.format(
                     "/ocr?lang=%s&psm=%d%s",
-                    lang,
+                    lang == null ? "eng" : lang,
                     psm,
                     (whitelist != null && !whitelist.isEmpty())
                             ? "&whitelist=" + urlEncode(whitelist)
