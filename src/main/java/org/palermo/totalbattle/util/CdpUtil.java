@@ -44,7 +44,7 @@ public class CdpUtil {
                     new TypeReference<List<ChromeTab>>() {}
             );
             
-            log.info("Number of tabs {}",  tabs.size());
+            //log.info("Number of tabs {}",  tabs.size());
             
             // Nothing to do
             if (tabs.size() <= 1) {
@@ -67,7 +67,7 @@ public class CdpUtil {
                         continue;
                     }
                     
-                    log.info("Closing {}",  tab.toString());
+                    //log.info("Closing {}",  tab.toString());
 
                     HttpRequest closeRequest = HttpRequest.newBuilder()
                             .uri(URI.create("http://localhost:9222/json/close/" + tab.getId()))

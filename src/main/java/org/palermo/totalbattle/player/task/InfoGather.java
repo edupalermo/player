@@ -95,14 +95,27 @@ public class InfoGather {
 
         selectTopMenuIcon(Resource.SILVER, Operation.NOTHING);
 
-        log.info("Lumber {}, Iron {}, Stone {}",
-                String.format("%,d", playerStateService.getState(player).getLumber()),
-                String.format("%,d", playerStateService.getState(player).getIron()),
-                String.format("%,d", playerStateService.getState(player).getStone()));
+        if (playerStateService.getState(player).getResourcesTarget() != null) {
+            log.info("Lumber {}, Iron {}, Stone {}",
+                    String.format("%,d %.0f%%", playerStateService.getState(player).getLumber(), (100d * (double) playerStateService.getState(player).getLumber() / (double) playerStateService.getState(player).getResourcesTarget().getLumber())),
+                    String.format("%,d %.0f%%", playerStateService.getState(player).getIron(), (100d * (double) playerStateService.getState(player).getIron() / (double) playerStateService.getState(player).getResourcesTarget().getIron())),
+                    String.format("%,d %.0f%%", playerStateService.getState(player).getStone(), (100d * (double) playerStateService.getState(player).getStone() / (double) playerStateService.getState(player).getResourcesTarget().getStone())));
 
-        log.info("Tar {}, Silver {}",
-                String.format("%,d", playerStateService.getState(player).getCommonTar()),
-                String.format("%,d", playerStateService.getState(player).getSilver()));
+            log.info("Tar {}, Silver {}",
+                    String.format("%,d", playerStateService.getState(player).getCommonTar()),
+                    String.format("%,d  %.0f%%", playerStateService.getState(player).getSilver(), (100d * (double) playerStateService.getState(player).getSilver() / (double) playerStateService.getState(player).getResourcesTarget().getSilver())));
+        }
+        else {
+            log.info("Lumber {}, Iron {}, Stone {}",
+                    String.format("%,d", playerStateService.getState(player).getLumber()),
+                    String.format("%,d", playerStateService.getState(player).getIron()),
+                    String.format("%,d", playerStateService.getState(player).getStone()));
+
+            log.info("Tar {}, Silver {}",
+                    String.format("%,d", playerStateService.getState(player).getCommonTar()),
+                    String.format("%,d", playerStateService.getState(player).getSilver()));
+            
+        }
     }
     
     private void gatherCommonTarAmount() {
