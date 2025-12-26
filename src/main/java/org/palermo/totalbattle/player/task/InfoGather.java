@@ -33,8 +33,23 @@ public class InfoGather {
     }
 
     public void evaluate() {
+        try {
+            doEverything();
+        }
+        catch (Exception e) {
+            log.error(e.getMessage(), e);
+            
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+    
+    private void doEverything() {
         gatherCommonTarAmount();
-        
+
         gatherLumberAmount();
         gatherIronAmount();
         gatherStoneAmount();
@@ -71,7 +86,7 @@ public class InfoGather {
                 WhatsappUtil.send(String.format("Player %s has the resources to upgrade a building", player.getName()));
             }
         }
-        
+
         // Fill all dragon coins... it cannot be stolen!
         selectTopMenuIcon(Resource.DRAGON_COIN, Operation.CLICK);
         robot.mouseMove(Point.of(500, 500));
