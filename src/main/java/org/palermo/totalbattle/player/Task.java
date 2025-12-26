@@ -49,7 +49,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.LORVEN);
+        play(Player.PETER);
         //play(Player.GRIRANA);
     }
 
@@ -100,81 +100,8 @@ public class Task {
             
             login(player);
 
-            //(new FixBrokenArmor(player)).fix();
-            
-            //(new InfoGather(player)).evaluate();
+            (new Quests(player)).evaluate();
 
-            (new Donate(player)).evaluate();
-            // (new Telescope(player)).findCitadels();
-
-            //(new Telescope(player)).findArena();
-            //(new Telescope(player)).findCrypts();
-
-            //(new ExploreCrypt(player)).explore();
-            //(new BuildArmy(player)).buildArmy();
-            //(new Telescope(player)).findArena();
-
-            //(new Telescope(player)).findCitadels();
-
-            //(new BuildArmy(player)).buildArmy();
-
-            // (new AttackCitadel(player)).attack();
-
-            // (new AttackCitadel(player)).attack();
-
-            //(new ExploreCrypt(player)).explore();
-
-
-
-            //Task.showPauseDialog("Click on the button to continue");
-
-            // (new ClanContribution(player)).helpClanMembers();
-            // (new ClanContribution(player)).collectChests();
-
-            // (new Announce()).playPlayerName(player);
-
-            
-
-            // (new SummoningCircle(robot, player)).evaluate();
-
-            // (new CaptainSelector(player)).updatePlayerState();
-            
-            /*
-            (new CaptainSelector(player)).select(CaptainSelector.CARTER);
-            (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
-            (new CaptainSelector(player)).select(CaptainSelector.STROR);
-             */
-            
-
-            // (new Telescope(player)).evaluate();
-
-            // (new AttackArena(player)).attackArena();
-             //(new MineSilver(player)).mine();
-                // attackArena(SharedData.INSTANCE.getArena().get());
-
-             (new SummoningCircle(robot, player)).evaluate();
-
-            // (new FreeSale(player)).freeSale();
-            
-            //(new BuildArmy(player)).buildArmy();
-            // (new Telescope(player)).findArena();
-            // (new Telescope(player)).findSilverMines();
-            //(new BuildArmy(player)).testSpeedUps();
-            
-            
-
-            //(new Telescope(player)).findArena();
-            //(new Telescope(player)).findSilverMines();
-            //(new AttackArena(player)).attackArena();
-
-            //(new Telescope(player)).findCitadels();
-            
-            //(new Telescope(player)).findCrypts();
-
-            // (new InfoGather(player)).evaluate();
-            
-//             (new PayTaxes(player)).pay();
-            //(new DonateSilver(player)).donate();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {

@@ -101,7 +101,7 @@ public class Navigate {
 
     public Point getPoint() {
         if (!this.exist()) {
-            throw new RuntimeException("Could not find mandatory resource");
+            throw new RuntimeException("Could not find mandatory resource " + ImageUtil.crcImage(this.searchImage));
         }
         return this.point;
     }
@@ -116,7 +116,7 @@ public class Navigate {
             point = search().orElse(null);
         }
         if (point == null) {
-            throw new RuntimeException("Could not find the given resource");
+            throw new RuntimeException("Could not find the given resource " + ImageUtil.crcImage(this.searchImage));
         }
         robot.leftClick(point, searchImage);
         robot.sleep(500);
@@ -127,7 +127,7 @@ public class Navigate {
             point = search().orElse(null);
         }
         if (point == null) {
-            throw new RuntimeException("Could not find the given resource");
+            throw new RuntimeException("Could not find the given resource " + ImageUtil.crcImage(this.searchImage));
         }
         robot.mouseMove(point, searchImage);
         robot.sleep(500);
