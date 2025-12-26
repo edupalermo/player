@@ -42,8 +42,9 @@ public class Donate {
             return;
         }
         
-        while (donate(target)) {
-            
+        int counter = 0;
+        while (donate(target) && counter < 3) {
+            counter = counter + 1;
         }
         
     }
