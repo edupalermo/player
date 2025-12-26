@@ -20,6 +20,7 @@ import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
+import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -93,19 +94,15 @@ public class Task {
         Process process = null;
         try {
             process = openOrdinaryBrowser(player);
-
-            // Fechar TABS!
-            robot.sleep(1000);
-            robot.leftClick(Point.of(560, 52));
+            
             robot.sleep(3000);
-            robot.leftClick(Point.of(560, 52));
-            robot.sleep(3000);
+            CdpUtil.closeAllTabsExceptOne();
             
             login(player);
 
-            (new FixBrokenArmor(player)).fix();
+            //(new FixBrokenArmor(player)).fix();
             
-            (new InfoGather(player)).evaluate();
+            //(new InfoGather(player)).evaluate();
 
             (new Donate(player)).evaluate();
             // (new Telescope(player)).findCitadels();
@@ -243,6 +240,7 @@ public class Task {
                     "--disable-popup-blocking",
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
+                    "--remote-debugging-port=9222",
                     //"--new-window",
                     "--user-data-dir=" + userDataDir,
                     // "--profile-directory=Default",
