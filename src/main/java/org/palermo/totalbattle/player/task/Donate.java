@@ -51,6 +51,7 @@ public class Donate {
     
     private boolean donate(Player target) {
         Resource resource = selectResourceToDonate(target);
+        resource = Resource.IRON;
         log.info("Trying to donate {} to {}", resource.name(), target.name());
 
         NavigationUtil.switchToMapIfNeeded();
@@ -88,11 +89,11 @@ public class Donate {
 
         Navigate icon = Navigate.builder()
                 .resourceName(resource.getResource())
-                .area(transformation.transform(Point.of(786, 400), Point.of(885, 805)))
+                .area(transformation.transform(Point.of(786, 400), Point.of(885, 772)))
                 .waitLimit(1000)
                 .build();
 
-        int verticalScroll = 220;
+        int verticalScroll = 200;
 
         for (int i = 0; i < 3; i++) {
             if (i > 0) {
