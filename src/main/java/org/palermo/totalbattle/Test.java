@@ -9,8 +9,9 @@ import java.awt.image.BufferedImage;
 @Slf4j
 public class Test {
 
-    public static void main3(String[] args) {
-        System.out.println(Integer.parseInt("2147483648"));
+    public static void main(String[] args) {
+        BufferedImage image = ImageUtil.loadResource("player/button_bonus_sales_close.png");
+        System.out.println(ImageUtil.crcImage(image));
     }
 
     public static void main2(String[] args) {
