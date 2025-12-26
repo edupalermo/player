@@ -6,6 +6,7 @@ import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
 import org.slf4j.MDC;
 
@@ -65,6 +66,9 @@ public class PlayerRunnable implements Runnable {
             MDC.put("playerName", player.getName());
             process = Task.openOrdinaryBrowser(player);
             Task.login(player);
+            
+            SharedData.INSTANCE.robot.sleep(1500);
+            CdpUtil.closeAllTabsExceptOne();
 
             if (SharedData.INSTANCE.shouldHalt(player)) {
                 Task.showPauseDialog("Click on the button to continue");
