@@ -101,6 +101,22 @@ public class Donate {
                 robot.sleep(350);
                 robot.mouseDrag(lastPosition, 0, i * verticalScroll);
             }
+            else {
+                Navigate navigateCheckmark = Navigate.builder()
+                        .resourceName("player/watchtower/icon_checkmark.png")
+                        .area(transformation.transform(Point.of(872, 526), Point.of(1118,553)))
+                        .waitLimit(1000)
+                        .build();
+                if (!navigateCheckmark.exist()) {
+                    log.info("No Captain available to donate resources!");
+                    robot.type(KeyEvent.VK_ESCAPE);
+                    robot.sleep(300);
+
+                    robot.type(KeyEvent.VK_ESCAPE);
+                    robot.sleep(300);
+                    return false;
+                }
+            }
 
             if (icon.searchAgain().isPresent()) {
                 break;
@@ -109,21 +125,6 @@ public class Donate {
 
         if (!icon.exist()) {
             log.info("Resource not found!");
-            robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(300);
-
-            robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(300);
-            return false;
-        }
-
-        Navigate navigateCheckmark = Navigate.builder()
-                .resourceName("player/watchtower/icon_checkmark.png")
-                .area(transformation.transform(Point.of(872, 526), Point.of(1118,553)))
-                .waitLimit(1000)
-                .build();
-        if (!navigateCheckmark.exist()) {
-            log.info("No Captain available to donate resources!");
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
 

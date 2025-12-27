@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class Test {
 
     public static void main(String[] args) {
-        BufferedImage image = ImageUtil.loadResource("player/button_bonus_sales_close.png");
+        BufferedImage image = ImageUtil.loadResource("player/watchtower/icon_checkmark.png");
         System.out.println(ImageUtil.crcImage(image));
     }
 

@@ -103,7 +103,7 @@ public class InfoGather {
 
             log.info("Tar {}, Silver {}",
                     String.format("%,d", playerStateService.getState(player).getCommonTar()),
-                    String.format("%,d  %.0f%%", playerStateService.getState(player).getSilver(), (100d * (double) playerStateService.getState(player).getSilver() / (double) playerStateService.getState(player).getResourcesTarget().getSilver())));
+                    String.format("%,d %.0f%%", playerStateService.getState(player).getSilver(), (100d * (double) playerStateService.getState(player).getSilver() / (double) playerStateService.getState(player).getResourcesTarget().getSilver())));
         }
         else {
             log.info("Lumber {}, Iron {}, Stone {}",

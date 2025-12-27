@@ -49,7 +49,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.PALERMO);
+        play(Player.PETER);
         //play(Player.GRIRANA);
     }
 
@@ -100,9 +100,9 @@ public class Task {
             
             login(player);
 
-            (new InfoGather(player)).evaluate();
-            // (new Quests(player)).evaluate();
-
+            //(new InfoGather(player)).evaluate();
+            //(new Quests(player)).evaluate();
+            (new Donate(player)).evaluate();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {
