@@ -76,8 +76,13 @@ public class SpeedUp {
     }
 
     public static boolean clickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
-        log.info("Searching for {}", speedUpBean.getLabel());
+        boolean result = internalClickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
+        log.info("Searching for {} {}", speedUpBean.getLabel(), result);
+        return result;
+    }
 
+
+    public static boolean internalClickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
         Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
         BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
 
