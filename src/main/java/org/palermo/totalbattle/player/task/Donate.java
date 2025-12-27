@@ -43,7 +43,9 @@ public class Donate {
         }
         
         int counter = 0;
-        while (donate(target) && counter < 3) {
+        boolean shouldContinue = true;
+        while (shouldContinue && counter < 3) {
+            shouldContinue = donate(target);
             counter = counter + 1;
         }
         
