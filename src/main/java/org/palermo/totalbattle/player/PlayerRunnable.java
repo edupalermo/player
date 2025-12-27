@@ -82,9 +82,9 @@ public class PlayerRunnable implements Runnable {
                 return;
             }
 
+            (new InfoGather(player)).evaluate();
             (new FixBrokenArmor(player)).fix();
             //(new CaptainSelector(player)).updatePlayerState();
-            (new InfoGather(player)).evaluate();
 
             (new FreeSale(player)).freeSale();
 
