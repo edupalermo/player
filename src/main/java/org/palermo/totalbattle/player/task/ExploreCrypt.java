@@ -11,11 +11,9 @@ import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.selenium.stacking.Captain;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 @Slf4j
 public class ExploreCrypt {

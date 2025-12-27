@@ -38,7 +38,7 @@ public class FixBrokenArmor {
         navigate = Navigate.builder()
                 .areaName(Area.MANAGE_CAPTAINS_CLOSE_BUTTON)
                 .resourceName("player/hero/button_close.png")
-                .waitLimit(5000)
+                .waitLimit(7500)
                 .build().ensureExistence();
         
         Transformation transformation = Transformation.builder()
