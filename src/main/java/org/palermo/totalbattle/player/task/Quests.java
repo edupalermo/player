@@ -41,6 +41,21 @@ public class Quests {
     }
 
     public void evaluate() {
+        try {
+            internal();
+        }
+        catch (Exception e) {
+            log.error(e.getMessage(), e);
+            
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+
+
+    private void internal() {
         BufferedImage screen = robot.captureScreen();
 
         BufferedImage labelQuestes = ImageUtil.loadResource("player/label_quests.png");

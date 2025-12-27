@@ -41,7 +41,7 @@ public class NavigationUtil {
                 .comparationLimit(0.03)
                 .build();
         if (twentyFivePerc.exist()) {
-            log.info("Zoom is already 25%");
+            //log.info("Zoom is already 25%");
             return;
         }
         

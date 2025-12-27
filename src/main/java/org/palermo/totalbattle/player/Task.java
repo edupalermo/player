@@ -20,6 +20,7 @@ import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Crypt;
 import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.Area;
+import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -48,7 +49,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.LORVEN);
+        play(Player.PETER);
         //play(Player.GRIRANA);
     }
 
@@ -93,91 +94,15 @@ public class Task {
         Process process = null;
         try {
             process = openOrdinaryBrowser(player);
-
-            // Fechar TABS!
-            robot.sleep(1000);
-            robot.leftClick(Point.of(560, 52));
+            
             robot.sleep(3000);
-            robot.leftClick(Point.of(560, 52));
-            robot.sleep(3000);
+            CdpUtil.closeAllTabsExceptOne();
             
             login(player);
 
-            (new FixBrokenArmor(player)).fix();
-            
-            (new InfoGather(player)).evaluate();
-
+            //(new InfoGather(player)).evaluate();
+            //(new Quests(player)).evaluate();
             (new Donate(player)).evaluate();
-            // (new Telescope(player)).findCitadels();
-
-            //(new Telescope(player)).findArena();
-            //(new Telescope(player)).findCrypts();
-
-            //(new ExploreCrypt(player)).explore();
-            //(new BuildArmy(player)).buildArmy();
-            //(new Telescope(player)).findArena();
-
-            //(new Telescope(player)).findCitadels();
-
-            //(new BuildArmy(player)).buildArmy();
-
-            // (new AttackCitadel(player)).attack();
-
-            // (new AttackCitadel(player)).attack();
-
-            //(new ExploreCrypt(player)).explore();
-
-
-
-            //Task.showPauseDialog("Click on the button to continue");
-
-            // (new ClanContribution(player)).helpClanMembers();
-            // (new ClanContribution(player)).collectChests();
-
-            // (new Announce()).playPlayerName(player);
-
-            
-
-            // (new SummoningCircle(robot, player)).evaluate();
-
-            // (new CaptainSelector(player)).updatePlayerState();
-            
-            /*
-            (new CaptainSelector(player)).select(CaptainSelector.CARTER);
-            (new CaptainSelector(player)).select(CaptainSelector.TRAINER);
-            (new CaptainSelector(player)).select(CaptainSelector.STROR);
-             */
-            
-
-            // (new Telescope(player)).evaluate();
-
-            // (new AttackArena(player)).attackArena();
-             //(new MineSilver(player)).mine();
-                // attackArena(SharedData.INSTANCE.getArena().get());
-
-             (new SummoningCircle(robot, player)).evaluate();
-
-            // (new FreeSale(player)).freeSale();
-            
-            //(new BuildArmy(player)).buildArmy();
-            // (new Telescope(player)).findArena();
-            // (new Telescope(player)).findSilverMines();
-            //(new BuildArmy(player)).testSpeedUps();
-            
-            
-
-            //(new Telescope(player)).findArena();
-            //(new Telescope(player)).findSilverMines();
-            //(new AttackArena(player)).attackArena();
-
-            //(new Telescope(player)).findCitadels();
-            
-            //(new Telescope(player)).findCrypts();
-
-            // (new InfoGather(player)).evaluate();
-            
-//             (new PayTaxes(player)).pay();
-            //(new DonateSilver(player)).donate();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {
@@ -243,9 +168,10 @@ public class Task {
                     "--disable-popup-blocking",
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
-                    "--new-window",
+                    "--remote-debugging-port=9222",
+                    //"--new-window",
                     "--user-data-dir=" + userDataDir,
-                    "--profile-directory=Default",
+                    // "--profile-directory=Default",
                     url
             );
             

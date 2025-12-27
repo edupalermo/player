@@ -138,7 +138,7 @@ public class CaptainSelector {
         Point targetCaptainPoint = ImageUtil.search(captain.getImage66(), screen, availableAra, 0.1).orElse(null);
 
         if (targetCaptainPoint == null) {
-            throw new RuntimeException("Not found!");
+            throw new RuntimeException(String.format("Captain %s not found!", captain.name()));
         }
 
         robot.leftClick(targetCaptainPoint.move(33, 30));

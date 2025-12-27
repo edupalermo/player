@@ -287,7 +287,7 @@ public class Telescope {
             mainLoopCount = mainLoopCount + 1;
             
                 
-        } while (gameStateService.countMines(MineType.SILVER) < 3);
+        } while (gameStateService.countMines(MineType.SILVER) < 1);
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);

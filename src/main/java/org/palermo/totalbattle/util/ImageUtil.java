@@ -2,6 +2,7 @@ package org.palermo.totalbattle.util;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
@@ -762,6 +763,11 @@ public class ImageUtil {
 
     public static void showImageAndWait(BufferedImage image) {
         showImageAndWait(image, (String) null);
+    }
+    
+    public static void showScreenAndWait(Area area) {
+        BufferedImage screen = SharedData.INSTANCE.robot.captureScreen();
+        showImageAndWait(crop(screen, area), (String) null);
     }
 
     public static void showImageAndWait(BufferedImage image, Area area) {

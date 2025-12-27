@@ -25,7 +25,7 @@
   },
   "QUESTS_DAILY_QUESTS_WEEKLY_REWARD" : {
     "x" : 821,
-    "y" : 327,
+    "y" : 333,
     "width" : 369,
     "height" : 47
   },
@@ -198,7 +198,7 @@
     "height" : 214
   },
   "BONUS_SALE_BUTTON_CLOSE" : {
-    "x" : 1654,
+    "x" : 1660,
     "y" : 162,
     "width" : 219,
     "height" : 154
