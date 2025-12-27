@@ -29,8 +29,21 @@ public class ExploreCrypt {
     public ExploreCrypt(Player player) {
         this.player = player;
     }
-    
+
     public void explore() {
+        try {
+            internalExplore();
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+    
+    public void internalExplore() {
         Point location = playerStateService.getState(player).getExploringCrypt();
         
         if  (location == null) {

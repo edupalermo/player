@@ -39,8 +39,20 @@ public class AttackCitadel {
     public AttackCitadel(Player player) {
         this.player = player;
     }
-    
+
     public void attack() {
+        try{
+            internalAttack();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+
+    public void internalAttack() {
         if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_NON_MONSTERS)) {
             log.info("Aborting Citadel attack because there are no NO troops trained");
             return;
