@@ -88,11 +88,13 @@ public class PlayerRunnable implements Runnable {
             (new FixBrokenArmor(player)).fix();
             
             (new FreeSale(player)).freeSale();
-            (new Quests(player)).evaluate();
+            if (!BUILD_ARMY) {
+                (new Quests(player)).evaluate();
+            }
             (new ClanContribution(player)).helpClanMembers();
+            (new ClanContribution(player)).collectChests();
 
             if (!BUILD_ARMY) {
-                (new ClanContribution(player)).collectChests();
 
                 (new Telescope(player)).findArena();
                 (new Telescope(player)).findSilverMines();
