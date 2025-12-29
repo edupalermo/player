@@ -87,11 +87,8 @@ public class PlayerRunnable implements Runnable {
             (new InfoGather(player)).evaluate();
             (new FixBrokenArmor(player)).fix();
             
-            if (!BUILD_ARMY) {
-                (new FreeSale(player)).freeSale();
-                (new Quests(player)).evaluate();
-            }
-            
+            (new FreeSale(player)).freeSale();
+            (new Quests(player)).evaluate();
             (new ClanContribution(player)).helpClanMembers();
 
             if (!BUILD_ARMY) {
@@ -116,7 +113,6 @@ public class PlayerRunnable implements Runnable {
 
             if (!BUILD_ARMY) {
                 (new PayTaxes(player)).pay();
-
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
             }
 
