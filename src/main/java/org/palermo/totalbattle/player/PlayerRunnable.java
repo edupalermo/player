@@ -95,7 +95,6 @@ public class PlayerRunnable implements Runnable {
             (new ClanContribution(player)).helpClanMembers();
 
             if (!BUILD_ARMY) {
-
                 (new ClanContribution(player)).collectChests();
 
                 (new Telescope(player)).findArena();
@@ -111,8 +110,11 @@ public class PlayerRunnable implements Runnable {
                 (new AttackArena(player)).attack();
                 (new MineSilver(player)).mine();
                 (new ExploreCrypt(player)).explore();
-                (new Donate(player)).evaluate();
+            }
+            
+            (new Donate(player)).evaluate();
 
+            if (!BUILD_ARMY) {
                 (new PayTaxes(player)).pay();
 
                 (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
