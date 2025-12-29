@@ -49,7 +49,7 @@ public class Task {
 
 
     public static void main(String[] args) {
-        play(Player.PETER);
+        play(Player.PALERMO);
         //play(Player.GRIRANA);
     }
 
@@ -57,9 +57,9 @@ public class Task {
     public static void play(Player player) {
         
         playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
-                        .leadership(30613)
-                        .dominance(7576)
-                        .authority(14715)
+                        .leadership(18912)
+                        .dominance(4768)
+                        .authority(9456)
                         .goal("any")
                         .waves(3)
                 .build());
@@ -102,7 +102,8 @@ public class Task {
 
             //(new InfoGather(player)).evaluate();
             //(new Quests(player)).evaluate();
-            (new Donate(player)).evaluate();
+            // (new Donate(player)).evaluate();
+            (new BuildArmy(player)).buildArmy();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {

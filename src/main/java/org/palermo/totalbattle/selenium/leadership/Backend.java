@@ -153,7 +153,36 @@ public class Backend {
                     troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
                 }
             }
-            case GRIRANA, ELANIN -> {
+            case GRIRANA -> {
+                if (tiers >= 3) {
+                    troops.add(Unit.S1_SWORDSMAN);
+                    troops.add(Unit.G1_MELEE);
+                    troops.add(Unit.G1_MOUNTED);
+                    troops.add(Unit.G2_RANGED);
+
+                }
+                if (tiers >= 2) {
+                    troops.add(Unit.S2_SWORDSMAN);
+                    troops.add(Unit.G2_MELEE);
+                    troops.add(Unit.G2_MOUNTED);
+                    troops.add(Unit.G3_RANGED);
+                }
+                if (tiers >= 1) {
+                    troops.add(Unit.G3_MELEE);
+                    troops.add(Unit.G3_MOUNTED);
+                    troops.add(Unit.G4_RANGED);
+                }
+
+                if (tiers >= 1) {
+                    troops.add(Unit.EMERALD_DRAGON);
+                    troops.add(Unit.WATER_ELEMENTAL);
+                    troops.add(Unit.STONE_GARGOYLE);
+                    troops.add(Unit.BATTLE_BOAR);
+                }
+
+                troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
+            }
+            case ELANIN -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S1_SWORDSMAN);
                     troops.add(Unit.G1_RANGED);
