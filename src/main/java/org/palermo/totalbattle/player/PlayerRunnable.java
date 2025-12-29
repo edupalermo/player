@@ -21,6 +21,8 @@ public class PlayerRunnable implements Runnable {
     private GameStateService gameStateService = new GameStateService();
     private PlayerStateService playerStateService = new PlayerStateService();
     
+    private final static boolean BUILD_ARMY = true;
+    
     private static List<Player> players = new ArrayList<>();
     static {
         players.add(Player.PALERMO);
@@ -84,31 +86,37 @@ public class PlayerRunnable implements Runnable {
 
             (new InfoGather(player)).evaluate();
             (new FixBrokenArmor(player)).fix();
-            //(new CaptainSelector(player)).updatePlayerState();
-
-            (new FreeSale(player)).freeSale();
-
-            (new Quests(player)).evaluate();
+            
+            if (!BUILD_ARMY) {
+                (new FreeSale(player)).freeSale();
+                (new Quests(player)).evaluate();
+            }
+            
             (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
 
-            (new Telescope(player)).findArena();
-            (new Telescope(player)).findSilverMines();
-            (new Telescope(player)).findCitadels();
-            (new Telescope(player)).findCrypts();
+            if (!BUILD_ARMY) {
+
+                (new ClanContribution(player)).collectChests();
+
+                (new Telescope(player)).findArena();
+                (new Telescope(player)).findSilverMines();
+                (new Telescope(player)).findCitadels();
+                (new Telescope(player)).findCrypts();
+            }
 
             (new BuildArmy(player)).buildArmy();
 
-            (new AttackCitadel(player)).attack();
-            (new AttackArena(player)).attack();
-            (new MineSilver(player)).mine();
-            (new ExploreCrypt(player)).explore();
-            (new Donate(player)).evaluate();
+            if (!BUILD_ARMY) {
+                (new AttackCitadel(player)).attack();
+                (new AttackArena(player)).attack();
+                (new MineSilver(player)).mine();
+                (new ExploreCrypt(player)).explore();
+                (new Donate(player)).evaluate();
 
-            (new PayTaxes(player)).pay();
-            // (new DonateSilver(player)).donate();
-            
-            (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
+                (new PayTaxes(player)).pay();
+
+                (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
