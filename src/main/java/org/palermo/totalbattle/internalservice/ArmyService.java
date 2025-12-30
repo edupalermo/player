@@ -294,9 +294,9 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.EC3_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
-                output = increase(output, Unit.G1_RANGED, 1500);
-                output = increase(output, Unit.G2_RANGED, 1000);
-                output = increase(output, Unit.G3_RANGED, 500);
+                output = increase(output, Unit.G2_RANGED, 1500);
+                output = increase(output, Unit.G3_RANGED, 1000);
+                output = increase(output, Unit.G4_RANGED, 500);
                 output = increase(output, Unit.EC2_ENGINEER, 290);
                 break;
             default:
@@ -326,7 +326,7 @@ public class ArmyService extends AbstractService {
                 break;
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.G3_MOUNTED, 2000);
-                output = increase(output, Unit.G3_RANGED, 4000);
+                output = increase(output, Unit.G4_RANGED, 2000);
                 output = increase(output, Unit.G3_MELEE, 4000);
                 break;
 
@@ -523,7 +523,6 @@ public class ArmyService extends AbstractService {
                 break;
             case ELANIN:
                 units.add(Unit.S1_SWORDSMAN);
-                units.add(Unit.G1_RANGED);
                 units.add(Unit.G1_MELEE);
                 units.add(Unit.G1_MOUNTED);
 
@@ -535,6 +534,8 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
                 units.add(Unit.G3_MOUNTED);
+
+                units.add(Unit.G4_RANGED);
 
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);

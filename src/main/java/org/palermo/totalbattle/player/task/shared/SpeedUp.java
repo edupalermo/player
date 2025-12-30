@@ -99,7 +99,7 @@ public class SpeedUp {
                 Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
                 Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
                 if (buttonUsePoint == null) {
-                    log.info("Speed up {} not available", speedUpBean.getLabel());
+                    //log.info("Speed up {} not available", speedUpBean.getLabel());
                     return false;
                 }
                 //log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
