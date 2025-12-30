@@ -159,7 +159,8 @@ public class Donate {
             if (playerState != null && playerState.getResourcesTarget() != null) {
                 if (playerState.getResourcesTarget().getLumber() > playerState.getLumber() ||
                         playerState.getResourcesTarget().getIron() > playerState.getIron() ||
-                        playerState.getResourcesTarget().getStone() > playerState.getStone()) {
+                        playerState.getResourcesTarget().getStone() > playerState.getStone() ||
+                        playerState.getResourcesTarget().getSilver() > playerState.getSilver()) {
                     if (answer == null || it.getPriority() < answer.getPriority()) {
                         answer = it;
                     }
