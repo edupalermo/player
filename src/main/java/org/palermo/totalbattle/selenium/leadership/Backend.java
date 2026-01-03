@@ -156,21 +156,21 @@ public class Backend {
             case GRIRANA -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S1_SWORDSMAN);
-                    troops.add(Unit.G1_MELEE);
                     troops.add(Unit.G1_MOUNTED);
                     troops.add(Unit.G2_RANGED);
-
+                    troops.add(Unit.G2_MELEE);
+                    
                 }
                 if (tiers >= 2) {
                     troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MELEE);
                     troops.add(Unit.G2_MOUNTED);
                     troops.add(Unit.G3_RANGED);
+                    troops.add(Unit.G3_MELEE);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
                     troops.add(Unit.G4_RANGED);
+                    troops.add(Unit.G4_MELEE);
                 }
 
                 if (tiers >= 1) {
@@ -185,20 +185,20 @@ public class Backend {
             case ELANIN -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S1_SWORDSMAN);
-                    troops.add(Unit.G1_MELEE);
                     troops.add(Unit.G1_MOUNTED);
                     troops.add(Unit.G2_RANGED);
+                    troops.add(Unit.G2_MELEE);
                 }
                 if (tiers >= 2) {
                     troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MELEE);
                     troops.add(Unit.G2_MOUNTED);
                     troops.add(Unit.G3_RANGED);
+                    troops.add(Unit.G3_MELEE);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
                     troops.add(Unit.G4_RANGED);
+                    troops.add(Unit.G4_MELEE);
                 }
 
                 if (tiers >= 1) {

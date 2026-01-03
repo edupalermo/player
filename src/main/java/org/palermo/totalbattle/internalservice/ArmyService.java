@@ -502,7 +502,6 @@ public class ArmyService extends AbstractService {
                 break;
             case GRIRANA:
                 units.add(Unit.S1_SWORDSMAN);
-                units.add(Unit.G1_MELEE);
                 units.add(Unit.G1_MOUNTED);
 
                 units.add(Unit.S2_SWORDSMAN);
@@ -515,6 +514,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G3_MOUNTED);
 
                 units.add(Unit.G4_RANGED);
+                units.add(Unit.G4_MELEE);
 
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);
