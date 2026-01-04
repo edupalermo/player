@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS ocr;
+DROP TABLE IF EXISTS search_history;
+DROP TABLE IF EXISTS location;
+DROP TABLE IF EXISTS area;
 DROP TABLE IF EXISTS propery;
 DROP TABLE IF EXISTS player_property;
 
@@ -102,5 +106,51 @@ CREATE TABLE player_property (
     CONSTRAINT fk_player_property_player
         FOREIGN KEY (player_id)
             REFERENCES player(id)
-
 );
+
+CREATE TABLE location (
+     id BIGSERIAL PRIMARY KEY,
+     location JSONB NOT NULL
+);
+
+CREATE TABLE area (
+      id BIGSERIAL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      x INT NOT NULL,
+      y INT NOT NULL,
+      width INT NOT NULL,
+      height INT NOT NULL
+);
+    
+CREATE UNIQUE INDEX uq_area
+    ON area(name);
+
+
+CREATE TABLE search_history (
+    id BIGSERIAL PRIMARY KEY,
+
+    screen BIGINT NOT NULL,
+    item BIGINT NOT NULL,
+    
+    limit DOUBLE PRECISION NOT NULL,
+
+    x INT NOT NULL,
+    y INT NOT NULL,
+    hits BIGINT NOT NULL DEFAULT 0
+);
+
+CREATE UNIQUE INDEX uq_search_history
+    ON search_history(screen, item);
+
+CREATE TABLE ocr (
+        id BIGSERIAL PRIMARY KEY,
+        crc BIGINT NOT NULL,
+        data BYTEA,
+        value VARCHAR(255),
+        hits BIGINT NOT NULL DEFAULT 0,
+        errors BIGINT NOT NULL DEFAULT 0
+);
+
+CREATE UNIQUE INDEX uq_ocr
+    ON ocr(crc);
+

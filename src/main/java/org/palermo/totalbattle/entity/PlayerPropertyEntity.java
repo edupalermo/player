@@ -1,12 +1,15 @@
 package org.palermo.totalbattle.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class PlayerPropertyEntity {
 
     @EmbeddedId
-    private PlayerPropertyId id;
+    @Setter
+    private PlayerPropertyEntityId id;
 
     @MapsId("playerId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

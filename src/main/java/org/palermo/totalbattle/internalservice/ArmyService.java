@@ -394,8 +394,8 @@ public class ArmyService {
         return best;
     }
 
-    public int getQtdSiegesForCitadel(PlayerEntity playerEntity, int level) {
-        switch (level) {
+    public int getQtdSiegesForCitadel(PlayerEntity playerEntity) {
+        switch (playerEntity.getCitadelLevel()) {
             case 10:
                 switch (getBestSiegeUnit(playerEntity)) {
                     case EC2_ENGINEER:

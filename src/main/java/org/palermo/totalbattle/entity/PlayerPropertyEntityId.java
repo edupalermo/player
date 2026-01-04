@@ -2,12 +2,13 @@ package org.palermo.totalbattle.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class PlayerPropertyId implements Serializable {
+public class PlayerPropertyEntityId implements Serializable {
 
     @Column(name = "player_id", nullable = false)
     private Long playerId;
@@ -15,9 +16,10 @@ public class PlayerPropertyId implements Serializable {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    protected PlayerPropertyId() {}
+    protected PlayerPropertyEntityId() {}
 
-    public PlayerPropertyId(Long playerId, String name) {
+    @Builder
+    public PlayerPropertyEntityId(Long playerId, String name) {
         this.playerId = playerId;
         this.name = name;
     }
@@ -28,7 +30,7 @@ public class PlayerPropertyId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PlayerPropertyId that)) return false;
+        if (!(o instanceof PlayerPropertyEntityId that)) return false;
         return Objects.equals(playerId, that.playerId)
                 && Objects.equals(name, that.name);
     }
