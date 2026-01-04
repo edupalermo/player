@@ -2,7 +2,7 @@ package org.palermo.totalbattle.player.state;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.message.Message;
 import org.palermo.totalbattle.player.state.location.Location;
 
@@ -12,7 +12,7 @@ import java.util.*;
 @Setter
 public class AutomationState {
     
-    public Map<Player, PlayerState> playerStates;
+    public Map<PlayerName, PlayerState> playerStates;
 
     public List<Location> locations = new ArrayList<>();
     
@@ -20,7 +20,7 @@ public class AutomationState {
     
     private Set<Message> messages = new HashSet<>();
 
-    public Map<Player, PlayerState> getPlayerStates() {
+    public Map<PlayerName, PlayerState> getPlayerStates() {
         if (playerStates == null) {
             this.playerStates = new HashMap<>();
         }

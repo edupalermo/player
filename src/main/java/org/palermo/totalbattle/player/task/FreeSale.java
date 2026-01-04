@@ -1,7 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -19,16 +19,16 @@ import java.util.List;
 public class FreeSale {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
     
     private final LockService lockService = new LockService();
 
-    public FreeSale(Player player) {
-        this.player = player;
+    public FreeSale(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void freeSale() {
-        if (lockService.isLocked(player, Scenario.BONUS_SALES_FREE)) {
+        if (lockService.isLocked(playerName, Scenario.BONUS_SALES_FREE)) {
             return;
         }
         
@@ -96,7 +96,7 @@ public class FreeSale {
                 String nextAsText = OcrUtil.ocr(next, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.LINE_OF_PRINTED_TEXT);
                 LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText).orElse(null);
                 if (nextLocalDateTime != null) {
-                    lockService.lock(player, Scenario.BONUS_SALES_FREE, nextLocalDateTime);
+                    lockService.lock(playerName, Scenario.BONUS_SALES_FREE, nextLocalDateTime);
                     break;
                 }
             }

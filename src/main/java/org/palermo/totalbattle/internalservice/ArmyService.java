@@ -1,6 +1,8 @@
 package org.palermo.totalbattle.internalservice;
 
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.entity.PlayerEntity;
+import org.palermo.totalbattle.entity.UnitEntity;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.bean.ArmyBean;
@@ -15,6 +17,8 @@ import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.selenium.stacking.UnitType;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ArmyService extends AbstractService {
+@Service
+public class ArmyService {
 
     private LockService lockService = new  LockService();
 
@@ -50,28 +55,12 @@ public class ArmyService extends AbstractService {
         return u1.getUnit().name().compareToIgnoreCase(u2.getUnit().name()); // User anything...
     };
     
-    
-    public boolean shouldBuildArmy(Player player) {
-        PlayerState playerState = getPlayerState(player);
-        Army army = playerState.getArmy();
-        
-        if (army == null || army.getTarget() == null) {
-            return false;
-        }
-        
-        if (!lockService.isLocked(player, Scenario.BUILD_TROOPS_REEVALUATE)) {
-            this.setProductionOrder(player);
-        }
-
-        return army.getProductionOrder().size() > 0;
-    }
-    
     /**
      * Gets a shallow copy of the list 
      */
-    public List<TroopQuantity> getProductionList(Player player) {
+    public List<TroopQuantity> getProductionList(PlayerName playerName) {
         AutomationState automationState = SharedData.INSTANCE.getAutomationState();
-        PlayerState playerState = automationState.getPlayerStates().get(player);
+        PlayerState playerState = automationState.getPlayerStates().get(playerName);
         Army army = playerState.getArmy();
 
         if (army == null) {
@@ -81,9 +70,9 @@ public class ArmyService extends AbstractService {
         return new ArrayList<>(army.getProductionOrder());
     }
 
-    public void setCurrentTroopQuantity(Player player, Unit unit, int quantity) {
+    public void setCurrentTroopQuantity(PlayerName playerName, Unit unit, int quantity) {
         AutomationState automationState = SharedData.INSTANCE.getAutomationState();
-        PlayerState playerState = automationState.getPlayerStates().get(player);
+        PlayerState playerState = automationState.getPlayerStates().get(playerName);
         Army army = playerState.getArmy();
 
         if (army == null) {
@@ -113,9 +102,9 @@ public class ArmyService extends AbstractService {
         SharedData.INSTANCE.saveAutomationState();
     }
     
-    public boolean shouldCheckTroopQuantities(Player player) {
+    public boolean shouldCheckTroopQuantities(PlayerName playerName) {
         AutomationState automationState = SharedData.INSTANCE.getAutomationState();
-        PlayerState playerState = automationState.getPlayerStates().get(player);
+        PlayerState playerState = automationState.getPlayerStates().get(playerName);
         Army army = playerState.getArmy();
 
         if (army == null) {
@@ -125,9 +114,9 @@ public class ArmyService extends AbstractService {
         return !army.isCheckedExistingQuantity();
     }
 
-    public void checkedTroopQuantities(Player player) {
+    public void checkedTroopQuantities(PlayerName playerName) {
         AutomationState automationState = SharedData.INSTANCE.getAutomationState();
-        PlayerState playerState = automationState.getPlayerStates().get(player);
+        PlayerState playerState = automationState.getPlayerStates().get(playerName);
         Army army = playerState.getArmy();
 
         if (army == null) {
@@ -139,7 +128,7 @@ public class ArmyService extends AbstractService {
     }
     
     public void setArmy(ArmyBean armyBean) {
-        Player player = armyBean.getPlayer();
+        PlayerName playerName = armyBean.getPlayerName();
 
         // Save Army Target
         ArmyTarget armyTarget = ArmyTarget.builder()
@@ -153,7 +142,7 @@ public class ArmyService extends AbstractService {
         AutomationState automationState = sharedData.getAutomationState();
         PlayerState playerState = automationState
                 .getPlayerStates()
-                .computeIfAbsent(player, (p) -> new PlayerState());
+                .computeIfAbsent(playerName, (p) -> new PlayerState());
 
         if (playerState.getArmy() == null) {
             playerState.setArmy(new Army());
@@ -161,17 +150,17 @@ public class ArmyService extends AbstractService {
         playerState.getArmy().setTarget(armyTarget);
 
 
-        setProductionOrder(player);
+        setProductionOrder(playerName);
 
         sharedData.saveAutomationState();
     }
     
-    public void setProductionOrder(Player player) {
+    public void setProductionOrder(PlayerEntity playerEntity) {
 
-        PlayerState playerState = getPlayerState(player);
+        PlayerState playerState = getPlayerState(playerName);
         ArmyTarget armyTarget = playerState.getArmy().getTarget();
         
-        List<Unit> units = getUnits(player);
+        List<Unit> units = getUnits(playerName);
 
         ConfigurationBuilder builder = Configuration.builder()
                 .leadership(armyTarget.getLeadership())
@@ -194,11 +183,11 @@ public class ArmyService extends AbstractService {
 
         unitQuantities = addMiners(unitQuantities);
 
-        unitQuantities = incrementLastLayer(unitQuantities, player);
+        unitQuantities = incrementLastLayer(unitQuantities, playerName);
 
-        unitQuantities = addSpies(unitQuantities, player);
+        unitQuantities = addSpies(unitQuantities, playerName);
         
-        unitQuantities = prepareForCitadel(unitQuantities, player);
+        unitQuantities = prepareForCitadel(unitQuantities, playerName);
 
         Army army = playerState.getArmy();
         army.getProductionOrder().clear();
@@ -219,7 +208,7 @@ public class ArmyService extends AbstractService {
             .getProductionOrder()
             .sort(UNIT_QUANTITY_COMPARATOR);
 
-        lockService.lock(player, Scenario.BUILD_TROOPS_REEVALUATE,
+        lockService.lock(playerName, Scenario.BUILD_TROOPS_REEVALUATE,
                 LocalDateTime.now().plusHours(1));
     }
 
@@ -244,11 +233,11 @@ public class ArmyService extends AbstractService {
         return output;
     }
 
-    private List<UnitQuantity> addSpies(List<UnitQuantity> input, Player player) {
+    private List<UnitQuantity> addSpies(List<UnitQuantity> input, PlayerName playerName) {
 
         List<UnitQuantity> output = input;
 
-        switch (player) {
+        switch (playerName) {
             case PALERMO:
                 output = increase(output, Unit.S4_SPY, 1000);
                 output = increase(output, Unit.S3_SPY, 2000);
@@ -269,11 +258,11 @@ public class ArmyService extends AbstractService {
     }
 
 
-    private List<UnitQuantity> prepareForCitadel(List<UnitQuantity> input, Player player) {
+    private List<UnitQuantity> prepareForCitadel(List<UnitQuantity> input, PlayerName playerName) {
 
         List<UnitQuantity> output = input;
 
-        switch (player) {
+        switch (playerName) {
             case PALERMO: // Should defeat Level 20 citadel
                 output = increase(output, Unit.G3_MELEE, 1500);
                 output = increase(output, Unit.G4_MELEE, 1000);
@@ -308,11 +297,11 @@ public class ArmyService extends AbstractService {
 
 
 
-    private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, Player player) {
+    private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, PlayerName playerName) {
 
         List<UnitQuantity> output = input;
 
-        switch (player) {
+        switch (playerName) {
             case PALERMO:
                 output = increase(output, Unit.G5_MOUNTED, 4000);
                 output = increase(output, Unit.G5_RANGED, 8000);
@@ -324,7 +313,12 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G4_RANGED, 8000);
                 output = increase(output, Unit.G4_MELEE, 8000);
                 break;
-            case GRIRANA, ELANIN:
+            case GRIRANA:
+                output = increase(output, Unit.G3_MOUNTED, 2000);
+                output = increase(output, Unit.G4_RANGED, 2500);
+                output = increase(output, Unit.G3_MELEE, 4000);
+                break;
+            case ELANIN:
                 output = increase(output, Unit.G3_MOUNTED, 2000);
                 output = increase(output, Unit.G4_RANGED, 2000);
                 output = increase(output, Unit.G3_MELEE, 4000);
@@ -387,18 +381,30 @@ public class ArmyService extends AbstractService {
                 throw new RuntimeException("Not implemented");
         }
     }
+    private Unit getBestSiegeUnit(PlayerEntity playerEntity) {
+        Unit best = null;
+        
+        for (UnitEntity unitEntity: playerEntity.getUnitEntities()) {
+            Unit unit = unitEntity.getUnit();
+            if (best == null || 
+                    (unit.getType() == UnitType.CATAPULT && unit.getTier() > best.getTier())) {
+                best = unit;
+            }
+        }
+        return best;
+    }
 
-    public int getQtdSiegesForCitadel(Player player, int level) {
+    public int getQtdSiegesForCitadel(PlayerEntity playerEntity, int level) {
         switch (level) {
             case 10:
-                switch (player.getBestSiegeUnit()) {
+                switch (getBestSiegeUnit(playerEntity)) {
                     case EC2_ENGINEER:
                         return 290;
                     default:
                         throw new RuntimeException("Not implemented");
                 }
             case 15:
-                switch (player.getBestSiegeUnit()) {
+                switch (getBestSiegeUnit(playerEntity)) {
                     case EC3_ENGINEER:
                         return 380;
                     case EC4_ENGINEER:
@@ -412,13 +418,12 @@ public class ArmyService extends AbstractService {
     }
 
 
-    public List<Unit> getUnits(Player player) {
+    public List<Unit> getUnits(PlayerEntity playerEntity) {
 
         List<Unit> units = new ArrayList<>();
 
-        switch (player) {
+        switch (playerEntity.getPlayerName()) {
             case PALERMO:
-
                 units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
@@ -543,7 +548,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.BATTLE_BOAR);
                 break;
             default:
-                throw new RuntimeException("Not Implemented for " + player.getName());
+                throw new RuntimeException("Not Implemented for " + playerName.name());
         }
         return units;
     }

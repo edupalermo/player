@@ -2,7 +2,6 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -10,22 +9,19 @@ import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.springframework.stereotype.Service;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 @Slf4j
+@Service
 public class CaptainSelector {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
     
     private PlayerStateService playerStateService = new PlayerStateService();
-
-    public CaptainSelector(Player player) {
-        this.player = player;
-    }
 
     public boolean select(Captain firstCaptain, Captain secondCaptain, Captain thirdCaptain) {
         Point heroPoint = openCaptainManagementArea();
@@ -65,7 +61,7 @@ public class CaptainSelector {
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
 
-        if (isCaptainSelected(player, selectedArea, captain)) {
+        if (isCaptainSelected(selectedArea, captain)) {
             log.info("Captain {} is already selected", captain);
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
@@ -76,7 +72,7 @@ public class CaptainSelector {
             removeCaptainAndSelectSpot(i, heroPoint);
             selectCaptain(heroPoint, captain);
 
-            if (isCaptainSelected(player, selectedArea, captain)) {
+            if (isCaptainSelected(selectedArea, captain)) {
                 log.info("Captain {} is already selected", captain);
                 robot.type(KeyEvent.VK_ESCAPE);
                 robot.sleep(300);
@@ -92,7 +88,7 @@ public class CaptainSelector {
         enableCaptainsLeftPane(heroPoint);
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
-        if (isCaptainSelected(player, selectedArea, captain)) {
+        if (isCaptainSelected(selectedArea, captain)) {
             System.out.println("Captain is already selected");
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
@@ -201,7 +197,7 @@ public class CaptainSelector {
         robot.sleep(500);
     }
     
-    private boolean isCaptainSelected(Player player, Area area, Captain captain) {
+    private boolean isCaptainSelected(Area area, Captain captain) {
         BufferedImage screen = robot.captureScreen();
         return ImageUtil.search(captain.getImage72(), screen, area, 0.1).isPresent();
     }
@@ -277,8 +273,6 @@ public class CaptainSelector {
             }
         }
 
-        playerStateService.setCaptains(player, captains);
-        
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
 

@@ -8,23 +8,25 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.palermo.totalbattle.entity.PlayerEntity;
 import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.state.Army;
 import org.palermo.totalbattle.player.state.ArmyTarget;
-import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.state.Resources;
-import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Crypt;
-import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.player.task.FixBrokenArmor;
+import org.palermo.totalbattle.repository.PlayerRepository;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.util.CdpUtil;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.service.player.PlayerService;
+import org.palermo.totalbattle.util.CdpUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,10 +36,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
+@Service
 public class Task {
 
     private static final ArmyService armyService = new ArmyService();
@@ -46,64 +48,28 @@ public class Task {
     private static final LockService lockService = new LockService();
 
     private static MyRobot robot = MyRobot.INSTANCE;
+    
+    @Autowired
+    private PlayerService playerService;
 
-
-    public static void main(String[] args) {
-        play(Player.PALERMO);
-        //play(Player.GRIRANA);
-    }
-
-
-    public static void play(Player player) {
-        
-        playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
-                        .leadership(18912)
-                        .dominance(4768)
-                        .authority(9456)
-                        .goal("any")
-                        .waves(3)
-                .build());
-
-        playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
-                .lumber(19_000_000)
-                .stone(19_000_000)
-                .iron(19_000_000)
-                .silver(2_000_000)
-                .build());
-        
-        playerStateService.getState(Player.LORVEN).setResourcesTarget(Resources.builder()
-                .lumber(250_000)
-                .stone(250_000)
-                .iron(250_000)
-                .build());
-
-        /*
-        gameStateService.add(Citadel.builder()
-                .level(15)
-                .position(Point.of(341, 523))
-                .build());
-         */
-
-        gameStateService.add(Crypt.builder()
-                .level(15)
-                .position(Point.of(396, 510))
-                .build());
-
-        lockService.lock(Player.GRIRANA, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+    public void play() {
 
         Process process = null;
         try {
-            process = openOrdinaryBrowser(player);
+            PlayerEntity playerEntity = playerService.findByPlayerName(PlayerName.LORVEN)
+                    .orElseThrow(() -> new RuntimeException("Player not found!"));
+            
+            process = openOrdinaryBrowser(playerEntity);
             
             robot.sleep(3000);
             CdpUtil.closeAllTabsExceptOne();
             
-            login(player);
+            login(playerEntity);
 
             //(new InfoGather(player)).evaluate();
             //(new Quests(player)).evaluate();
             // (new Donate(player)).evaluate();
-            (new BuildArmy(player)).buildArmy();
+            (new FixBrokenArmor(playerEntity)).fix();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {
@@ -126,18 +92,18 @@ public class Task {
         }
     }
     
-    public static WebDriver openBrowser(Player player) {
+    public static WebDriver openBrowser(PlayerEntity playerEntity) {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        options.addArguments("--user-data-dir=" + new java.io.File(player.getProfileFolder()).getAbsolutePath());
+        options.addArguments("--user-data-dir=" + new java.io.File(playerEntity.getProfileFolder()).getAbsolutePath());
         options.addArguments("--profile-directory=Default"); // Default profile in that dir
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         options.setExperimentalOption("useAutomationExtension", false);
 
         WebDriver driver = new ChromeDriver(options);
-        driver.get(AddressSelector.select(player));
+        driver.get(AddressSelector.select(playerEntity.getPlayerName()));
 
         waitPageToBeLoaded(driver);
 
@@ -146,7 +112,7 @@ public class Task {
         return driver;
     }
 
-    public static Process openOrdinaryBrowser(Player player) {
+    public static Process openOrdinaryBrowser(PlayerEntity playerEntity) {
         try {
             String chromePath;
             if (isLinux()) {
@@ -156,8 +122,8 @@ public class Task {
                 chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
             }
 
-            String userDataDir = new File(player.getProfileFolder()).getAbsolutePath();
-            String url = AddressSelector.select(player);
+            String userDataDir = new File(playerEntity.getProfileFolder()).getAbsolutePath();
+            String url = AddressSelector.select(playerEntity.getPlayerName());
 
             ProcessBuilder pb = new ProcessBuilder(
                     chromePath,
@@ -187,7 +153,7 @@ public class Task {
     }
 
 
-    public static void login(Player player) {
+    public static void login(PlayerEntity playerEntity) {
         Navigate linkLogin = Navigate.builder()
                 .resourceName("player/link_login.png")
                 .area(Area.fromTwoPoints(347, 459, 591, 548))
@@ -196,7 +162,7 @@ public class Task {
         
         if (linkLogin.exist()) {
             System.out.println("Login link found");
-            login(player, linkLogin);
+            login(playerEntity, linkLogin);
         }
         
         robot.sleep(5000);
@@ -204,8 +170,7 @@ public class Task {
         System.out.println("User already logged");
 
         BufferedImage labelClan = ImageUtil.loadResource("player/label_clan.png");
-        BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
-        BufferedImage screen = robot.captureScreen();
+        BufferedImage screen;
         long start = System.currentTimeMillis();
         boolean found = false;
         do {
@@ -320,7 +285,7 @@ public class Task {
     }
 
 
-    private static void login(Player player, Navigate linkLogin) {
+    private static void login(PlayerEntity playerEntity, Navigate linkLogin) {
         // Search and click accept all cookies button
         Navigate.builder()
                 .resourceName("player/button_accept_cookies.png")
@@ -336,12 +301,12 @@ public class Task {
         // Provide username
         robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(358, 494)));
         robot.clearText();
-        robot.typeString(player.getUsername());
+        robot.typeString(playerEntity.getUsername());
 
         // Provide password
         robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(358, 564)));
         robot.clearText();
-        robot.typeString(player.getPassword());
+        robot.typeString(playerEntity.getPassword());
 
         // Click on Login Button
         robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(438, 650)));

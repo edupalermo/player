@@ -1,6 +1,6 @@
 package org.palermo.totalbattle.internalservice;
 
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.state.AutomationState;
@@ -12,18 +12,18 @@ public class LockService {
 
     private SharedData sharedData = SharedData.INSTANCE;
 
-    public void lock(Player player, Scenario scenario, LocalDateTime until) {
+    public void lock(PlayerName playerName, Scenario scenario, LocalDateTime until) {
         AutomationState automationState = sharedData.getAutomationState();
         PlayerState playerState = automationState.getPlayerStates()
-                .computeIfAbsent(player, (it) -> new PlayerState());
+                .computeIfAbsent(playerName, (it) -> new PlayerState());
         playerState.getLocks().put(scenario, until);
         sharedData.saveAutomationState();;
     }
 
-    public boolean isLocked(Player player, Scenario scenario) {
+    public boolean isLocked(PlayerName playerName, Scenario scenario) {
         AutomationState automationState = sharedData.getAutomationState();
         PlayerState playerState = automationState.getPlayerStates()
-                .computeIfAbsent(player, (it) -> new PlayerState());
+                .computeIfAbsent(playerName, (it) -> new PlayerState());
         LocalDateTime until = playerState.getLocks().get(scenario);
         if (until == null) {
             return false;
@@ -31,14 +31,14 @@ public class LockService {
         return LocalDateTime.now().isBefore(until);
     }
     
-    public boolean isFree(Player player, Scenario scenario) {
-        return !isLocked(player, scenario);
+    public boolean isFree(PlayerName playerName, Scenario scenario) {
+        return !isLocked(playerName, scenario);
     }
 
-    public void clear(Player player, Scenario scenario) {
+    public void clear(PlayerName playerName, Scenario scenario) {
         AutomationState automationState = sharedData.getAutomationState();
         PlayerState playerState = automationState.getPlayerStates()
-                .computeIfAbsent(player, (it) -> new PlayerState());
+                .computeIfAbsent(playerName, (it) -> new PlayerState());
         playerState.getLocks().remove(scenario);
         sharedData.saveAutomationState();;
     }

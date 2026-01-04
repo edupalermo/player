@@ -7,15 +7,15 @@ import java.util.Random;
 
 public class AddressSelector {
     
-    private static final Map<Player, Integer> PLAYERS_COUNTER = new HashMap<>();
+    private static final Map<PlayerName, Integer> PLAYERS_COUNTER = new HashMap<>();
     
     private static final int LOOP = 5;
     
     private static final Random random = new Random();
 
-    public static String select(Player player) {
+    public static String select(PlayerName playerName) {
         String address;
-        int counter = PLAYERS_COUNTER.computeIfAbsent(player, (p) -> 0);
+        int counter = PLAYERS_COUNTER.computeIfAbsent(playerName, (p) -> 0);
 
         switch(counter % LOOP) {
             case 0:
@@ -30,7 +30,7 @@ public class AddressSelector {
         }
         
         counter = counter + 1;
-        PLAYERS_COUNTER.put(player, counter);
+        PLAYERS_COUNTER.put(playerName, counter);
         
         return address;
     }
@@ -111,7 +111,7 @@ public class AddressSelector {
 
     public static void main(String[] args) {
         for (int i = 0; i < 10; i++) {
-            System.out.println(select(Player.PALERMO));
+            System.out.println(select(PlayerName.PALERMO));
         }
     }
 }

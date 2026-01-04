@@ -2,7 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -17,12 +17,12 @@ import java.awt.image.BufferedImage;
 public class AttackArena {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
     
     private final GameStateService gameStateService = new GameStateService();
 
-    public AttackArena(Player player) {
-        this.player = player;
+    public AttackArena(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void attack() {

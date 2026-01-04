@@ -1,6 +1,6 @@
 package org.palermo.totalbattle.selenium.leadership;
 
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
@@ -47,7 +47,7 @@ public class Backend {
         
         List<Unit> troops = new ArrayList<>();
         
-        Player player = Player.getPlayerByName(playerName);
+        PlayerName player = PlayerName.getPlayerByName(playerName);
         
         switch(player) {
             case PALERMO -> {

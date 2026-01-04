@@ -5,7 +5,7 @@ import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
@@ -36,29 +36,29 @@ import java.util.Set;
 public class BuildArmy {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
     
     private final ArmyService armyService = new ArmyService();
     private final PlayerStateService playerStateService = new PlayerStateService();
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
 
-    public BuildArmy(Player player) {
-        this.player = player;
+    public BuildArmy(PlayerName playerName) {
+        this.playerName = playerName;
     }
     
     public void buildArmy() {
-        if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
+        if (lockService.isLocked(playerName, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             return;
         }
 
-        if (!armyService.shouldBuildArmy(player)) {
+        if (!armyService.shouldBuildArmy(playerName)) {
             return;
         }
 
-        Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
-        if (!playerStateService.hasCaptain(player, captain)) {
-            (new CaptainSelector(player)).select(captain);
+        Captain captain = playerName.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
+        if (!playerStateService.hasCaptain(playerName, captain)) {
+            (new CaptainSelector(playerName)).select(captain);
         }
         
         BufferedImage screen = robot.captureScreen();
@@ -153,9 +153,9 @@ public class BuildArmy {
     }
     
     private void updateTroopQuantities(Point titleBarracksPoint) {
-        for (TroopQuantity troopQuantity : armyService.getProductionList(player)) {
+        for (TroopQuantity troopQuantity : armyService.getProductionList(playerName)) {
             int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
-            armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+            armyService.setCurrentTroopQuantity(playerName, troopQuantity.getUnit(), currentSize);
         }
     }
     
@@ -290,7 +290,7 @@ public class BuildArmy {
 
     private void chooseTroopToBuild(Point titleBarracksPoint) {
 
-        List<TroopQuantity> list = armyService.getProductionList(player);
+        List<TroopQuantity> list = armyService.getProductionList(playerName);
 
         boolean trainedSomething = false;
         
@@ -298,13 +298,13 @@ public class BuildArmy {
         for (int i = 0; i < list.size(); i++) {
             TroopQuantity troopQuantity = list.get(i);
             int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
-            armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+            armyService.setCurrentTroopQuantity(playerName, troopQuantity.getUnit(), currentSize);
 
             if (currentSize < troopQuantity.getTarget()) {
                 if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
-                    lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-                    if (player == Player.PALERMO) {
-                        WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
+                    lockService.lock(playerName, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                    if (playerName == PlayerName.PALERMO) {
+                        WhatsappUtil.send(playerName.getName() + " has finished building the Guardsman");
                     }
                 }
                 train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
@@ -314,9 +314,9 @@ public class BuildArmy {
         }
 
         if (!trainedSomething) {
-            lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-            lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
-            WhatsappUtil.send(player.getName() + " has finished building the army");
+            lockService.lock(playerName, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+            lockService.lock(playerName, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
+            WhatsappUtil.send(playerName.getName() + " has finished building the army");
         }
     }
 
@@ -407,7 +407,7 @@ public class BuildArmy {
             
             if (target == 1) {
                 continueTrying = false;
-                log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
+                log.info("User {} doesnt have resources for one {}" , playerName.name(), unit.name());
             }
             
         } while(continueTrying);

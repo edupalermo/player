@@ -1,36 +1,43 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.entity.PlayerEntity;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.state.location.Crypt;
+import org.palermo.totalbattle.player.state.location.Location;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.selenium.stacking.Captain;
+import org.palermo.totalbattle.service.player.PlayerService;
 import org.palermo.totalbattle.util.Navigate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.awt.event.KeyEvent;
+import java.util.Optional;
 
 @Slf4j
+@Service
 public class ExploreCrypt {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
 
     private final GameStateService gameStateService = new GameStateService();
-    private final PlayerStateService playerStateService = new PlayerStateService();
+    
+    @Autowired
+    private CaptainSelector captainSelector;
+    
+    @Autowired
+    private PlayerService playerService;
 
-    public ExploreCrypt(Player player) {
-        this.player = player;
-    }
-
-    public void explore() {
+    public void explore(PlayerEntity playerEntity) {
         try {
-            internalExplore();
+            internalExplore(playerEntity);
         }
         catch (Exception e) {
             log.error(e.getMessage());
@@ -41,27 +48,29 @@ public class ExploreCrypt {
         }
     }
     
-    public void internalExplore() {
-        Point location = playerStateService.getState(player).getExploringCrypt();
+    public void internalExplore(PlayerEntity playerEntity) {
+        Crypt crypt = Optional
+                .ofNullable(playerEntity.getCommonCryptExploringLocation())
+                .orElse(null); 
         
-        if  (location == null) {
-            if (playerStateService.getState(player).getCommonTar() < player.getCommonTarRequired() &&
-                    playerStateService.getState(player).getExploringCrypt() == null) {
-                log.info("Not enough common tar {}/{}",  playerStateService.getState(player).getCommonTar(), player.getCommonTarRequired());
+        if  (crypt == null) {
+            if (playerEntity.getCommonTar() < playerEntity.getCommonTarRequired() ) {
+                log.info("Not enough common tar {}/{}",  playerEntity.getCommonTar(), playerEntity.getCommonTarRequired());
                 return;
             }
+            
+            final int playerCommonCryptLevel = playerEntity.getCommonCryptLevel();
 
-            location = gameStateService
+            crypt = gameStateService
                     .getLocation(Crypt.class)
                     .stream()
-                    .filter((c) -> c.getLevel() == player.getCommonCryptLevel())
-                    .map(Crypt::getPosition)
+                    .filter((c) -> c.getLevel() == playerCommonCryptLevel)
                     .findAny()
                     .orElse(null);
         }
 
-        if (location == null) {
-            log.info("There is not Crypt Level {} available", player.getCommonCryptLevel());
+        if (crypt == null) {
+            log.info("There is not Crypt Level {} available", playerEntity.getCommonCryptLevel());
             return;
         }
 
@@ -69,7 +78,7 @@ public class ExploreCrypt {
 
         NavigationUtil.zoomInIfNeeded();
 
-        boolean captainConfigured = (new CaptainSelector(player)).select(Captain.UNKNOW, Captain.CARTER, Captain.UNKNOW);
+        boolean captainConfigured = captainSelector.select(Captain.UNKNOW, Captain.CARTER, Captain.UNKNOW);
 
         if (!captainConfigured) {
             log.info("Carter not available");
@@ -77,7 +86,7 @@ public class ExploreCrypt {
             robot.sleep(300);
         }
         
-        Point target = NavigationUtil.goToMapPosition(location);
+        Point target = NavigationUtil.goToMapPosition(crypt.getPosition());
         robot.leftClick(target);
         
         Navigate titleCrypt = Navigate.builder()
@@ -88,8 +97,9 @@ public class ExploreCrypt {
         
         if (!titleCrypt.exist()) {
             log.info("Crypt doesnt exist anymore");
-            playerStateService.getState(player).setExploringCrypt(null);
-            gameStateService.removeLocationAt(location);
+            playerEntity.setCommonCryptExploringLocation(null);
+            playerEntity = playerService.update(playerEntity);
+            gameStateService.removeLocationAt(crypt.getPosition());
             
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
@@ -99,10 +109,6 @@ public class ExploreCrypt {
                 .real(titleCrypt.getPoint())
                 .reference(Point.of(972, 325))
                 .build();
-
-
-        //BufferedImage screen = robot.captureScreen();
-        //ImageUtil.showImageAndWait(screen, transformation.transform(Point.of(867, 712), Point.of(893, 738)));
         
         // Select Carter
         robot.leftClick(transformation.transform(Point.of(879, 722)));
@@ -125,7 +131,8 @@ public class ExploreCrypt {
         robot.leftClick(transformation.transform(Point.of(1170, 867)));
         robot.sleep(300);
 
-        playerStateService.getState(player).setExploringCrypt(location);
+        playerEntity.setCommonCryptExploringLocation(crypt);
+        playerService.update(playerEntity);
 
         NavigationUtil.speedUpMarch();
     }

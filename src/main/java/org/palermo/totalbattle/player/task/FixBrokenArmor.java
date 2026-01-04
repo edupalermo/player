@@ -1,7 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.entity.PlayerEntity;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -13,11 +13,11 @@ import java.awt.event.KeyEvent;
 @Slf4j
 public class FixBrokenArmor {
 
-    private Player player;
+    private PlayerEntity playerEntity;
     private final MyRobot robot = MyRobot.INSTANCE;
 
-    public FixBrokenArmor(Player player) {
-        this.player = player;
+    public FixBrokenArmor(PlayerEntity playerEntity) {
+        this.playerEntity = playerEntity;
     }
     
     public void fix() {

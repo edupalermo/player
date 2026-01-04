@@ -1,6 +1,6 @@
 package org.palermo.totalbattle.selenium.stacking;
 
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class Stacking {
         
         //custom(Player.PALERMO, set, 4, 43446 - (36 * 10)); // Citadel
 
-        custom(Player.PETER, set, 2, 8058);
+        custom(PlayerName.PETER, set, 2, 8058);
         //custom(Player.PETER_II, set, 3, 11679);
         
         //custom(Player.PETER_II, set, 2, 7599);
@@ -153,10 +153,10 @@ public class Stacking {
 
     }
     
-    private static void custom(Player player, Set<Attribute> exclusions, int tiers, int leadership) {
+    private static void custom(PlayerName playerName, Set<Attribute> exclusions, int tiers, int leadership) {
 
         List<Unit> units;
-        switch (player) {
+        switch (playerName) {
             case PALERMO:
                 units = getPalermoUnits(tiers);
                 break;

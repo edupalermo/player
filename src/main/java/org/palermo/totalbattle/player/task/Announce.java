@@ -1,15 +1,15 @@
 package org.palermo.totalbattle.player.task;
 
 import javazoom.jl.decoder.JavaLayerException;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class Announce {
     
-    public void playPlayerName(Player player) {
-        switch(player) {
+    public void playPlayerName(PlayerName playerName) {
+        switch(playerName) {
             case PALERMO:
                 play("player/audio/palermo.mp3");
                 break;
@@ -26,7 +26,7 @@ public class Announce {
                 play("player/audio/elanin.mp3");
                 break;
             default:
-                System.out.println("Not implemented " + player.getName());
+                System.out.println("Not implemented " + playerName.getName());
         }
     }
     

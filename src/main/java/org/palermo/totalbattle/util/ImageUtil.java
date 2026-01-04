@@ -293,6 +293,38 @@ public class ImageUtil {
     }
 
 
+    public static Optional<SearchResponse> compareImages(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
+        long difference = Long.MAX_VALUE;
+        org.palermo.totalbattle.selenium.leadership.Point best = null;
+
+
+        for (int i = x; i <= x + width - item.getWidth(); i++) {
+            for (int j = y; j <= y + height - item.getHeight(); j++) {
+                long currentDifference = compareWithBreak(item, screen, i, j, item.getWidth(), item.getHeight(), difference);
+                if (currentDifference < difference) {
+                    difference = currentDifference;
+                    best = org.palermo.totalbattle.selenium.leadership.Point.of(i, j);
+                }
+            }
+        }
+
+        double percentage = (double) difference / (3 * 255 * (item.getWidth() * item.getHeight()));
+        // System.out.println("Difference: " + difference + " Percentage: " + percentage);
+
+        if (percentage > limit) {
+            // System.out.println(String.format("Difference %f more than limit: %f ", percentage, limit));
+            return Optional.empty();
+        }
+
+        return Optional.of(SearchResponse
+                .builder()
+                .point(best)
+                .difference(percentage)
+                .build());
+    }
+
+
+
     /**
      * @param x y width height area inside the screen to search
      */

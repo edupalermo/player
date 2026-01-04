@@ -3,14 +3,10 @@ package org.palermo.totalbattle.player.task;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
-import org.palermo.totalbattle.player.RegionSelector;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
-import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
-import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.task.shared.SpeedUp;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -31,13 +27,13 @@ import java.util.List;
 public class Quests {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
 
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
 
-    public Quests(Player player) {
-        this.player = player;
+    public Quests(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void evaluate() {
@@ -72,7 +68,7 @@ public class Quests {
         robot.sleep(1000);
 
         // Tem que checar se tem ouro
-        if (lockService.isFree(player, Scenario.QUESTS_TRY_FULL_CHESTS))  {
+        if (lockService.isFree(playerName, Scenario.QUESTS_TRY_FULL_CHESTS))  {
 
             List<Point> chests = new ArrayList<Point>();
 
@@ -92,7 +88,7 @@ public class Quests {
                 robot.sleep(450);
             }
             robot.sleep(3500); // Wait toast to disappear
-            lockService.lock(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
+            lockService.lock(playerName, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
         }
 
         screen = robot.captureScreen();

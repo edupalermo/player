@@ -1,6 +1,6 @@
 package org.palermo.totalbattle.internalservice;
 
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.state.AutomationState;
 import org.palermo.totalbattle.player.state.PlayerState;
@@ -9,10 +9,10 @@ public abstract class AbstractService {
 
     protected SharedData sharedData = SharedData.INSTANCE;
 
-    protected PlayerState getPlayerState(Player player) {
+    protected PlayerState getPlayerState(PlayerName playerName) {
         return sharedData.getAutomationState()
                 .getPlayerStates()
-                .computeIfAbsent((player), k -> new PlayerState());
+                .computeIfAbsent((playerName), k -> new PlayerState());
     }
 
     public void saveGameState() {

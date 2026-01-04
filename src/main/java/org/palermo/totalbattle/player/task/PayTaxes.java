@@ -3,7 +3,7 @@ package org.palermo.totalbattle.player.task;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -17,18 +17,18 @@ import java.time.LocalDateTime;
 public class PayTaxes {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
 
     private final PlayerStateService playerStateService = new PlayerStateService();
     private final GameStateService gameStateService = new GameStateService();
     private final LockService lockService = new LockService();
 
-    public PayTaxes(Player player) {
-        this.player = player;
+    public PayTaxes(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void pay() {
-        if (lockService.isLocked(player, Scenario.PAY_TAXES)) {
+        if (lockService.isLocked(playerName, Scenario.PAY_TAXES)) {
             return;            
         }
 
@@ -72,6 +72,6 @@ public class PayTaxes {
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(150);
 
-        lockService.lock(player, Scenario.PAY_TAXES, LocalDateTime.now().plusHours(24/4));
+        lockService.lock(playerName, Scenario.PAY_TAXES, LocalDateTime.now().plusHours(24/4));
     }
 }

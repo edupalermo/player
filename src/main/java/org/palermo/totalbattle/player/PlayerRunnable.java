@@ -2,121 +2,114 @@ package org.palermo.totalbattle.player;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.palermo.totalbattle.entity.PlayerEntity;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.service.player.PlayerService;
 import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class PlayerRunnable implements Runnable {
+@Service
+public class PlayerRunnable {
 
     private LockService lockService = new LockService();
     private GameStateService gameStateService = new GameStateService();
     private PlayerStateService playerStateService = new PlayerStateService();
-    
-    private final static boolean BUILD_ARMY = true;
-    
-    private static List<Player> players = new ArrayList<>();
+
+    @Autowired
+    private PlayerService playerService;
+
+    @Autowired
+    private InfoGather infoGather;
+
+    private static List<PlayerName> playerNames = new ArrayList<>();
     static {
-        players.add(Player.PALERMO);
-        players.add(Player.PETER);
-        players.add(Player.MIGHTSHAPER);
-        players.add(Player.GRIRANA);
-        players.add(Player.ELANIN);
+        playerNames.add(PlayerName.PALERMO);
+        playerNames.add(PlayerName.PETER);
+        playerNames.add(PlayerName.MIGHTSHAPER);
+        playerNames.add(PlayerName.GRIRANA);
+        playerNames.add(PlayerName.ELANIN);
     }
 
-    @Override
     public void run() {
         log.info("Player Thread running");
 
-        int counter = 0;
-        
         while (true) {
+            PlayerEntity playerEntity = null;
             try {
-                Player player = players.get(counter % players.size());
-                if (!SharedData.INSTANCE.isLocked(player)) {
-                    play(player);
-                }
-
-                String playerName = gameStateService.getProperty(GameStateService.PROPERTY_NEXT);
-                if (StringUtils.isNoneBlank(playerName)) {
-                    Player adHocPlayer = Player.findPlayerByName(playerName).orElse(null);
-                    if (adHocPlayer != null) {
-                        play(adHocPlayer);
-                        gameStateService.removeProperty(GameStateService.PROPERTY_NEXT);
-                    }
-                }
-                    
+                playerEntity = playerService.findFreePlayerToPlay();
             } catch (RuntimeException e) {
                 log.error(e.getMessage(), e);
             }
-            counter++;
+            finally {
+                playerService.finishPlaying(playerEntity);
+            }
         }
     }
     
     
-    private void play(Player player) {
+    private void play(PlayerEntity playerEntity) {
         Process process = null;
         try {
-            MDC.put("playerName", player.getName());
-            process = Task.openOrdinaryBrowser(player);
+            MDC.put("playerName", playerEntity.getPlayerName().name());
+            process = Task.openOrdinaryBrowser(playerEntity);
 
             SharedData.INSTANCE.robot.sleep(1500);
             CdpUtil.closeAllTabsExceptOne();
 
-            Task.login(player);
+            Task.login(playerEntity);
             
 
-            if (SharedData.INSTANCE.shouldHalt(player)) {
+            /*
+            if (SharedData.INSTANCE.shouldHalt(playerName)) {
                 Task.showPauseDialog("Click on the button to continue");
-                SharedData.INSTANCE.removeHalt(player);
+                SharedData.INSTANCE.removeHalt(playerName);
             }
+            */
 
-            if ((new CheckHeroHealth(player)).isDead()) {
-                WhatsappUtil.send(String.format("Player %s is dead", player.name()));
+            if ((new CheckHeroHealth(playerEntity)).isDead()) {
+                WhatsappUtil.send(String.format("Player %s is dead", playerEntity.getPlayerName().name()));
                 return;
             }
 
-            (new InfoGather(player)).evaluate();
-            (new FixBrokenArmor(player)).fix();
+            infoGather.evaluate(playerEntity);
             
-            (new FreeSale(player)).freeSale();
-            if (!BUILD_ARMY) {
-                (new Quests(player)).evaluate();
-            }
-            (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
+            /*
+            (new FixBrokenArmor(playerName)).fix();
 
-            if (!BUILD_ARMY) {
+            (new FreeSale(playerName)).freeSale();
 
-                (new Telescope(player)).findArena();
-                (new Telescope(player)).findSilverMines();
-                (new Telescope(player)).findCitadels();
-                (new Telescope(player)).findCrypts();
-            }
+            (new Quests(playerName)).evaluate();
+            (new ClanContribution(playerName)).helpClanMembers();
+            (new ClanContribution(playerName)).collectChests();
 
-            (new BuildArmy(player)).buildArmy();
+            (new Telescope(playerName)).findArena();
+            (new Telescope(playerName)).findSilverMines();
+            (new Telescope(playerName)).findCitadels();
+            (new Telescope(playerName)).findCrypts();
 
-            if (!BUILD_ARMY) {
-                (new AttackCitadel(player)).attack();
-                (new AttackArena(player)).attack();
-                (new MineSilver(player)).mine();
-                (new ExploreCrypt(player)).explore();
-            }
+            (new BuildArmy(playerName)).buildArmy();
+
+            (new AttackCitadel(playerName)).attack();
+            (new AttackArena(playerName)).attack();
+            (new MineSilver(playerName)).mine();
+            (new ExploreCrypt(playerName)).explore();
+            (new Donate(playerName)).evaluate();
+
+            (new PayTaxes(playerName)).pay();
             
-            (new Donate(player)).evaluate();
-
-            if (!BUILD_ARMY) {
-                (new PayTaxes(player)).pay();
-                (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
-            }
+            (new SummoningCircle(SharedData.INSTANCE.robot, playerName)).evaluate();
+             */
 
         } catch (Exception e) {
             throw new RuntimeException(e);

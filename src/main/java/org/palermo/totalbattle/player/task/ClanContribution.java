@@ -1,7 +1,7 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -16,10 +16,10 @@ import java.awt.image.BufferedImage;
 public class ClanContribution {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
 
-    public ClanContribution(Player player) {
-        this.player = player;
+    public ClanContribution(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void collectChests() {

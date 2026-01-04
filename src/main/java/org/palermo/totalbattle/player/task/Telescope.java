@@ -2,7 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.state.location.Arena;
 import org.palermo.totalbattle.player.state.location.Citadel;
@@ -26,20 +26,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 public class Telescope {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
     
     private final GameStateService gameStateService = new GameStateService();
     
     private final int MINE_COUNT_TARGET = 1;
 
-    public Telescope(Player player) {
-        this.player = player;
+    public Telescope(PlayerName playerName) {
+        this.playerName = playerName;
     }
     
     public void findArena() {

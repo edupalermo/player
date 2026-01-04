@@ -4,7 +4,7 @@ package org.palermo.totalbattle.player.task;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -22,19 +22,19 @@ import java.time.LocalDateTime;
 public class SummoningCircle {
 
     private final MyRobot robot;
-    private final Player player;
+    private final PlayerName playerName;
 
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    public SummoningCircle(MyRobot robot, Player player) {
+    public SummoningCircle(MyRobot robot, PlayerName playerName) {
         this.robot = robot;
-        this.player = player;
+        this.playerName = playerName;
     }
 
     public void evaluate() {
 
-        if (!isSummoningCircleFree(player)) {
+        if (!isSummoningCircleFree(playerName)) {
             log.info("Summoning Circle is on halt");
             return;
         }
@@ -105,10 +105,10 @@ public class SummoningCircle {
         robot.sleep(150);
     }
 
-    private boolean isSummoningCircleFree(Player player) {
-        return lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
-                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
-                lockService.isLocked(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
+    private boolean isSummoningCircleFree(PlayerName playerName) {
+        return lockService.isLocked(playerName, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT) &&
+                lockService.isLocked(playerName, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT)  &&
+                lockService.isLocked(playerName, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
     }
 
     private void collectArtifacts() {
@@ -124,7 +124,7 @@ public class SummoningCircle {
         Point iconArtifactPoint = ImageUtil.searchSurroundings(iconArtifact, screen, iconArtifactArea, 0.1, 20).orElse(null);
 
         if (iconArtifactPoint == null) {
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, LocalDateTime.now().plusHours(12));
+            lockService.lock(playerName, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, LocalDateTime.now().plusHours(12));
             return;
         }
         robot.leftClick(iconArtifactPoint, iconArtifact);
@@ -177,7 +177,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
+            lockService.lock(playerName, Scenario.SUMMONING_CIRCLE_ARTIFACT_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
         }
     }
 
@@ -270,7 +270,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
+            lockService.lock(playerName, Scenario.SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
 
         }
         else {
@@ -289,7 +289,7 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            lockService.lock(player, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
+            lockService.lock(playerName, Scenario.SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT, OcrUtil.ocrTimer(timerImage, true));
         }
         else {
             collectEliteCaptainFragments(eliteArtifactQtd);

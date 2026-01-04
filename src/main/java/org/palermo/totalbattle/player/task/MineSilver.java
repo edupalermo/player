@@ -2,7 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.state.location.Mine;
 import org.palermo.totalbattle.player.state.location.MineType;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
@@ -18,12 +18,12 @@ import java.awt.event.KeyEvent;
 public class MineSilver {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
     
     private final GameStateService gameStateService = new GameStateService();
 
-    public MineSilver(Player player) {
-        this.player = player;
+    public MineSilver(PlayerName playerName) {
+        this.playerName = playerName;
     }
     
     public void mine() {
@@ -126,7 +126,7 @@ public class MineSilver {
                 .build();
         
         if (!strorNavigate.exist()) {
-            (new CaptainSelector(player)).select(Captain.STROR);
+            (new CaptainSelector(playerName)).select(Captain.STROR);
             strorNavigate.searchAgain();
         }
 

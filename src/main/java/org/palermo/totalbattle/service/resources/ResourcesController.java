@@ -2,7 +2,7 @@ package org.palermo.totalbattle.service.resources;
 
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.state.Resources;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,7 @@ public class ResourcesController {
                 .stone(resourceBean.getStone())
                 .silver(resourceBean.getSilver())
                 .build();
-        playerStateService.getState(Player.getPlayerByName(resourceBean.getPlayerName())).setResourcesTarget(resources);
+        playerStateService.getState(PlayerName.getPlayerByName(resourceBean.getPlayerName())).setResourcesTarget(resources);
         playerStateService.saveGameState();
     }
 }

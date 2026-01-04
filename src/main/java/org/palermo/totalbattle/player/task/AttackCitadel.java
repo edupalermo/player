@@ -5,7 +5,7 @@ import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
@@ -29,15 +29,15 @@ import java.util.List;
 public class AttackCitadel {
     
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
 
     private PlayerStateService playerStateService = new PlayerStateService();
     private LockService lockService = new LockService();
     private GameStateService gameStateService = new GameStateService();
     private ArmyService armyService = new ArmyService();
 
-    public AttackCitadel(Player player) {
-        this.player = player;
+    public AttackCitadel(PlayerName playerName) {
+        this.playerName = playerName;
     }
 
     public void attack() {
@@ -53,7 +53,7 @@ public class AttackCitadel {
     }
 
     public void internalAttack() {
-        if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_NON_MONSTERS)) {
+        if (!lockService.isLocked(playerName, Scenario.FINISHED_TRAINING_NON_MONSTERS)) {
             log.info("Aborting Citadel attack because there are no NO troops trained");
             return;
         }
@@ -61,7 +61,7 @@ public class AttackCitadel {
         Point citadelLocation = gameStateService
                 .getLocation(Citadel.class)
                 .stream()
-                .filter((c) -> c.getLevel() == player.getCitadelLevel())
+                .filter((c) -> c.getLevel() == playerName.getCitadelLevel())
                 .map(Citadel::getPosition)
                 .findAny()
                 .orElse(null);
@@ -101,12 +101,12 @@ public class AttackCitadel {
         robot.sleep(1500);
 
         boolean captainConfigured;
-        switch(player.getCitadelLevel()) {
+        switch(playerName.getCitadelLevel()) {
             case 10:
-                captainConfigured = (new CaptainSelector(player)).select(Captain.AYDAE, Captain.MINAMOTO, Captain.UNKNOW);
+                captainConfigured = (new CaptainSelector(playerName)).select(Captain.AYDAE, Captain.MINAMOTO, Captain.UNKNOW);
                 break;
             case 15:
-                captainConfigured = (new CaptainSelector(player)).select(Captain.AYDAE, Captain.ALEXANDER, Captain.UNKNOW);
+                captainConfigured = (new CaptainSelector(playerName)).select(Captain.AYDAE, Captain.ALEXANDER, Captain.UNKNOW);
                 break;
             default:
                 throw new RuntimeException("Not implemented");
@@ -129,13 +129,13 @@ public class AttackCitadel {
         
         // System.out.println(headCount[0] + " - " + headCount[1] + " - " + headCount[2]);
         
-        List<Unit> units = armyService.getUnits(player);
-        units = armyService.removeWeakPointForCitadel(units, player.getCitadelLevel());
+        List<Unit> units = armyService.getUnits(playerName);
+        units = armyService.removeWeakPointForCitadel(units, playerName.getCitadelLevel());
         
-        final int siegeQtd = armyService.getQtdSiegesForCitadel(player, player.getCitadelLevel());
+        final int siegeQtd = armyService.getQtdSiegesForCitadel(playerName, playerName.getCitadelLevel());
         
         ConfigurationBuilder builder = Configuration.builder()
-                .leadership(headCount[0] - (player.getBestSiegeUnit().getHeadCount() * siegeQtd))
+                .leadership(headCount[0] - (playerName.getBestSiegeUnit().getHeadCount() * siegeQtd))
                 .dominance(headCount[1])
                 .authority(headCount[2]);
 
@@ -147,7 +147,7 @@ public class AttackCitadel {
         
         List<TroopQuantity> quantities = new ArrayList<>();
         quantities.add(TroopQuantity.builder()
-                .unit(player.getBestSiegeUnit())
+                .unit(playerName.getBestSiegeUnit())
                 .quantity(siegeQtd)
                 .build());
         
@@ -173,10 +173,10 @@ public class AttackCitadel {
 
         NavigationUtil.speedUpMarch();
 
-        lockService.clear(player, Scenario.BUILD_TROOPS_REEVALUATE);
-        lockService.clear(player, Scenario.FINISHED_TRAINING_ALL_TROOPS);
-        lockService.clear(player, Scenario.FINISHED_TRAINING_NON_MONSTERS);
-        armyService.setProductionOrder(player);
+        lockService.clear(playerName, Scenario.BUILD_TROOPS_REEVALUATE);
+        lockService.clear(playerName, Scenario.FINISHED_TRAINING_ALL_TROOPS);
+        lockService.clear(playerName, Scenario.FINISHED_TRAINING_NON_MONSTERS);
+        armyService.setProductionOrder(playerName);
     }
     
     private boolean checkMinimumRequirements() {

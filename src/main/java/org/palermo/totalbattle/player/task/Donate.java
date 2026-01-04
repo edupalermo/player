@@ -3,7 +3,7 @@ package org.palermo.totalbattle.player.task;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.PlayerName;
 import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.task.shared.NavigationUtil;
 import org.palermo.totalbattle.player.task.shared.Resource;
@@ -11,11 +11,9 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,18 +23,18 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Donate {
 
     private final MyRobot robot = MyRobot.INSTANCE;
-    private final Player player;
+    private final PlayerName playerName;
 
     private static final GameStateService gameStateService = new GameStateService();
     private static final PlayerStateService playerStateService = new PlayerStateService();
 
-    public Donate(Player player) {
-        this.player = player;
+    public Donate(PlayerName playerName) {
+        this.playerName = playerName;
     }
     
     public void evaluate() {
         
-        Player target = playerInNeed().orElse(null);
+        PlayerName target = playerInNeed().orElse(null);
         if (target == null) {
             log.info("No other player needs help");
             return;
@@ -51,7 +49,7 @@ public class Donate {
         
     }
     
-    private boolean donate(Player target) {
+    private boolean donate(PlayerName target) {
         Resource resource = selectResourceToDonate(target);
         log.info("Trying to donate {} to {}", resource.name(), target.name());
 
@@ -149,10 +147,10 @@ public class Donate {
         return true;
     }
 
-    private Optional<Player> playerInNeed() {
-        Player answer = null;
-        for (Player it: Player.values()) {
-            if (it.getPriority() >= player.getPriority()) {
+    private Optional<PlayerName> playerInNeed() {
+        PlayerName answer = null;
+        for (PlayerName it: PlayerName.values()) {
+            if (it.getPriority() >= playerName.getPriority()) {
                 continue;
             }
             PlayerState playerState = playerStateService.getState(it);
@@ -170,7 +168,7 @@ public class Donate {
         return Optional.ofNullable(answer);
     }
 
-    private Resource selectResourceToDonate(Player it) {
+    private Resource selectResourceToDonate(PlayerName it) {
         List<Resource> resources = new ArrayList<>(); 
         PlayerState playerState = playerStateService.getState(it);
         if (playerState.getResourcesTarget().getLumber() > playerState.getLumber()) {
