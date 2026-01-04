@@ -13,6 +13,8 @@ public class HaltController {
 
     @PostMapping("/halt")
     public void record(@RequestBody String playerName) {
-        SharedData.INSTANCE.halt(PlayerName.getPlayerByName(playerName));
+        // It shouls receive the machine name as well... otherwise is going to be difficult to know where it is halted
+        // SharedData.INSTANCE.halt(PlayerName.getPlayerByName(playerName));
+        throw new RuntimeException("Not implemented");
     }
 }

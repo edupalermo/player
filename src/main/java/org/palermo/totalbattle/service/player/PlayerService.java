@@ -31,7 +31,8 @@ public class PlayerService {
         PlayerEntity playerEntity = null;
         
         while (playerEntity == null) {
-            playerEntity = playerRepository.findPlayerToPlay(PageRequest.of(0, 1))
+            playerEntity = playerRepository.findPlayerToPlay(LocalDateTime.now().minusHours(2),
+                            PageRequest.of(0, 1))
                     .stream().findFirst().orElse(null);
             
             if (playerEntity == null) {
@@ -66,5 +67,24 @@ public class PlayerService {
             throw new RuntimeException("We should not create new players here!");
         }
         return playerRepository.save(playerEntity);
+    }
+    
+    public void lock(PlayerName playerName) {
+        PlayerEntity playerEntity = playerRepository.findByPlayerName(playerName).orElse(null);
+        if (playerEntity == null) {
+            throw new RuntimeException(String.format("Player %s doesn't exist in the database", playerName.name()));
+        }
+        playerEntity.setLock(LocalDateTime.now());
+        playerRepository.save(playerEntity);
+    }
+
+    public void free() {
+        List<PlayerEntity> list = playerRepository.findAll();
+        for (PlayerEntity playerEntity: list) {
+            if (playerEntity.getLock() != null) {
+                playerEntity.setLock(null);
+                playerRepository.save(playerEntity);
+            }
+        }
     }
 }

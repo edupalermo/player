@@ -47,7 +47,7 @@ public class PlayerEntity {
 
     @Setter
     @Column(name = "lock", nullable = false)
-    private boolean lock;
+    private LocalDateTime lock;
 
     @Setter
     @Column(name = "halt", nullable = false)

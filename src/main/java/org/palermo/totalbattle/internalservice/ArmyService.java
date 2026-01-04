@@ -155,7 +155,8 @@ public class ArmyService {
         sharedData.saveAutomationState();
     }
     
-    public void setProductionOrder(PlayerEntity playerEntity) {
+    public void setProductionOrder(PlayerName playerName) {
+        /*
 
         PlayerState playerState = getPlayerState(playerName);
         ArmyTarget armyTarget = playerState.getArmy().getTarget();
@@ -210,6 +211,7 @@ public class ArmyService {
 
         lockService.lock(playerName, Scenario.BUILD_TROOPS_REEVALUATE,
                 LocalDateTime.now().plusHours(1));
+         */
     }
 
     private List<UnitQuantity> addMiners(List<UnitQuantity> input) {
@@ -548,7 +550,7 @@ public class ArmyService {
                 units.add(Unit.BATTLE_BOAR);
                 break;
             default:
-                throw new RuntimeException("Not Implemented for " + playerName.name());
+                throw new RuntimeException("Not Implemented for " + playerEntity.getPlayerName().name());
         }
         return units;
     }
