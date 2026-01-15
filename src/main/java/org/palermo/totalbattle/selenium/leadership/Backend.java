@@ -155,29 +155,37 @@ public class Backend {
             }
             case GRIRANA -> {
                 if (tiers >= 3) {
-                    troops.add(Unit.S1_SWORDSMAN);
-                    troops.add(Unit.G1_MOUNTED);
+                    troops.add(Unit.S2_SWORDSMAN);
                     troops.add(Unit.G2_RANGED);
                     troops.add(Unit.G2_MELEE);
+                    troops.add(Unit.G2_MOUNTED);
                     
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MOUNTED);
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
+                    troops.add(Unit.G3_MOUNTED);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G3_MOUNTED);
                     troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
+                    troops.add(Unit.G4_MOUNTED);
                 }
 
-                if (tiers >= 1) {
-                    troops.add(Unit.EMERALD_DRAGON);
-                    troops.add(Unit.WATER_ELEMENTAL);
-                    troops.add(Unit.STONE_GARGOYLE);
-                    troops.add(Unit.BATTLE_BOAR);
+                if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
+                        monsterOverride == MonsterOverride.DEFAULT) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.MAGIC_DRAGON);
+                        troops.add(Unit.ICE_PHOENIX);
+                        troops.add(Unit.MANY_ARMED_GUARDIAN);
+                        troops.add(Unit.GORGON_MEDUSA);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                        troops.add(Unit.EMERALD_DRAGON);
+                        troops.add(Unit.WATER_ELEMENTAL);
+                        troops.add(Unit.STONE_GARGOYLE);
+                        troops.add(Unit.BATTLE_BOAR);
+                    }
                 }
 
                 troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
