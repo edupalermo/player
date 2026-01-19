@@ -192,21 +192,20 @@ public class Backend {
             }
             case ELANIN -> {
                 if (tiers >= 3) {
-                    troops.add(Unit.S1_SWORDSMAN);
-                    troops.add(Unit.G1_MOUNTED);
+                    troops.add(Unit.S2_SWORDSMAN);
                     troops.add(Unit.G2_RANGED);
                     troops.add(Unit.G2_MELEE);
+                    troops.add(Unit.G2_MOUNTED);
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MOUNTED);
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
+                    troops.add(Unit.G3_MOUNTED);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G3_MOUNTED);
                     troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
+                    troops.add(Unit.G4_MOUNTED);
                 }
 
                 if (tiers >= 1) {
