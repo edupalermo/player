@@ -501,9 +501,6 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.GORGON_MEDUSA);
                 break;
             case GRIRANA:
-                units.add(Unit.S1_SWORDSMAN);
-                units.add(Unit.G1_MOUNTED);
-
                 units.add(Unit.S2_SWORDSMAN);
                 units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);
@@ -515,17 +512,14 @@ public class ArmyService extends AbstractService {
 
                 units.add(Unit.G4_RANGED);
                 units.add(Unit.G4_MELEE);
-
+                units.add(Unit.G4_MOUNTED);
+                
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);
                 units.add(Unit.STONE_GARGOYLE);
                 units.add(Unit.BATTLE_BOAR);
                 break;
             case ELANIN:
-                units.add(Unit.S1_SWORDSMAN);
-                units.add(Unit.G1_MELEE);
-                units.add(Unit.G1_MOUNTED);
-
                 units.add(Unit.S2_SWORDSMAN);
                 units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);
@@ -536,6 +530,8 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G3_MOUNTED);
 
                 units.add(Unit.G4_RANGED);
+                units.add(Unit.G4_MELEE);
+                units.add(Unit.G4_MOUNTED);
 
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);
