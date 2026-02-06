@@ -21,6 +21,7 @@ public enum Unit {
     
     S5_SWORDSMAN(520, 1560, UnitType.MELEE, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_v.png", Pool.LEADERSHIP, 1),
     S5_VULTURE(520, 1560, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_v.png", Pool.LEADERSHIP, 1),
+    S5_DEADSHOT(520, 1560, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.RANGED, Attribute.SPECIALIST), "leadership/deadshot_v.png", Pool.LEADERSHIP, 1),
     S5_LION_RIDER(1050, 3150, UnitType.RIDER, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/lion_rider_v.png", Pool.LEADERSHIP, 2),
 
     G1_MELEE(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_i.png", Pool.LEADERSHIP, 1),
