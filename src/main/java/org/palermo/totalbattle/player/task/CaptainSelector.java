@@ -234,6 +234,12 @@ public class CaptainSelector {
                 return point;
             }
 
+            BufferedImage thelensia = ImageUtil.loadResource("player/hero/thelensia_66.png");
+            point = ImageUtil.searchSurroundings(thelensia, screen, area, 0.1, 20).orElse(null);
+            if (point != null) {
+                return point;
+            }
+
             BufferedImage ayrin = ImageUtil.loadResource("player/hero/ayrin_66.png");
             point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
             if (point != null) {
