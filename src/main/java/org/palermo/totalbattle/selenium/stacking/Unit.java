@@ -14,6 +14,8 @@ public enum Unit {
     S2_SPY(45, 135, UnitType.SPY, 2, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     S3_SPY(80, 240, UnitType.SPY, 3, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     S4_SPY(150, 450, UnitType.SPY, 4, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
+    S5_SPY(260, 780, UnitType.SPY, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
+    
     S1_SWORDSMAN(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_i.png", Pool.LEADERSHIP, 1),
     S2_SWORDSMAN(90, 270, UnitType.MELEE, 2, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_ii.png", Pool.LEADERSHIP, 1),
     S3_SWORDSMAN(160, 480, UnitType.MELEE, 3, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_iii.png", Pool.LEADERSHIP, 1),
@@ -36,10 +38,13 @@ public enum Unit {
     G4_MELEE(290, 870, UnitType.MELEE, 4, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_iv.png", Pool.LEADERSHIP, 1),
     G4_RANGED(290, 870, UnitType.ARCHER, 4, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_iv.png", Pool.LEADERSHIP, 1),
     G4_MOUNTED(580, 1740, UnitType.RIDER, 4, Attribute.GUARDSMAN_RIDER, "leadership/mounted_iv.png", Pool.LEADERSHIP, 2),
+
     G5_RANGED(520, 1560, UnitType.ARCHER, 5, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_v.png", Pool.LEADERSHIP, 1),
     G5_MELEE(520, 1560, UnitType.MELEE, 5, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_v.png", Pool.LEADERSHIP, 1),
     G5_MOUNTED(1050, 3150, UnitType.RIDER, 5, Attribute.GUARDSMAN_RIDER, "leadership/mounted_v.png", Pool.LEADERSHIP, 2),
     G5_GRIFFIN(10000, 30000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING, Attribute.GUARDSMAN), "leadership/griffin_v.png", Pool.LEADERSHIP, 20),
+
+    G6_RANGED(940, 2820, UnitType.ARCHER, 6, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_vi.png", Pool.LEADERSHIP, 1),
     
     EC1_ENGINEER(250, 1500, UnitType.CATAPULT, 1, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_i.png", Pool.LEADERSHIP, 10),
     EC2_ENGINEER(450, 2700, UnitType.CATAPULT, 2, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_ii.png", Pool.LEADERSHIP, 10),

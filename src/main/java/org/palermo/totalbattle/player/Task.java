@@ -12,18 +12,15 @@ import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.state.Army;
 import org.palermo.totalbattle.player.state.ArmyTarget;
-import org.palermo.totalbattle.player.state.PlayerState;
 import org.palermo.totalbattle.player.state.Resources;
-import org.palermo.totalbattle.player.state.location.Citadel;
 import org.palermo.totalbattle.player.state.location.Crypt;
-import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.selenium.leadership.Area;
-import org.palermo.totalbattle.util.CdpUtil;
-import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.util.CdpUtil;
+import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import javax.swing.*;
@@ -34,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -241,6 +237,8 @@ public class Task {
         }
         
         System.out.println("Press scape twice to close random pop ups");
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);

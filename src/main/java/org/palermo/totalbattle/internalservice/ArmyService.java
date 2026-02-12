@@ -194,7 +194,7 @@ public class ArmyService extends AbstractService {
 
         unitQuantities = addMiners(unitQuantities);
 
-        unitQuantities = incrementLastLayer(unitQuantities, player);
+        unitQuantities = incrementLastGuardsmanLayer(unitQuantities, player);
 
         unitQuantities = addSpies(unitQuantities, player);
         
@@ -250,8 +250,8 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = increase(output, Unit.S4_SPY, 1000);
-                output = increase(output, Unit.S3_SPY, 2000);
+                output = increase(output, Unit.S5_SPY, 1000);
+                output = increase(output, Unit.S4_SPY, 2000);
                 break;
             case PETER, MIGHTSHAPER:
                 output = increase(output, Unit.S2_SPY, 1000);
@@ -308,16 +308,16 @@ public class ArmyService extends AbstractService {
 
 
 
-    private List<UnitQuantity> incrementLastLayer(List<UnitQuantity> input, Player player) {
+    private List<UnitQuantity> incrementLastGuardsmanLayer(List<UnitQuantity> input, Player player) {
 
         List<UnitQuantity> output = input;
 
         switch (player) {
             case PALERMO:
                 output = increase(output, Unit.G5_MOUNTED, 4000);
-                output = increase(output, Unit.G5_RANGED, 8000);
                 output = increase(output, Unit.G5_MELEE, 8000);
                 output = increase(output, Unit.G5_GRIFFIN, 400);
+                output = increase(output, Unit.G6_RANGED, 8000);
                 break;
             case PETER, MIGHTSHAPER:
                 output = increase(output, Unit.G4_MOUNTED, 4000);
@@ -420,7 +420,6 @@ public class ArmyService extends AbstractService {
             case PALERMO:
 
                 units.add(Unit.S3_SWORDSMAN);
-                units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
                 units.add(Unit.G3_MOUNTED);
 
@@ -429,10 +428,17 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
 
+                units.add(Unit.S5_SWORDSMAN);
+                units.add(Unit.S5_DEADSHOT);
+                units.add(Unit.S5_VULTURE);
+                units.add(Unit.S5_LION_RIDER);
+                
                 units.add(Unit.G5_RANGED);
                 units.add(Unit.G5_MELEE);
                 units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
+
+                units.add(Unit.G6_RANGED);
 
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);

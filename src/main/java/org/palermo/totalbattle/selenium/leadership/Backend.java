@@ -53,31 +53,35 @@ public class Backend {
             case PALERMO -> {
                 if (tiers >= 4) {
                     troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_RANGED);
                     troops.add(Unit.G2_MELEE);
                     troops.add(Unit.G2_MOUNTED);
+
+                    troops.add(Unit.G3_RANGED);
                 }
                 if (tiers >= 3) {
                     troops.add(Unit.S3_SWORDSMAN);
-                    troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
+
+                    troops.add(Unit.G4_RANGED);
                 }
                 if (tiers >= 2) {
                     troops.add(Unit.S4_SWORDSMAN);
-                    troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
+
+                    troops.add(Unit.S5_DEADSHOT);
+                    troops.add(Unit.G5_RANGED);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.S5_DEADSHOT);
                     troops.add(Unit.S5_SWORDSMAN);
                     troops.add(Unit.S5_VULTURE);
                     troops.add(Unit.S5_LION_RIDER);
-                    troops.add(Unit.G5_RANGED);
                     troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_MOUNTED);
                     troops.add(Unit.G5_GRIFFIN);
+
+                    troops.add(Unit.G6_RANGED);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
@@ -112,7 +116,55 @@ public class Backend {
                     troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
                 }
             }
-            case PETER, MIGHTSHAPER -> {
+            case PETER -> {
+                if (tiers >= 3) {
+                    troops.add(Unit.S2_SWORDSMAN);
+                    troops.add(Unit.G2_MELEE);
+                    troops.add(Unit.G2_MOUNTED);
+
+                    troops.add(Unit.G3_RANGED);
+                }
+                if (tiers >= 2) {
+                    troops.add(Unit.S3_SWORDSMAN);
+                    troops.add(Unit.G3_MELEE);
+                    troops.add(Unit.G3_MOUNTED);
+
+                    troops.add(Unit.G4_RANGED);
+                }
+                if (tiers >= 1) {
+                    troops.add(Unit.G4_MELEE);
+                    troops.add(Unit.G4_MOUNTED);
+
+                    troops.add(Unit.G5_RANGED);
+                }
+
+                if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
+                        monsterOverride == MonsterOverride.DEFAULT) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                        troops.add(Unit.EMERALD_DRAGON);
+                        troops.add(Unit.WATER_ELEMENTAL);
+                        troops.add(Unit.STONE_GARGOYLE);
+                        troops.add(Unit.BATTLE_BOAR);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.MAGIC_DRAGON);
+                        troops.add(Unit.ICE_PHOENIX);
+                        troops.add(Unit.MANY_ARMED_GUARDIAN);
+                        troops.add(Unit.GORGON_MEDUSA);
+                    }
+                }
+
+                if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
+                    troops.add(Unit.ARBALESTER_VI);
+                    troops.add(Unit.LEGIONARY_VI);
+                    troops.add(Unit.CHARIOT_VI);
+                    troops.add(Unit.SPHYNX_VI);
+
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                }
+            }
+            case MIGHTSHAPER -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S2_SWORDSMAN);
                     troops.add(Unit.G2_RANGED);
