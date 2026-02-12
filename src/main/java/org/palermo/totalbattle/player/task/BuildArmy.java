@@ -411,6 +411,8 @@ public class BuildArmy {
             
             if (isSilverEnough && isResourceEnough(foodArea)) {
                 
+                log.info("Training {}: {}", unit.name(), target);
+                
                 // Click on train button
                 robot.leftClick(trainButtonPoint);
                 robot.sleep(1500);
