@@ -52,36 +52,33 @@ public class Backend {
         switch(player) {
             case PALERMO -> {
                 if (tiers >= 4) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MELEE);
-                    troops.add(Unit.G2_MOUNTED);
-
-                    troops.add(Unit.G3_RANGED);
-                }
-                if (tiers >= 3) {
                     troops.add(Unit.S3_SWORDSMAN);
+                    troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
-
-                    troops.add(Unit.G4_RANGED);
                 }
-                if (tiers >= 2) {
+                if (tiers >= 3) {
                     troops.add(Unit.S4_SWORDSMAN);
+                    troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
-
-                    troops.add(Unit.S5_DEADSHOT);
-                    troops.add(Unit.G5_RANGED);
                 }
-                if (tiers >= 1) {
+                if (tiers >= 2) {
+                    troops.add(Unit.S5_DEADSHOT);
                     troops.add(Unit.S5_SWORDSMAN);
                     troops.add(Unit.S5_VULTURE);
                     troops.add(Unit.S5_LION_RIDER);
+                    
+                    troops.add(Unit.G5_RANGED);
                     troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_MOUNTED);
                     troops.add(Unit.G5_GRIFFIN);
+                }
+                if (tiers >= 1) {
 
                     troops.add(Unit.G6_RANGED);
+                    troops.add(Unit.G6_MELEE);
+                    troops.add(Unit.G6_MOUNTED);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
@@ -118,24 +115,21 @@ public class Backend {
             }
             case PETER -> {
                 if (tiers >= 3) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MELEE);
-                    troops.add(Unit.G2_MOUNTED);
-
-                    troops.add(Unit.G3_RANGED);
-                }
-                if (tiers >= 2) {
                     troops.add(Unit.S3_SWORDSMAN);
+                    troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
-
-                    troops.add(Unit.G4_RANGED);
                 }
-                if (tiers >= 1) {
+                if (tiers >= 2) {
+                    troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
-
+                }
+                if (tiers >= 1) {
                     troops.add(Unit.G5_RANGED);
+                    troops.add(Unit.G5_MELEE);
+                    troops.add(Unit.G5_MOUNTED);
+                    troops.add(Unit.G5_GRIFFIN);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
