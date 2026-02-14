@@ -43,7 +43,7 @@ public class BuildArmy {
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    private final boolean TEST = true; 
+    private final boolean TEST = false; 
 
     public BuildArmy(Player player) {
         this.player = player;
