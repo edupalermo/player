@@ -38,7 +38,7 @@ public class TroopManagerApp extends JFrame {
     private JComboBox<Backend.MonsterOverride> monsterOverride;
     
     // ===== Exclusions =====
-    private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon, cbSpecialist;
+    private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon, cbGiant, cbSpecialist;
 
     // ===== Buttons =====
     private JButton btnRetrieve;
@@ -275,6 +275,9 @@ public class TroopManagerApp extends JFrame {
         if (cbDragon.isSelected()) {
             exclusions.add(Attribute.DRAGON);
         }
+        if (cbGiant.isSelected()) {
+            exclusions.add(Attribute.GIANT);
+        }
         if (cbSpecialist.isSelected()) {
             exclusions.add(Attribute.SPECIALIST);
         }
@@ -431,14 +434,16 @@ public class TroopManagerApp extends JFrame {
         cbElemental = new JCheckBox("Elemental");
         cbFlying    = new JCheckBox("Flying");
         cbDragon    = new JCheckBox("Dragon");
+        cbGiant    = new JCheckBox("Giant");
         cbSpecialist    = new JCheckBox("Specialist");
 
         panel.add(cbRanged);
         panel.add(cbMelee);
         panel.add(cbMounted);
-        panel.add(cbElemental);
-        panel.add(cbFlying);
         panel.add(cbDragon);
+        panel.add(cbElemental);
+        panel.add(cbGiant);
+        panel.add(cbFlying);
         panel.add(cbSpecialist);
 
         return panel;

@@ -275,10 +275,10 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO: // Should defeat Level 20 citadel
-                output = increase(output, Unit.G3_MELEE, 1500);
-                output = increase(output, Unit.G4_MELEE, 1000);
-                output = increase(output, Unit.G5_MELEE, 500);
-                output = increase(output, Unit.G5_GRIFFIN, 500);
+                output = increase(output, Unit.G4_MELEE, 1500);
+                output = increase(output, Unit.G5_MELEE, 1000);
+                output = increase(output, Unit.G6_MELEE, 500);
+                output = increase(output, Unit.G6_GRIFFIN, 500);
                 output = increase(output, Unit.EC5_ENGINEER, 25);
                 break;
             case PETER, MIGHTSHAPER:  // Should defeat Level 15 citadel
@@ -314,10 +314,10 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = increase(output, Unit.G5_MOUNTED, 4000);
-                output = increase(output, Unit.G5_MELEE, 8000);
-                output = increase(output, Unit.G5_GRIFFIN, 400);
                 output = increase(output, Unit.G6_RANGED, 8000);
+                output = increase(output, Unit.G6_MELEE, 8000);
+                output = increase(output, Unit.G6_MOUNTED, 4000);
+                output = increase(output, Unit.G6_GRIFFIN, 400);
                 break;
             case PETER, MIGHTSHAPER:
                 output = increase(output, Unit.G4_MOUNTED, 4000);
@@ -418,11 +418,6 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-
-                units.add(Unit.S3_SWORDSMAN);
-                units.add(Unit.G3_MELEE);
-                units.add(Unit.G3_MOUNTED);
-
                 units.add(Unit.S4_SWORDSMAN);
                 units.add(Unit.G4_RANGED);
                 units.add(Unit.G4_MELEE);
@@ -439,6 +434,9 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G5_GRIFFIN);
 
                 units.add(Unit.G6_RANGED);
+                units.add(Unit.G6_MELEE);
+                units.add(Unit.G6_MOUNTED);
+                units.add(Unit.G6_GRIFFIN);
 
                 units.add(Unit.EMERALD_DRAGON);
                 units.add(Unit.WATER_ELEMENTAL);

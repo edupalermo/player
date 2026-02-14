@@ -75,10 +75,10 @@ public class Backend {
                     troops.add(Unit.G5_GRIFFIN);
                 }
                 if (tiers >= 1) {
-
                     troops.add(Unit.G6_RANGED);
                     troops.add(Unit.G6_MELEE);
                     troops.add(Unit.G6_MOUNTED);
+                    troops.add(Unit.G6_GRIFFIN);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
