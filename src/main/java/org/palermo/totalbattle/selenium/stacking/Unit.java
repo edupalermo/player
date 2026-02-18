@@ -66,21 +66,25 @@ public enum Unit {
 
     EPIC_MONSTER_HUNTER_VII(3740, 11220, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_vii.png", Pool.AUTHORITY, 1),
 
+    DRAGON_III(4500, 13500, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.DRAGON, Attribute.FLYING), "leadership/emerald_dragon.png", Pool.DOMINANCE, 7),
+    DRAGON_IV(15000, 45000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.DRAGON, Attribute.RANGED), "leadership/magic_dragon.png", Pool.DOMINANCE, 13),
+    DRAGON_V(42000, 126000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.DRAGON, Attribute.MOUNTED), "leadership/desert_vanquisher.png", Pool.DOMINANCE, 20),
+    DRAGON_VI(120000, 360000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.DRAGON, Attribute.MELEE), "leadership/dragon_vi.png", Pool.DOMINANCE, 33),
 
-    EMERALD_DRAGON(4500, 13500, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.DRAGON, Attribute.FLYING), "leadership/emerald_dragon.png", Pool.DOMINANCE, 7),
-    STONE_GARGOYLE(5200, 15600, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.FLYING, Attribute.GIANT), "leadership/stone_gargoyle.png", Pool.DOMINANCE, 8),
-    WATER_ELEMENTAL(1900, 5700, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.RANGED), "leadership/water_elemental.png", Pool.DOMINANCE, 3),
-    BATTLE_BOAR(3900, 11700, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.BEAST, Attribute.MOUNTED), "leadership/battle_boar.png", Pool.DOMINANCE, 6),
-
-    MAGIC_DRAGON(15000, 45000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.DRAGON, Attribute.RANGED), "leadership/magic_dragon.png", Pool.DOMINANCE, 13),
-    ICE_PHOENIX(17000, 51000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.FLYING), "leadership/ice_phoenix.png", Pool.DOMINANCE, 15),
-    MANY_ARMED_GUARDIAN(13000, 39000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.GIANT, Attribute.MELEE), "leadership/many_armed_guardian.png", Pool.DOMINANCE, 11),
-    GORGON_MEDUSA(12000, 36000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.BEAST, Attribute.RANGED), "leadership/gorgon_medusa.png", Pool.DOMINANCE, 10),
-
-    DESERT_VANQUISER(42000, 126000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.DRAGON, Attribute.MOUNTED), "leadership/desert_vanquisher.png", Pool.DOMINANCE, 20),
-    FLAMING_CENTAUR(44000, 132000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.MOUNTED), "leadership/flaming_centaur.png", Pool.DOMINANCE, 21),
-    ETTIN(48000, 144000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.GIANT, Attribute.MELEE), "leadership/ettin.png", Pool.DOMINANCE, 23),
-    FEARSOME_MANTICORE(46000, 138000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING), "leadership/fearsome_manticore.png", Pool.DOMINANCE, 22);
+    ELEMENTAL_III(1900, 5700, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.RANGED), "leadership/water_elemental.png", Pool.DOMINANCE, 3),
+    ELEMENTAL_IV(17000, 51000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.FLYING), "leadership/ice_phoenix.png", Pool.DOMINANCE, 15),
+    ELEMENTAL_V(44000, 132000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.MOUNTED), "leadership/flaming_centaur.png", Pool.DOMINANCE, 21),
+    ELEMENTAL_VI(130000, 390000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.ELEMENTAL, Attribute.MELEE), "leadership/elemental_vi.png", Pool.DOMINANCE, 35),
+    
+    GIANT_III(5200, 15600, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.FLYING, Attribute.GIANT), "leadership/stone_gargoyle.png", Pool.DOMINANCE, 8),
+    GIANT_IV(13000, 39000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.GIANT, Attribute.MELEE), "leadership/many_armed_guardian.png", Pool.DOMINANCE, 11),
+    GIANT_V(48000, 144000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.GIANT, Attribute.MELEE), "leadership/ettin.png", Pool.DOMINANCE, 23),
+    GIANT_VI(110000, 330000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GIANT, Attribute.MOUNTED), "leadership/giant_vi.png", Pool.DOMINANCE, 30),
+    
+    BEAST_III(3900, 11700, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.BEAST, Attribute.MOUNTED), "leadership/battle_boar.png", Pool.DOMINANCE, 6),
+    BEAST_IV(12000, 36000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.BEAST, Attribute.RANGED), "leadership/gorgon_medusa.png", Pool.DOMINANCE, 10),
+    BEAST_V(46000, 138000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING), "leadership/fearsome_manticore.png", Pool.DOMINANCE, 22),
+    BEAST_VI(130000, 390000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.BEAST, Attribute.MELEE), "leadership/beast_vi.png", Pool.DOMINANCE, 34);
 
     private int strength;
     private int health;

@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.player.task;
 
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.internalservice.GameStateService;
@@ -43,7 +44,7 @@ public class BuildArmy {
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    private final boolean TEST = false; 
+    private final boolean TEST = true; 
 
     public BuildArmy(Player player) {
         this.player = player;
@@ -326,7 +327,7 @@ public class BuildArmy {
         }
         else {
             //train(titleBarracksPoint, Unit.G4_RANGED, 1);
-            train(titleBarracksPoint, Unit.G5_MELEE, 1);
+            //train(titleBarracksPoint, Unit.G5_MELEE, 1);
             // train(titleBarracksPoint, Unit.G3_MELEE, 1);
             // train(titleBarracksPoint, Unit.G3_MOUNTED, 1);
             // train(titleBarracksPoint, Unit.S5_SWORDSMAN, 1);
@@ -338,6 +339,11 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.G6_MELEE, 1);
             //train(titleBarracksPoint, Unit.G6_MOUNTED, 1);
             //train(titleBarracksPoint, Unit.G6_GRIFFIN, 1);
+            //train(titleBarracksPoint, Unit.DRAGON_III, 1);
+            //train(titleBarracksPoint, Unit.DRAGON_VI, 1);
+            //train(titleBarracksPoint, Unit.ELEMENTAL_VI, 1);
+            //train(titleBarracksPoint, Unit.GIANT_VI, 1);
+            train(titleBarracksPoint, Unit.BEAST_VI, 1);
         }
     }
 
@@ -353,24 +359,31 @@ public class BuildArmy {
         Point silverPoint = null;
         Point foodPoint = null;
 
-
+        int shift = 0; 
+        
         switch (unit) {
-            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN, 
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
                  G5_GRIFFIN, G6_GRIFFIN,
                  G6_MOUNTED,
-                 EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR,
+                 DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
+                 DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
                  S5_LION_RIDER:
-                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719));
-                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783));
-                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 783 + 35));
-                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814));
-                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780));
-                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814));
+
+                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
+                    shift = 41;
+                }
+                
+                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719 + shift));
+                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783 + shift));
+                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 818 + shift));
+                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814 + shift));
+                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780 + shift));
+                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814 + shift));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
-                    S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
-                    MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA,
+                 S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
+                 DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  G6_RANGED,
                  S5_VULTURE:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
@@ -382,7 +395,7 @@ public class BuildArmy {
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE,
-                    DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE,
+                 DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
@@ -738,29 +751,70 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
                 
-            case EMERALD_DRAGON, MAGIC_DRAGON, DESERT_VANQUISER:
+            case DRAGON_III, DRAGON_IV, DRAGON_V:
+                // Click on Dragons left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
+                robot.sleep(wait);
+
+                // Scroll up (player G6 needs to scroll up)
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                robot.sleep(wait);
+                break;
+
+            case ELEMENTAL_III, ELEMENTAL_IV, ELEMENTAL_V:
+                // Click on Elementals left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
+                robot.sleep(wait);
+
+                // Scroll up (player G6 needs to scroll up)
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                robot.sleep(wait);
+                break;
+
+            case GIANT_III, GIANT_IV, GIANT_V:
+                // Click on Giants left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
+                robot.sleep(wait);
+
+                // Scroll up (player G6 needs to scroll up)
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                robot.sleep(wait);
+                break;
+
+            case BEAST_III, BEAST_IV, BEAST_V:
+                // Click on Beats left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
+                robot.sleep(wait);
+
+                // Scroll up (player G6 needs to scroll up)
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                robot.sleep(wait);
+                break;
+
+            case DRAGON_VI:
                 // Click on Dragons left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
                 robot.sleep(wait);
                 break;
 
-            case WATER_ELEMENTAL, ICE_PHOENIX, FLAMING_CENTAUR:
+            case ELEMENTAL_VI:
                 // Click on Elementals left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
                 robot.sleep(wait);
                 break;
 
-            case STONE_GARGOYLE, MANY_ARMED_GUARDIAN, ETTIN:
+            case GIANT_VI:
                 // Click on Giants left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
                 robot.sleep(wait);
                 break;
 
-            case BATTLE_BOAR, GORGON_MEDUSA, FEARSOME_MANTICORE:
+            case BEAST_VI:
                 // Click on Beats left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
                 robot.sleep(wait);
                 break;
+                
             case EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER:
                 // Click on Engineer corps
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
@@ -780,30 +834,39 @@ public class BuildArmy {
         Area area;
 
         selectUnit(titleBarracksPoint, unit);
+        
+        int shift = 0;
 
         switch (unit) {
-            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, 
+            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED,
                  S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
                  G6_MOUNTED,
-                    EMERALD_DRAGON, WATER_ELEMENTAL, STONE_GARGOYLE, BATTLE_BOAR, 
+                 DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
+                 DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  G5_GRIFFIN, G6_GRIFFIN,
-                    EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
-                    S5_LION_RIDER:
-                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852, 677), Point.of(912, 699));
+                 EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
+                 S5_LION_RIDER:
+                
+                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
+                    shift = 41;
+                }
+                
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852, 677 + shift), Point.of(912, 699 + shift));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  G6_RANGED,
-                 MAGIC_DRAGON, ICE_PHOENIX, MANY_ARMED_GUARDIAN, GORGON_MEDUSA, 
+                 DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  S5_VULTURE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE,
-                    DESERT_VANQUISER, FLAMING_CENTAUR, ETTIN, FEARSOME_MANTICORE,
-                    S5_DEADSHOT:
+                 DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
+                 S5_DEADSHOT:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
                 break;
+                
             default:
                 throw new RuntimeException("Not Implemented for "+ unit.name());
         }

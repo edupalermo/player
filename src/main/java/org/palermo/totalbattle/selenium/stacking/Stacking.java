@@ -101,10 +101,10 @@ public class Stacking {
                 .addUnit(Unit.G4_MELEE)
                 .addUnit(Unit.G4_MOUNTED)
                 
-                .addUnit(Unit.EMERALD_DRAGON)
-                .addUnit(Unit.BATTLE_BOAR)
-                .addUnit(Unit.WATER_ELEMENTAL)
-                .addUnit(Unit.STONE_GARGOYLE)
+                .addUnit(Unit.DRAGON_III)
+                .addUnit(Unit.BEAST_III)
+                .addUnit(Unit.ELEMENTAL_III)
+                .addUnit(Unit.GIANT_III)
                 
                 .addUnit(Unit.EPIC_MONSTER_HUNTER_VI)
                 .build();
@@ -206,15 +206,15 @@ public class Stacking {
             units.add(Unit.G5_GRIFFIN);
         }
 
-        units.add(Unit.EMERALD_DRAGON);
-        units.add(Unit.WATER_ELEMENTAL);
-        units.add(Unit.STONE_GARGOYLE);
-        units.add(Unit.BATTLE_BOAR);
+        units.add(Unit.DRAGON_III);
+        units.add(Unit.ELEMENTAL_III);
+        units.add(Unit.GIANT_III);
+        units.add(Unit.BEAST_III);
 
-        units.add(Unit.MAGIC_DRAGON);
-        units.add(Unit.ICE_PHOENIX);
-        units.add(Unit.MANY_ARMED_GUARDIAN);
-        units.add(Unit.GORGON_MEDUSA);
+        units.add(Unit.DRAGON_IV);
+        units.add(Unit.ELEMENTAL_IV);
+        units.add(Unit.GIANT_IV);
+        units.add(Unit.BEAST_IV);
         
         return units;
     }
@@ -237,15 +237,15 @@ public class Stacking {
             units.add(Unit.G4_MOUNTED);
         }
 
-        units.add(Unit.EMERALD_DRAGON);
-        units.add(Unit.WATER_ELEMENTAL);
-        units.add(Unit.STONE_GARGOYLE);
-        units.add(Unit.BATTLE_BOAR);
+        units.add(Unit.DRAGON_III);
+        units.add(Unit.ELEMENTAL_III);
+        units.add(Unit.GIANT_III);
+        units.add(Unit.BEAST_III);
 
-        units.add(Unit.MAGIC_DRAGON);
-        units.add(Unit.ICE_PHOENIX);
-        units.add(Unit.MANY_ARMED_GUARDIAN);
-        units.add(Unit.GORGON_MEDUSA);
+        units.add(Unit.DRAGON_IV);
+        units.add(Unit.ELEMENTAL_IV);
+        units.add(Unit.GIANT_IV);
+        units.add(Unit.BEAST_IV);
 
         return units;
     }
@@ -277,20 +277,20 @@ public class Stacking {
                 .addUnit(Unit.G5_MELEE)
                 .addUnit(Unit.G5_MOUNTED)
                 .addUnit(Unit.G5_GRIFFIN)
-                .addUnit(Unit.EMERALD_DRAGON)
-                .addUnit(Unit.WATER_ELEMENTAL)
-                .addUnit(Unit.STONE_GARGOYLE)
-                .addUnit(Unit.BATTLE_BOAR)
+                .addUnit(Unit.DRAGON_III)
+                .addUnit(Unit.ELEMENTAL_III)
+                .addUnit(Unit.GIANT_III)
+                .addUnit(Unit.BEAST_III)
                 
-                .addUnit(Unit.MAGIC_DRAGON)
-                .addUnit(Unit.ICE_PHOENIX)
-                .addUnit(Unit.MANY_ARMED_GUARDIAN)
-                .addUnit(Unit.GORGON_MEDUSA)
+                .addUnit(Unit.DRAGON_IV)
+                .addUnit(Unit.ELEMENTAL_IV)
+                .addUnit(Unit.GIANT_IV)
+                .addUnit(Unit.BEAST_IV)
 
-                .addUnit(Unit.DESERT_VANQUISER)
-                .addUnit(Unit.FLAMING_CENTAUR)
-                .addUnit(Unit.ETTIN)
-                .addUnit(Unit.FEARSOME_MANTICORE)
+                .addUnit(Unit.DRAGON_V)
+                .addUnit(Unit.ELEMENTAL_V)
+                .addUnit(Unit.GIANT_V)
+                .addUnit(Unit.BEAST_V)
 
                 .addUnit(Unit.EPIC_MONSTER_HUNTER_VI)
                 .build();
@@ -410,15 +410,15 @@ public class Stacking {
                 .addUnit(Unit.G4_MELEE)
                 .addUnit(Unit.G4_MOUNTED)
 
-                .addUnit(Unit.EMERALD_DRAGON)
-                .addUnit(Unit.WATER_ELEMENTAL)
-                .addUnit(Unit.STONE_GARGOYLE)
-                .addUnit(Unit.BATTLE_BOAR)
+                .addUnit(Unit.DRAGON_III)
+                .addUnit(Unit.ELEMENTAL_III)
+                .addUnit(Unit.GIANT_III)
+                .addUnit(Unit.BEAST_III)
 
-                .addUnit(Unit.MAGIC_DRAGON)
-                .addUnit(Unit.ICE_PHOENIX)
-                .addUnit(Unit.MANY_ARMED_GUARDIAN)
-                .addUnit(Unit.GORGON_MEDUSA)
+                .addUnit(Unit.DRAGON_IV)
+                .addUnit(Unit.ELEMENTAL_IV)
+                .addUnit(Unit.GIANT_IV)
+                .addUnit(Unit.BEAST_IV)
                 
                 .addUnit(Unit.EPIC_MONSTER_HUNTER_VI)
                 .build();
@@ -450,15 +450,15 @@ public class Stacking {
                 .addUnit(Unit.G4_MELEE)
                 .addUnit(Unit.G4_MOUNTED)
 
-                .addUnit(Unit.EMERALD_DRAGON)
-                .addUnit(Unit.WATER_ELEMENTAL)
-                .addUnit(Unit.STONE_GARGOYLE)
-                .addUnit(Unit.BATTLE_BOAR)
+                .addUnit(Unit.DRAGON_III)
+                .addUnit(Unit.ELEMENTAL_III)
+                .addUnit(Unit.GIANT_III)
+                .addUnit(Unit.BEAST_III)
 
-                .addUnit(Unit.MAGIC_DRAGON)
-                .addUnit(Unit.ICE_PHOENIX)
-                .addUnit(Unit.MANY_ARMED_GUARDIAN)
-                .addUnit(Unit.GORGON_MEDUSA)
+                .addUnit(Unit.DRAGON_IV)
+                .addUnit(Unit.ELEMENTAL_IV)
+                .addUnit(Unit.GIANT_IV)
+                .addUnit(Unit.BEAST_IV)
                 
                 .addUnit(Unit.EPIC_MONSTER_HUNTER_VI)
                 .build();

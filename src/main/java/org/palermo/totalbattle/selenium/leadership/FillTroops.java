@@ -450,18 +450,18 @@ public class FillTroops {
             }
 
             if (enemyType == Enemy.BOSS || enemyType == Enemy.CONTRACT_COMMON || enemyType == Enemy.CONTRACT_RARE) {
-                inputList.add(Unit.STONE_GARGOYLE);
-                inputList.add(Unit.WATER_ELEMENTAL);
-                inputList.add(Unit.EMERALD_DRAGON);
-                inputList.add(Unit.BATTLE_BOAR);
+                inputList.add(Unit.GIANT_III);
+                inputList.add(Unit.ELEMENTAL_III);
+                inputList.add(Unit.DRAGON_III);
+                inputList.add(Unit.BEAST_III);
 
-                inputList.add(Unit.MAGIC_DRAGON);
-                inputList.add(Unit.ICE_PHOENIX);
-                inputList.add(Unit.MANY_ARMED_GUARDIAN);
-                inputList.add(Unit.GORGON_MEDUSA);
+                inputList.add(Unit.DRAGON_IV);
+                inputList.add(Unit.ELEMENTAL_IV);
+                inputList.add(Unit.GIANT_IV);
+                inputList.add(Unit.BEAST_IV);
 
                 if (getUsername(myRobot).equals("Palermo")) {
-                    inputList.add(Unit.DESERT_VANQUISER);
+                    inputList.add(Unit.DRAGON_V);
                 }
 
                 inputList.add(Unit.EPIC_MONSTER_HUNTER_VII);

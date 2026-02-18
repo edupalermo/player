@@ -288,9 +288,9 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.EC4_ENGINEER, 167);
                 break;
             case GRIRANA:  // Should defeat Level 15 citadel
-                output = increase(output, Unit.G1_MOUNTED, 1500);
-                output = increase(output, Unit.G2_MOUNTED, 1000);
-                output = increase(output, Unit.G3_MOUNTED, 550);
+                output = increase(output, Unit.G2_MOUNTED, 1500);
+                output = increase(output, Unit.G3_MOUNTED, 1000);
+                output = increase(output, Unit.G4_MOUNTED, 550);
                 output = increase(output, Unit.EC3_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
@@ -319,15 +319,20 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G6_MOUNTED, 4000);
                 output = increase(output, Unit.G6_GRIFFIN, 400);
                 break;
-            case PETER, MIGHTSHAPER:
+            case PETER:
+                output = increase(output, Unit.G5_MOUNTED, 4000);
+                output = increase(output, Unit.G5_RANGED, 8000);
+                output = increase(output, Unit.G5_MELEE, 8000);
+                break;
+            case MIGHTSHAPER:
                 output = increase(output, Unit.G4_MOUNTED, 4000);
                 output = increase(output, Unit.G4_RANGED, 8000);
                 output = increase(output, Unit.G4_MELEE, 8000);
                 break;
             case GRIRANA, ELANIN:
-                output = increase(output, Unit.G3_MOUNTED, 2000);
+                output = increase(output, Unit.G4_MOUNTED, 2000);
                 output = increase(output, Unit.G4_RANGED, 2000);
-                output = increase(output, Unit.G3_MELEE, 4000);
+                output = increase(output, Unit.G4_MELEE, 4000);
                 break;
 
             default:
@@ -438,20 +443,25 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G6_MOUNTED);
                 units.add(Unit.G6_GRIFFIN);
 
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
+                units.add(Unit.DRAGON_III);
+                units.add(Unit.ELEMENTAL_III);
+                units.add(Unit.GIANT_III);
+                units.add(Unit.BEAST_III);
 
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
+                units.add(Unit.DRAGON_IV);
+                units.add(Unit.ELEMENTAL_IV);
+                units.add(Unit.GIANT_IV);
+                units.add(Unit.BEAST_IV);
 
-                units.add(Unit.DESERT_VANQUISER);
-                units.add(Unit.FLAMING_CENTAUR);
-                units.add(Unit.ETTIN);
-                units.add(Unit.FEARSOME_MANTICORE);
+                units.add(Unit.DRAGON_V);
+                units.add(Unit.ELEMENTAL_V);
+                units.add(Unit.GIANT_V);
+                units.add(Unit.BEAST_V);
+
+                units.add(Unit.DRAGON_VI);
+                units.add(Unit.ELEMENTAL_VI);
+                units.add(Unit.GIANT_VI);
+                units.add(Unit.BEAST_VI);
                 break;
 
             case PETER:
@@ -469,20 +479,20 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
 
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
+                units.add(Unit.DRAGON_III);
+                units.add(Unit.ELEMENTAL_III);
+                units.add(Unit.GIANT_III);
+                units.add(Unit.BEAST_III);
 
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
+                units.add(Unit.DRAGON_IV);
+                units.add(Unit.ELEMENTAL_IV);
+                units.add(Unit.GIANT_IV);
+                units.add(Unit.BEAST_IV);
 
-                units.add(Unit.DESERT_VANQUISER);
-                units.add(Unit.FLAMING_CENTAUR);
-                units.add(Unit.ETTIN);
-                units.add(Unit.FEARSOME_MANTICORE);
+                units.add(Unit.DRAGON_V);
+                units.add(Unit.ELEMENTAL_V);
+                units.add(Unit.GIANT_V);
+                units.add(Unit.BEAST_V);
                 break;
             case MIGHTSHAPER:
                 units.add(Unit.S2_SWORDSMAN);
@@ -499,15 +509,15 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
 
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
+                units.add(Unit.DRAGON_III);
+                units.add(Unit.ELEMENTAL_III);
+                units.add(Unit.GIANT_III);
+                units.add(Unit.BEAST_III);
 
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
+                units.add(Unit.DRAGON_IV);
+                units.add(Unit.ELEMENTAL_IV);
+                units.add(Unit.GIANT_IV);
+                units.add(Unit.BEAST_IV);
                 break;
             case GRIRANA:
                 units.add(Unit.S2_SWORDSMAN);
@@ -523,15 +533,15 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
                 
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
+                units.add(Unit.DRAGON_III);
+                units.add(Unit.ELEMENTAL_III);
+                units.add(Unit.GIANT_III);
+                units.add(Unit.BEAST_III);
 
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
+                units.add(Unit.DRAGON_IV);
+                units.add(Unit.ELEMENTAL_IV);
+                units.add(Unit.GIANT_IV);
+                units.add(Unit.BEAST_IV);
                 break;
             case ELANIN:
                 units.add(Unit.S2_SWORDSMAN);
@@ -547,15 +557,15 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
 
-                units.add(Unit.EMERALD_DRAGON);
-                units.add(Unit.WATER_ELEMENTAL);
-                units.add(Unit.STONE_GARGOYLE);
-                units.add(Unit.BATTLE_BOAR);
+                units.add(Unit.DRAGON_III);
+                units.add(Unit.ELEMENTAL_III);
+                units.add(Unit.GIANT_III);
+                units.add(Unit.BEAST_III);
 
-                units.add(Unit.MAGIC_DRAGON);
-                units.add(Unit.ICE_PHOENIX);
-                units.add(Unit.MANY_ARMED_GUARDIAN);
-                units.add(Unit.GORGON_MEDUSA);
+                units.add(Unit.DRAGON_IV);
+                units.add(Unit.ELEMENTAL_IV);
+                units.add(Unit.GIANT_IV);
+                units.add(Unit.BEAST_IV);
                 break;
             default:
                 throw new RuntimeException("Not Implemented for " + player.getName());
