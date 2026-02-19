@@ -314,10 +314,10 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = increase(output, Unit.G6_RANGED, 8000);
-                output = increase(output, Unit.G6_MELEE, 8000);
-                output = increase(output, Unit.G6_MOUNTED, 4000);
-                output = increase(output, Unit.G6_GRIFFIN, 400);
+                output = increase(output, Unit.G6_RANGED, 10000);
+                output = increase(output, Unit.G6_MELEE, 10000);
+                output = increase(output, Unit.G6_MOUNTED, 5000);
+                output = increase(output, Unit.G6_GRIFFIN, 500);
                 break;
             case PETER:
                 output = increase(output, Unit.G5_MOUNTED, 4000);

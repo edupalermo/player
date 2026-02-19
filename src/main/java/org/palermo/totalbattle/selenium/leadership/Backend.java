@@ -108,15 +108,8 @@ public class Backend {
                         troops.add(Unit.BEAST_VI);
                     }
                 }
-
                 if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
-                    troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
-                    troops.add(Unit.ARBALESTER_VI);
-                    troops.add(Unit.LEGIONARY_VI);
-                    troops.add(Unit.CHARIOT_VI);
-                    troops.add(Unit.SPHYNX_VI);
-
-                    troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
+                    troops.add(Unit.EPIC_MONSTER_HUNTER_IX);
                 }
             }
             case PETER -> {

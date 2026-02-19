@@ -56,15 +56,17 @@ public enum Unit {
     EC5_ENGINEER(2630, 15800, UnitType.CATAPULT, 5, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_v.png", Pool.LEADERSHIP, 10),
 
     SWIFT_MARKSMAN(1050, 3150, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/swift_marksman.png", Pool.AUTHORITY, 1),
+    
     EPIC_MONSTER_HUNTER_V(1050, 3150, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_v.png", Pool.AUTHORITY, 1),
-
     EPIC_MONSTER_HUNTER_VI(2030, 6090, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_vi.png", Pool.AUTHORITY, 1),
+    EPIC_MONSTER_HUNTER_VII(3740, 11220, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_vii.png", Pool.AUTHORITY, 1),
+    EPIC_MONSTER_HUNTER_IX(25000, 75000, UnitType.UNKNOWN, 9, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_ix.png", Pool.AUTHORITY, 1),
+    
     ARBALESTER_VI(2030, 6090, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/arbalester_vi.png", Pool.AUTHORITY, 1),
     LEGIONARY_VI(1900, 5700, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/legionary_vi.png", Pool.AUTHORITY, 1),
     CHARIOT_VI(3800, 11400, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.MOUNTED), "leadership/chariot_vi.png", Pool.AUTHORITY, 2),
     SPHYNX_VI(18900, 56700, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.BEAST, Attribute.FLYING), "leadership/sphynx.png", Pool.AUTHORITY, 10),
 
-    EPIC_MONSTER_HUNTER_VII(3740, 11220, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.EPIC_MONSTER_HUNTER), "leadership/epic_monster_hunter_vii.png", Pool.AUTHORITY, 1),
 
     DRAGON_III(4500, 13500, UnitType.UNKNOWN, 3, ImmutableSet.of(Attribute.DRAGON, Attribute.FLYING), "leadership/emerald_dragon.png", Pool.DOMINANCE, 7),
     DRAGON_IV(15000, 45000, UnitType.UNKNOWN, 4, ImmutableSet.of(Attribute.DRAGON, Attribute.RANGED), "leadership/magic_dragon.png", Pool.DOMINANCE, 13),

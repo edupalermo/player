@@ -38,7 +38,7 @@ public class TroopManagerApp extends JFrame {
     private JComboBox<Backend.MonsterOverride> monsterOverride;
     
     // ===== Exclusions =====
-    private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon, cbGiant, cbSpecialist;
+    private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon, cbGiant, cbBeast, cbSpecialist;
 
     // ===== Buttons =====
     private JButton btnRetrieve;
@@ -278,6 +278,9 @@ public class TroopManagerApp extends JFrame {
         if (cbGiant.isSelected()) {
             exclusions.add(Attribute.GIANT);
         }
+        if (cbBeast.isSelected()) {
+            exclusions.add(Attribute.BEAST);
+        }
         if (cbSpecialist.isSelected()) {
             exclusions.add(Attribute.SPECIALIST);
         }
@@ -297,15 +300,17 @@ public class TroopManagerApp extends JFrame {
     private java.util.List<Unit> limitUnits(java.util.List<Unit> input) {
         java.util.List<Unit> output = new ArrayList<>();
         
-        int count = 0;
+        int countLeadership = 0;
         int limit = getSelectedLimit();
+        
+        int totalLeadership = (int) input.stream().filter((it) -> it.getPool() == Pool.LEADERSHIP).count();
         
         for (Unit unit : input) {
             if (unit.getPool() == Pool.LEADERSHIP) {
-                if (count < limit) {
+                if (countLeadership >= totalLeadership - limit) {
                     output.add(unit);
-                    count++;
                 }
+                countLeadership++;
             }
             else {
                 output.add(unit);
@@ -435,6 +440,7 @@ public class TroopManagerApp extends JFrame {
         cbFlying    = new JCheckBox("Flying");
         cbDragon    = new JCheckBox("Dragon");
         cbGiant    = new JCheckBox("Giant");
+        cbBeast    = new JCheckBox("Beast");
         cbSpecialist    = new JCheckBox("Specialist");
 
         panel.add(cbRanged);
@@ -443,6 +449,7 @@ public class TroopManagerApp extends JFrame {
         panel.add(cbDragon);
         panel.add(cbElemental);
         panel.add(cbGiant);
+        panel.add(cbBeast);
         panel.add(cbFlying);
         panel.add(cbSpecialist);
 

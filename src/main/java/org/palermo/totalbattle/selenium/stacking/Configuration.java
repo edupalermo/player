@@ -89,7 +89,7 @@ public class Configuration {
             }
         }
 
-        troops = ResolverV2.resolveByPool(filteredUnits, authority, getLowerHealth(answer, Pool.DOMINANCE));
+        troops = ResolverV2.resolveByPool(filteredUnits, authority, Math.min(getLowerHealth(answer, Pool.DOMINANCE), getLowerHealth(answer, Pool.LEADERSHIP)));
         for (int i = 0; i < troops.length; i++) {
             answer[relations.get(i)] = troops[i];
         }
