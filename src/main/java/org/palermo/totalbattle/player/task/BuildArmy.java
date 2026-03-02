@@ -44,7 +44,7 @@ public class BuildArmy {
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    private final boolean TEST = false; 
+    private final boolean TEST = true; 
 
     public BuildArmy(Player player) {
         this.player = player;
@@ -343,7 +343,8 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.DRAGON_VI, 1);
             //train(titleBarracksPoint, Unit.ELEMENTAL_VI, 1);
             //train(titleBarracksPoint, Unit.GIANT_VI, 1);
-            train(titleBarracksPoint, Unit.BEAST_VI, 1);
+            //train(titleBarracksPoint, Unit.BEAST_VI, 1);
+            train(titleBarracksPoint, Unit.EC6_ENGINEER, 1);
         }
     }
 
@@ -385,7 +386,8 @@ public class BuildArmy {
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  G6_RANGED,
-                 S5_VULTURE:
+                 S5_VULTURE,
+                 EC6_ENGINEER:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35), Point.of(798 + 261, 783 + 35));
@@ -814,7 +816,7 @@ public class BuildArmy {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
                 robot.sleep(wait);
                 break;
-                
+
             case EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER:
                 // Click on Engineer corps
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
@@ -823,6 +825,17 @@ public class BuildArmy {
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 1) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                robot.sleep(wait);
+                break;
+                
+            case EC6_ENGINEER:
+                // Click on Engineer corps
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
+                robot.sleep(wait);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 6) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
                 robot.sleep(wait);
                 break;
             default:
@@ -857,7 +870,7 @@ public class BuildArmy {
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  G6_RANGED,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
-                 S5_VULTURE:
+                 S5_VULTURE, EC6_ENGINEER:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,

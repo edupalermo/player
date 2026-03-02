@@ -197,8 +197,10 @@ public class ArmyService extends AbstractService {
         unitQuantities = incrementLastGuardsmanLayer(unitQuantities, player);
 
         unitQuantities = addSpies(unitQuantities, player);
-        
+
         unitQuantities = prepareForCitadel(unitQuantities, player);
+        
+        unitQuantities = prepareForPvP(unitQuantities, player);
 
         Army army = playerState.getArmy();
         army.getProductionOrder().clear();
@@ -254,8 +256,8 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.S4_SPY, 2000);
                 break;
             case PETER, MIGHTSHAPER:
-                output = increase(output, Unit.S2_SPY, 1000);
-                output = increase(output, Unit.S1_SPY, 2000);
+                output = increase(output, Unit.S3_SPY, 1000);
+                output = increase(output, Unit.S2_SPY, 2000);
                 break;
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.S1_SPY, 1500);
@@ -279,12 +281,18 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G5_MELEE, 1000);
                 output = increase(output, Unit.G6_MELEE, 500);
                 output = increase(output, Unit.G6_GRIFFIN, 500);
-                output = increase(output, Unit.EC5_ENGINEER, 25);
+                output = increase(output, Unit.EC6_ENGINEER, 25);
                 break;
-            case PETER, MIGHTSHAPER:  // Should defeat Level 15 citadel
-                output = increase(output, Unit.G2_MOUNTED, 750);
-                output = increase(output, Unit.G3_MOUNTED, 500);
-                output = increase(output, Unit.G4_MOUNTED, 270);
+            case PETER:  // Should defeat Level 15 citadel
+                output = increase(output, Unit.G3_MOUNTED, 750);
+                output = increase(output, Unit.G4_MOUNTED, 500);
+                output = increase(output, Unit.G5_MOUNTED, 270);
+                output = increase(output, Unit.EC5_ENGINEER, 167);
+                break;
+            case MIGHTSHAPER:  // Should defeat Level 15 citadel
+                output = increase(output, Unit.G3_MOUNTED, 750);
+                output = increase(output, Unit.G4_MOUNTED, 500);
+                output = increase(output, Unit.G5_MOUNTED, 270);
                 output = increase(output, Unit.EC4_ENGINEER, 167);
                 break;
             case GRIRANA:  // Should defeat Level 15 citadel
@@ -307,6 +315,30 @@ public class ArmyService extends AbstractService {
     }
 
 
+    private List<UnitQuantity> prepareForPvP(List<UnitQuantity> input, Player player) {
+
+        List<UnitQuantity> output = input;
+
+        switch (player) {
+            case PALERMO: // Should defeat Level 20 citadel
+                output = topUp(output, Unit.EC6_ENGINEER, 1000);
+                break;
+            case PETER:  // Should defeat Level 15 citadel
+                output = increase(output, Unit.EC5_ENGINEER, 1000);
+                break;
+            case MIGHTSHAPER: 
+                break;
+            case GRIRANA:
+                break;
+            case ELANIN:
+                break;
+            default:
+                throw new RuntimeException("Not Implemented");
+        }
+
+        return output;
+    }
+
 
     private List<UnitQuantity> incrementLastGuardsmanLayer(List<UnitQuantity> input, Player player) {
 
@@ -320,14 +352,15 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G6_GRIFFIN, 500);
                 break;
             case PETER:
-                output = increase(output, Unit.G5_MOUNTED, 4000);
                 output = increase(output, Unit.G5_RANGED, 8000);
                 output = increase(output, Unit.G5_MELEE, 8000);
+                output = increase(output, Unit.G5_MOUNTED, 4000);
+                output = increase(output, Unit.G5_GRIFFIN, 400);
                 break;
             case MIGHTSHAPER:
-                output = increase(output, Unit.G4_MOUNTED, 4000);
-                output = increase(output, Unit.G4_RANGED, 8000);
-                output = increase(output, Unit.G4_MELEE, 8000);
+                output = increase(output, Unit.G5_RANGED, 8000);
+                output = increase(output, Unit.G5_MELEE, 8000);
+                output = increase(output, Unit.G5_MOUNTED, 4000);
                 break;
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.G4_MOUNTED, 2000);
@@ -341,6 +374,28 @@ public class ArmyService extends AbstractService {
 
         return output;
     }
+
+    private List<UnitQuantity> topUp(List<UnitQuantity> input, Unit unit, int qtd) {
+        List<UnitQuantity> output = new ArrayList<>();
+        boolean found = false;
+        for (UnitQuantity unitQuantity: input) {
+            if (unitQuantity.getUnit() == unit) {
+                output.add(unitQuantity.withQuantity(Math.max(unitQuantity.getQuantity(), qtd)));
+                found = true;
+            }
+            else {
+                output.add(unitQuantity);
+            }
+        }
+
+        if (!found) {
+            output.add(UnitQuantity.builder()
+                    .unit(unit)
+                    .quantity(qtd).build());
+        }
+        return output;
+    }
+
 
     private List<UnitQuantity> increase(List<UnitQuantity> input, Unit unit, int qtd) {
         List<UnitQuantity> output = new ArrayList<>();
@@ -495,11 +550,6 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.BEAST_V);
                 break;
             case MIGHTSHAPER:
-                units.add(Unit.S2_SWORDSMAN);
-                units.add(Unit.G2_RANGED);
-                units.add(Unit.G2_MELEE);
-                units.add(Unit.G2_MOUNTED);
-
                 units.add(Unit.S3_SWORDSMAN);
                 units.add(Unit.G3_RANGED);
                 units.add(Unit.G3_MELEE);
@@ -508,6 +558,10 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_RANGED);
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
+
+                units.add(Unit.G5_RANGED);
+                units.add(Unit.G5_MELEE);
+                units.add(Unit.G5_MOUNTED);
 
                 units.add(Unit.DRAGON_III);
                 units.add(Unit.ELEMENTAL_III);
