@@ -165,32 +165,31 @@ public class Backend {
             }
             case MIGHTSHAPER -> {
                 if (tiers >= 3) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_RANGED);
-                    troops.add(Unit.G2_MELEE);
-                    troops.add(Unit.G2_MOUNTED);
-                }
-                if (tiers >= 2) {
                     troops.add(Unit.S3_SWORDSMAN);
                     troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
                 }
-                if (tiers >= 1) {
+                if (tiers >= 2) {
                     troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
                 }
+                if (tiers >= 1) {
+                    troops.add(Unit.G5_RANGED);
+                    troops.add(Unit.G5_MELEE);
+                    troops.add(Unit.G5_MOUNTED);
+                }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
                         monsterOverride == MonsterOverride.DEFAULT) {
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
                         troops.add(Unit.DRAGON_III);
                         troops.add(Unit.ELEMENTAL_III);
                         troops.add(Unit.GIANT_III);
                         troops.add(Unit.BEAST_III);
                     }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
                         troops.add(Unit.DRAGON_IV);
                         troops.add(Unit.ELEMENTAL_IV);
                         troops.add(Unit.GIANT_IV);
