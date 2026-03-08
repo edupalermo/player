@@ -180,6 +180,7 @@ public class Backend {
                     troops.add(Unit.G5_RANGED);
                     troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_MOUNTED);
+                    troops.add(Unit.G5_GRIFFIN);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
