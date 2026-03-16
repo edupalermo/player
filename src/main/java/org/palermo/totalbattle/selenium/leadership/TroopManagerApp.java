@@ -1,5 +1,8 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import org.palermo.totalbattle.selenium.leadership.model.EnemyRarity;
+import org.palermo.totalbattle.selenium.leadership.model.EnemyType;
+import org.palermo.totalbattle.selenium.leadership.model.Exclusion;
 import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Pool;
@@ -11,6 +14,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -36,6 +41,9 @@ public class TroopManagerApp extends JFrame {
     private JComboBox<String> limitCombo;
     private JComboBox<String> waveCombo;
     private JComboBox<Backend.MonsterOverride> monsterOverride;
+    private JComboBox<String> targetRarity;
+    private JComboBox<String> targetType;
+    private JComboBox<String> targetLevel;
     
     // ===== Exclusions =====
     private JCheckBox cbRanged, cbMelee, cbMounted, cbElemental, cbFlying, cbDragon, cbGiant, cbBeast, cbSpecialist;
@@ -45,6 +53,7 @@ public class TroopManagerApp extends JFrame {
     private JButton btnGenerate;
     private JButton btnAssign;
     private JButton btnClear;
+    private JButton btnClearExclusions;
 
     // ===== Table =====
     private JTable table;
@@ -428,10 +437,59 @@ public class TroopManagerApp extends JFrame {
     }
 
     private JPanel buildExclusionSection() {
-        JPanel panel = new JPanel(new GridLayout(0, 3, 8, 4));
+        JPanel panel = new JPanel(new BorderLayout(0, 8));
         panel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "Exclusion",
                 TitledBorder.LEFT, TitledBorder.TOP));
+
+
+        ActionListener commonActionListener = changeTargetConfiguration();
+        
+        // --- Top row ---
+        JLabel lblTarget = new JLabel("Target:");
+        targetRarity = new JComboBox<>(new String[]{
+                "Undefined", "Common", "Rare"
+        });
+        targetRarity.addActionListener(commonActionListener);
+        targetType = new JComboBox<>(new String[]{
+                "Undefined", "Barbarian", "Inferno", "Undead", "Elves", "Cursed"
+        });
+        targetType.addActionListener(commonActionListener);
+
+        targetLevel = new JComboBox<>(new String[]{
+                "Undefined", "19", "20", "21", "22", "23", "24", "25", "26"
+        });
+        targetLevel.addActionListener(commonActionListener);
+        
+        btnClearExclusions = new JButton("Clear");
+        btnClearExclusions.addActionListener(e -> {
+            cbRanged.setSelected(false);
+            cbMelee.setSelected(false);
+            cbMounted.setSelected(false);
+            cbElemental.setSelected(false);
+            cbFlying.setSelected(false);
+            cbDragon.setSelected(false);
+            cbGiant.setSelected(false);
+            cbBeast.setSelected(false);
+            cbSpecialist.setSelected(false);
+
+            targetRarity.setSelectedIndex(0);
+            targetType.setSelectedIndex(0);
+            targetLevel.setSelectedIndex(0);
+            
+        });
+
+        JPanel targetPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        targetPanel.add(lblTarget);
+        targetPanel.add(targetRarity);
+        targetPanel.add(targetType);
+        targetPanel.add(targetLevel);
+        targetPanel.add(btnClearExclusions);
+
+        panel.add(targetPanel, BorderLayout.NORTH);
+
+        // --- Checkbox grid ---
+        JPanel grid = new JPanel(new GridLayout(0, 3, 8, 4));
 
         cbRanged    = new JCheckBox("Ranged");
         cbMelee     = new JCheckBox("Melee");
@@ -439,21 +497,75 @@ public class TroopManagerApp extends JFrame {
         cbElemental = new JCheckBox("Elemental");
         cbFlying    = new JCheckBox("Flying");
         cbDragon    = new JCheckBox("Dragon");
-        cbGiant    = new JCheckBox("Giant");
-        cbBeast    = new JCheckBox("Beast");
-        cbSpecialist    = new JCheckBox("Specialist");
+        cbGiant     = new JCheckBox("Giant");
+        cbBeast     = new JCheckBox("Beast");
+        cbSpecialist= new JCheckBox("Specialist");
 
-        panel.add(cbRanged);
-        panel.add(cbMelee);
-        panel.add(cbMounted);
-        panel.add(cbDragon);
-        panel.add(cbElemental);
-        panel.add(cbGiant);
-        panel.add(cbBeast);
-        panel.add(cbFlying);
-        panel.add(cbSpecialist);
+        grid.add(cbRanged);
+        grid.add(cbMelee);
+        grid.add(cbMounted);
+        grid.add(cbDragon);
+        grid.add(cbElemental);
+        grid.add(cbGiant);
+        grid.add(cbBeast);
+        grid.add(cbFlying);
+        grid.add(cbSpecialist);
+
+        panel.add(grid, BorderLayout.CENTER);
 
         return panel;
+    }
+
+/*
+    targetRarity = new JComboBox<>(new String[]{
+        "Undefined", "Common", "Rare"
+    });
+    targetType = new JComboBox<>(new String[]{
+        "Undefined", "Barbarian", "Inferno", "Undead", "Elves", "Cursed"
+    });
+    targetLevel = new JComboBox<>(new String[]{
+    */
+
+        private ActionListener changeTargetConfiguration() {
+        return actionEvent -> {
+            if ((targetRarity.getSelectedIndex() == 0) || (targetType.getSelectedIndex() == 0)  || (targetLevel.getSelectedIndex() == 0)) {
+                cbRanged.setSelected(false);
+                cbMelee.setSelected(false);
+                cbMounted.setSelected(false);
+                cbElemental.setSelected(false);
+                cbFlying.setSelected(false);
+                cbDragon.setSelected(false);
+                cbGiant.setSelected(false);
+                cbBeast.setSelected(false);
+                cbSpecialist.setSelected(false);
+                return;
+            }
+
+            EnemyRarity rarity = EnemyRarity.fromString((String) targetRarity.getSelectedItem());
+            EnemyType type = EnemyType.fromString((String) targetType.getSelectedItem());
+            int level = Integer.parseInt((String) targetLevel.getSelectedItem());
+            
+            Exclusion exclusion = ExclusionDatabase.resolve(rarity, type, level).orElse(null);
+            
+            if (exclusion == null) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Enemy not recorded",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            cbRanged.setSelected(exclusion.isRanged());
+            cbMelee.setSelected(exclusion.isMelee());
+            cbMounted.setSelected(exclusion.isMounted());
+            cbDragon.setSelected(exclusion.isDragon());
+            cbElemental.setSelected(exclusion.isElemental());
+            cbGiant.setSelected(exclusion.isGiant());
+            cbBeast.setSelected(exclusion.isBeast());
+            cbFlying.setSelected(exclusion.isFlying());            
+        };
     }
 
     private void setTableVisible(boolean visible) {

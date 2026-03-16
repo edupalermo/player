@@ -574,6 +574,11 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.ELEMENTAL_IV);
                 units.add(Unit.GIANT_IV);
                 units.add(Unit.BEAST_IV);
+
+                units.add(Unit.DRAGON_V);
+                units.add(Unit.ELEMENTAL_V);
+                units.add(Unit.GIANT_V);
+                units.add(Unit.BEAST_V);
                 break;
             case GRIRANA:
                 units.add(Unit.S2_SWORDSMAN);
