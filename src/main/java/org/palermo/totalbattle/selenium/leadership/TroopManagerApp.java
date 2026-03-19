@@ -369,7 +369,7 @@ public class TroopManagerApp extends JFrame {
         panel.add(new JLabel("Player"), gc);
 
         // Combo on the right (same row)
-        playerCombo = new JComboBox<>(new String[]{"Palermo", "Peter", "Mightshaper", "Grirana", "Elanin"});
+        playerCombo = new JComboBox<>(new String[]{"Palermo", "Peter", "Mightshaper", "Grirana", "Elanin", "Lorven"});
         gc.gridx = 1; gc.gridy = 0; gc.weightx = 1.0;
         panel.add(playerCombo, gc);
 

@@ -288,6 +288,13 @@ public class Backend {
 
                 troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
             }
+            case LORVEN -> {
+                if (tiers >= 1) {
+                    troops.add(Unit.G1_RANGED);
+                    troops.add(Unit.G1_MELEE);
+                    troops.add(Unit.G1_MOUNTED);
+                }
+            }
             default -> throw new RuntimeException("Not implemented for " + playerName);
         }
 
