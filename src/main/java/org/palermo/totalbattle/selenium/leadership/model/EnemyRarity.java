@@ -1,7 +1,7 @@
 package org.palermo.totalbattle.selenium.leadership.model;
 
 public enum EnemyRarity {
-    COMMON, RARE;
+    COMMON, RARE, CITADEL;
 
     public static EnemyRarity fromString(String value) {
         if (value == null) {
