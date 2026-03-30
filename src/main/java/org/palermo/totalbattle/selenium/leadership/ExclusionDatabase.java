@@ -15,21 +15,46 @@ public class ExclusionDatabase {
     private static Map<ExclusionKey, Exclusion> exclusions = new HashMap<>();
 
     static {
-        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.INFERNO, 22), Exclusion.builder().ranged(true).elemental(true).melee(true).mounted(true).build());
-        
+        //RARE
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.BARBARIAN, 12), Exclusion.builder().melee(true).elemental(true).ranged(true).siege(true).mounted(true).build());        
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.BARBARIAN, 15), Exclusion.builder().melee(true).elemental(true).flying(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.BARBARIAN, 22), Exclusion.builder().melee(true).elemental(true).ranged(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.BARBARIAN, 25), Exclusion.builder().ranged(true).siege(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.BARBARIAN, 26), Exclusion.builder().melee(true).beast(true).flying(true).mounted(true).build());
+
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 12), Exclusion.builder().melee(true).elemental(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 22), Exclusion.builder().melee(true).elemental(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 23), Exclusion.builder().melee(true).elemental(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 26), Exclusion.builder().ranged(true).mounted(true).build());
+
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 22), Exclusion.builder().melee(true).dragon(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 26), Exclusion.builder().mounted(true).elemental(true).melee(true).build());
         
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.INFERNO, 15), Exclusion.builder().ranged(true).elemental(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.INFERNO, 22), Exclusion.builder().ranged(true).elemental(true).melee(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.INFERNO, 26), Exclusion.builder().ranged(true).mounted(true).build());
+
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.UNDEAD, 22), Exclusion.builder().ranged(true).melee(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.UNDEAD, 23), Exclusion.builder().ranged(true).melee(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.UNDEAD, 25), Exclusion.builder().mounted(true).elemental(true).melee(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.UNDEAD, 26), Exclusion.builder().mounted(true).elemental(true).ranged(true).build());
+
         
-        
+        // COMMON
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 15), Exclusion.builder().mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 19), Exclusion.builder().mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 22), Exclusion.builder().mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 23), Exclusion.builder().ranged(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 24), Exclusion.builder().ranged(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 25), Exclusion.builder().melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 26), Exclusion.builder().ranged(true).melee(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 27), Exclusion.builder().melee(true).ranged(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 28), Exclusion.builder().ranged(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 29), Exclusion.builder().melee(true).mounted(true).build());
-        
+
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.UNDEAD, 16), Exclusion.builder().ranged(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.UNDEAD, 22), Exclusion.builder().ranged(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.UNDEAD, 26), Exclusion.builder().mounted(true).ranged(true).build());
 
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 22), Exclusion.builder().melee(true).flying(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 23), Exclusion.builder().melee(true).flying(true).ranged(true).siege(true).build());
@@ -37,11 +62,18 @@ public class ExclusionDatabase {
 
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.ELVES, 22), Exclusion.builder().ranged(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.ELVES, 26), Exclusion.builder().ranged(true).siege(true).melee(true).build());
-        
-        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 22), Exclusion.builder().ranged(true).mounted(true).build());
 
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 22), Exclusion.builder().ranged(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 23), Exclusion.builder().mounted(true).ranged(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 26), Exclusion.builder().ranged(true).mounted(true).build());
+
+        
+        // Citadel
+        exclusions.put(ExclusionKey.of(EnemyRarity.CITADEL, EnemyType.ELVES, 20), Exclusion.builder().mounted(true).giant(true).ranged(true).dragon(true).elemental(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.CITADEL, EnemyType.ELVES, 25), Exclusion.builder().mounted(true).giant(true).ranged(true).dragon(true).elemental(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.CITADEL, EnemyType.ELVES, 30), Exclusion.builder().mounted(true).giant(true).ranged(true).dragon(true).elemental(true).melee(true).build());
+        
+        exclusions.put(ExclusionKey.of(EnemyRarity.CITADEL, EnemyType.CURSED, 25), Exclusion.builder().giant(true).mounted(true).ranged(true).dragon(true).beast(true).build());
     }
     
     public static Optional<Exclusion> resolve(EnemyRarity rarity, EnemyType type, int level) {
