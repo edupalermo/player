@@ -111,7 +111,7 @@ public class PlayerRunnable implements Runnable {
                 (new ExploreCrypt(player)).explore();
             }
             
-            (new Donate(player)).evaluate();
+            // (new Donate(player)).evaluate();
 
             if (!BUILD_ARMY) {
                 (new PayTaxes(player)).pay();
