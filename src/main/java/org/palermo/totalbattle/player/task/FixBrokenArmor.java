@@ -29,7 +29,7 @@ public class FixBrokenArmor {
                 .build();
         
         if (!navigate.exist()) {
-            log.info("Armor is NOT broken! Good to go!");
+            // log.info("Armor is NOT broken! Good to go!");
             return;
         }
         
