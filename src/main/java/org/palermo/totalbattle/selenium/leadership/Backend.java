@@ -517,7 +517,7 @@ public class Backend {
                 }
             });
             
-            final int delta = 50;
+            final int delta = 40;
 
             if (processed.size() < stack.size()) {
                 Point scroolBar = Point.of(closeButtonLocation, Point.of(1438, 356), Point.of(978, 448));
