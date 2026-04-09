@@ -293,7 +293,7 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G3_MOUNTED, 750);
                 output = increase(output, Unit.G4_MOUNTED, 500);
                 output = increase(output, Unit.G5_MOUNTED, 270);
-                output = increase(output, Unit.EC4_ENGINEER, 167);
+                output = increase(output, Unit.EC5_ENGINEER, 167);
                 break;
             case GRIRANA:  // Should defeat Level 15 citadel
                 output = increase(output, Unit.G2_MOUNTED, 1500);
@@ -320,13 +320,14 @@ public class ArmyService extends AbstractService {
         List<UnitQuantity> output = input;
 
         switch (player) {
-            case PALERMO: // Should defeat Level 20 citadel
+            case PALERMO:
                 output = topUp(output, Unit.EC6_ENGINEER, 1000);
                 break;
-            case PETER:  // Should defeat Level 15 citadel
-                output = increase(output, Unit.EC5_ENGINEER, 1000);
+            case PETER:  
+                output = topUp(output, Unit.EC5_ENGINEER, 1000);
                 break;
-            case MIGHTSHAPER: 
+            case MIGHTSHAPER:
+                output = topUp(output, Unit.EC5_ENGINEER, 1000);
                 break;
             case GRIRANA:
                 break;
@@ -361,6 +362,7 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G5_RANGED, 8000);
                 output = increase(output, Unit.G5_MELEE, 8000);
                 output = increase(output, Unit.G5_MOUNTED, 4000);
+                output = increase(output, Unit.G5_GRIFFIN, 400);
                 break;
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.G4_MOUNTED, 2000);
@@ -493,6 +495,8 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
 
+                units.add(Unit.S6_RANGED);
+                
                 units.add(Unit.G6_RANGED);
                 units.add(Unit.G6_MELEE);
                 units.add(Unit.G6_MOUNTED);
@@ -556,6 +560,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G3_MELEE);
                 units.add(Unit.G3_MOUNTED);
 
+                units.add(Unit.S4_SWORDSMAN);
                 units.add(Unit.G4_RANGED);
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);

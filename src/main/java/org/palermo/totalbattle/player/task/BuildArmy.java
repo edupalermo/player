@@ -309,6 +309,7 @@ public class BuildArmy {
                 if (currentSize < troopQuantity.getTarget()) {
                     if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
                         lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                        log.info("Player finished to train Guardsmen and Specialists");
                         if (player == Player.PALERMO) {
                             WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
                         }
@@ -322,6 +323,7 @@ public class BuildArmy {
             if (!trainedSomething) {
                 lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
                 lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
+                log.info("Player is ready to ATTACK!");
                 WhatsappUtil.send(player.getName() + " has finished building the army");
             }
         }
@@ -344,7 +346,10 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.ELEMENTAL_VI, 1);
             //train(titleBarracksPoint, Unit.GIANT_VI, 1);
             //train(titleBarracksPoint, Unit.BEAST_VI, 1);
-            train(titleBarracksPoint, Unit.EC6_ENGINEER, 1);
+            // train(titleBarracksPoint, Unit.EC6_ENGINEER, 1);
+
+            //train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
+            train(titleBarracksPoint, Unit.S6_RANGED, 1);
         }
     }
 
@@ -398,7 +403,7 @@ public class BuildArmy {
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
-                 S5_DEADSHOT:
+                 S5_DEADSHOT, S6_RANGED:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
                 foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
@@ -712,14 +717,14 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
                 
-            case S5_DEADSHOT:
+            case S5_DEADSHOT, S6_RANGED:
                 // Click on Specialists left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
                 robot.sleep(wait);
 
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 5) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
                 robot.sleep(wait);
                 break;
 
@@ -876,7 +881,7 @@ public class BuildArmy {
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
-                 S5_DEADSHOT:
+                 S5_DEADSHOT, S6_RANGED:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
                 break;
                 

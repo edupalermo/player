@@ -66,6 +66,7 @@ public class PlayerRunnable implements Runnable {
         Process process = null;
         try {
             MDC.put("playerName", player.getName());
+            log.info("Started new player");
             process = Task.openOrdinaryBrowser(player);
 
             SharedData.INSTANCE.robot.sleep(1500);
