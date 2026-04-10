@@ -351,7 +351,7 @@ public class BuildArmy {
 
             //train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
             // train(titleBarracksPoint, Unit.S6_RANGED, 1);
-            train(titleBarracksPoint, Unit.BEAST_VI, 6);
+            train(titleBarracksPoint, Unit.BEAST_VI, 1);
         }
     }
 
@@ -470,7 +470,7 @@ public class BuildArmy {
 
         BufferedImage colorOkImage = ImageUtil.loadResource("player/barracks/color_ok.png");
 
-        ImageUtil.showImageAndWait(screen, area);
+        //ImageUtil.showImageAndWait(screen, area);
         
         return ImageUtil.search(colorOkImage, screen, area, 0.1).isPresent();
     }
