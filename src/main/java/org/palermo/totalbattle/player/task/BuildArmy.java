@@ -350,7 +350,8 @@ public class BuildArmy {
             // train(titleBarracksPoint, Unit.EC6_ENGINEER, 1);
 
             //train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
-            train(titleBarracksPoint, Unit.S6_RANGED, 1);
+            // train(titleBarracksPoint, Unit.S6_RANGED, 1);
+            train(titleBarracksPoint, Unit.BEAST_VI, 6);
         }
     }
 
@@ -382,8 +383,8 @@ public class BuildArmy {
                 }
                 
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719 + shift));
-                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775), Point.of(798, 783 + shift));
-                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35), Point.of(798, 818 + shift));
+                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + shift), Point.of(798, 783 + shift));
+                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35 + shift), Point.of(798, 818 + shift));
                 trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814 + shift));
                 silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780 + shift));
                 foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814 + shift));
@@ -469,6 +470,8 @@ public class BuildArmy {
 
         BufferedImage colorOkImage = ImageUtil.loadResource("player/barracks/color_ok.png");
 
+        ImageUtil.showImageAndWait(screen, area);
+        
         return ImageUtil.search(colorOkImage, screen, area, 0.1).isPresent();
     }
 
