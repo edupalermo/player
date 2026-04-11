@@ -260,7 +260,21 @@ public class BuildArmy {
             if (exclusionSet.contains(bean.getLabel())) {
                 continue;
             }
-            if ((bean.getSeconds() < seconds) || (bean.getSeconds() <= Duration.ofHours(1).getSeconds() )) {
+            if (bean.getSeconds() < seconds) {
+                if ((bestSpeedUp == null) ||  (bean.getSeconds() > bestSpeedUp.getSeconds())) {
+                    bestSpeedUp = bean;
+                }
+            }
+        }
+        if (bestSpeedUp != null) {
+            return Optional.of(bestSpeedUp);
+        }
+
+        for (SpeedUpBean bean : SpeedUp.speedUps) {
+            if (exclusionSet.contains(bean.getLabel())) {
+                continue;
+            }
+            if (bean.getSeconds() <= Duration.ofHours(1).getSeconds()) {
                 if ((bestSpeedUp == null) ||  (bean.getSeconds() < bestSpeedUp.getSeconds())) {
                     bestSpeedUp = bean;
                 }
