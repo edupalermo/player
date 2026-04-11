@@ -232,13 +232,17 @@ public class BuildArmy {
 
             // log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
             
-            while (bestSpeedUp != null && !SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+            while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
                 if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
                     break outer;
                 }
 
                 exclusionSet.add(bestSpeedUp.getLabel());
                 bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
+                
+                if (bestSpeedUp == null) {
+                    break outer;
+                }
             }
             
             seconds = seconds - bestSpeedUp.getSeconds();
