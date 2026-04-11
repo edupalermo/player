@@ -261,7 +261,7 @@ public class BuildArmy {
                 continue;
             }
             if ((bean.getSeconds() < seconds) || (bean.getSeconds() <= Duration.ofHours(1).getSeconds() )) {
-                if ((bestSpeedUp == null) ||  (bean.getSeconds() > bestSpeedUp.getSeconds())) {
+                if ((bestSpeedUp == null) ||  (bean.getSeconds() < bestSpeedUp.getSeconds())) {
                     bestSpeedUp = bean;
                 }
             }
