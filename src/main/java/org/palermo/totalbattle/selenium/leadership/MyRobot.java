@@ -121,7 +121,7 @@ public enum MyRobot {
             throw new RuntimeException(e);
         }
     }
-
+    
     public BufferedImage captureScreen() {
         return robot.createScreenCapture(screenBounds);
     }

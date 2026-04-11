@@ -226,13 +226,13 @@ public class BuildArmy {
             SpeedUpBean bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
 
             if (bestSpeedUp == null) {
-                System.out.println("Shouldn't use speed ups!");
+                log.info("Shouldn't use speed ups! Seconds: " + seconds);
                 break;
             }
 
             // log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
             
-            while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+            while (bestSpeedUp != null && !SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
                 if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
                     break outer;
                 }
@@ -257,10 +257,7 @@ public class BuildArmy {
                 continue;
             }
             if (bean.getSeconds() < seconds) {
-                if (bestSpeedUp == null) {
-                    bestSpeedUp = bean;
-                }
-                else if (bean.getSeconds() > bestSpeedUp.getSeconds()) {
+                if ((bestSpeedUp == null) ||  (bean.getSeconds() > bestSpeedUp.getSeconds())) {
                     bestSpeedUp = bean;
                 }
             }
