@@ -76,6 +76,7 @@ public class Backend {
                 }
                 if (tiers >= 1) {
                     troops.add(Unit.S6_RANGED);
+                    troops.add(Unit.S6_FLYING);
                     
                     troops.add(Unit.G6_RANGED);
                     troops.add(Unit.G6_MELEE);

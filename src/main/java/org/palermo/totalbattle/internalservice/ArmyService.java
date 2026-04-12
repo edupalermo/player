@@ -496,6 +496,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G5_GRIFFIN);
 
                 units.add(Unit.S6_RANGED);
+                units.add(Unit.S6_FLYING);
                 
                 units.add(Unit.G6_RANGED);
                 units.add(Unit.G6_MELEE);
