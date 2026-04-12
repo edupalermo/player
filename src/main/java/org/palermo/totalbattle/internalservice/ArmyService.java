@@ -252,8 +252,8 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = increase(output, Unit.S5_SPY, 1000);
-                output = increase(output, Unit.S4_SPY, 2000);
+                output = increase(output, Unit.S6_SPY, 1000);
+                output = increase(output, Unit.S5_SPY, 2000);
                 break;
             case PETER, MIGHTSHAPER:
                 output = increase(output, Unit.S3_SPY, 1000);
@@ -281,31 +281,31 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G5_MELEE, 1000);
                 output = increase(output, Unit.G6_MELEE, 500);
                 output = increase(output, Unit.G6_GRIFFIN, 500);
-                output = increase(output, Unit.EC6_ENGINEER, 25);
+                output = topUp(output, Unit.EC6_ENGINEER, 3874);
                 break;
             case PETER:  // Should defeat Level 15 citadel
                 output = increase(output, Unit.G3_MOUNTED, 750);
                 output = increase(output, Unit.G4_MOUNTED, 500);
                 output = increase(output, Unit.G5_MOUNTED, 270);
-                output = increase(output, Unit.EC5_ENGINEER, 167);
+                output = topUp(output, Unit.EC5_ENGINEER, 167);
                 break;
             case MIGHTSHAPER:  // Should defeat Level 15 citadel
                 output = increase(output, Unit.G3_MOUNTED, 750);
                 output = increase(output, Unit.G4_MOUNTED, 500);
                 output = increase(output, Unit.G5_MOUNTED, 270);
-                output = increase(output, Unit.EC5_ENGINEER, 167);
+                output = topUp(output, Unit.EC5_ENGINEER, 167);
                 break;
             case GRIRANA:  // Should defeat Level 15 citadel
                 output = increase(output, Unit.G2_MOUNTED, 1500);
                 output = increase(output, Unit.G3_MOUNTED, 1000);
                 output = increase(output, Unit.G4_MOUNTED, 550);
-                output = increase(output, Unit.EC3_ENGINEER, 400);
+                output = topUp(output, Unit.EC3_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
                 output = increase(output, Unit.G2_RANGED, 1500);
                 output = increase(output, Unit.G3_RANGED, 1000);
                 output = increase(output, Unit.G4_RANGED, 500);
-                output = increase(output, Unit.EC2_ENGINEER, 290);
+                output = topUp(output, Unit.EC2_ENGINEER, 290);
                 break;
             default:
                 throw new RuntimeException("Not Implemented");

@@ -58,6 +58,7 @@ public class ExclusionDatabase {
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.UNDEAD, 23), Exclusion.builder().ranged(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.UNDEAD, 26), Exclusion.builder().mounted(true).ranged(true).build());
 
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 15), Exclusion.builder().melee(true).flying(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 22), Exclusion.builder().melee(true).flying(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 23), Exclusion.builder().melee(true).flying(true).ranged(true).siege(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.BARBARIAN, 26), Exclusion.builder().mounted(true).melee(true).flying(true).build());

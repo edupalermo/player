@@ -366,7 +366,10 @@ public class BuildArmy {
 
             //train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
             // train(titleBarracksPoint, Unit.S6_RANGED, 1);
-            train(titleBarracksPoint, Unit.BEAST_VI, 1);
+            // train(titleBarracksPoint, Unit.BEAST_VI, 1);
+
+            //train(titleBarracksPoint, Unit.S6_FLYING, 1);
+            train(titleBarracksPoint, Unit.S6_SPY, 1);
         }
     }
 
@@ -391,7 +394,8 @@ public class BuildArmy {
                  DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
-                 S5_LION_RIDER:
+                 S5_LION_RIDER,
+                 S6_SPY:
 
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
                     shift = 41;
@@ -408,7 +412,7 @@ public class BuildArmy {
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  G6_RANGED,
-                 S5_VULTURE,
+                 S5_VULTURE, S6_FLYING,
                  EC6_ENGINEER:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
                 silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775), Point.of(798 + 261, 783));
@@ -762,7 +766,7 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
 
-            case S5_VULTURE:
+            case S5_VULTURE, S6_FLYING:
                 // Click on Specialists left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
                 robot.sleep(wait);
@@ -774,6 +778,22 @@ public class BuildArmy {
                 // Click on Tier
                 tierPos = 458 + ((unit.getTier() - 5) * 26);
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                robot.sleep(wait);
+                break;
+
+            case S6_SPY:
+                // Click on Specialists left tab
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                robot.sleep(wait);
+
+
+                // Scroll to second line
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
+                robot.sleep(wait);
+
+                // Click on Tier
+                tierPos = 458 + ((unit.getTier() - 6) * 26);
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
                 robot.sleep(wait);
                 break;
                 
@@ -882,7 +902,7 @@ public class BuildArmy {
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  G5_GRIFFIN, G6_GRIFFIN,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
-                 S5_LION_RIDER:
+                 S5_LION_RIDER, S6_SPY:
                 
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
                     shift = 41;
@@ -894,7 +914,7 @@ public class BuildArmy {
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  G6_RANGED,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
-                 S5_VULTURE, EC6_ENGINEER:
+                 S5_VULTURE, S6_FLYING, EC6_ENGINEER:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,

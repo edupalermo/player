@@ -16,5 +16,4 @@ public class Exclusion {
     private boolean beast = false;
     private boolean flying = false;
     private boolean siege = false;
-
 }

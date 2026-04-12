@@ -15,6 +15,7 @@ public enum Unit {
     S3_SPY(80, 240, UnitType.SPY, 3, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     S4_SPY(150, 450, UnitType.SPY, 4, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     S5_SPY(260, 780, UnitType.SPY, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
+    S6_SPY(470, 1410, UnitType.SPY, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     
     S1_SWORDSMAN(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_i.png", Pool.LEADERSHIP, 1),
     S2_SWORDSMAN(90, 270, UnitType.MELEE, 2, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_ii.png", Pool.LEADERSHIP, 1),
@@ -27,6 +28,7 @@ public enum Unit {
     S5_LION_RIDER(1050, 3150, UnitType.RIDER, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/lion_rider_v.png", Pool.LEADERSHIP, 2),
 
     S6_RANGED(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.RANGED, Attribute.SPECIALIST), "leadership/deadshot_vi.png", Pool.LEADERSHIP, 1),
+    S6_FLYING(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_vi.png", Pool.LEADERSHIP, 1),
 
     G1_MELEE(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_i.png", Pool.LEADERSHIP, 1),
     G1_RANGED(50, 150, UnitType.ARCHER, 1, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_i.png", Pool.LEADERSHIP, 1),
