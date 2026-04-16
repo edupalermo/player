@@ -27,8 +27,10 @@ public enum Unit {
     S5_DEADSHOT(520, 1560, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.RANGED, Attribute.SPECIALIST), "leadership/deadshot_v.png", Pool.LEADERSHIP, 1),
     S5_LION_RIDER(1050, 3150, UnitType.RIDER, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/lion_rider_v.png", Pool.LEADERSHIP, 2),
 
+    S6_MELEE(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/s_melee_vi.png", Pool.LEADERSHIP, 1),
     S6_RANGED(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.RANGED, Attribute.SPECIALIST), "leadership/deadshot_vi.png", Pool.LEADERSHIP, 1),
     S6_FLYING(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_vi.png", Pool.LEADERSHIP, 1),
+    S6_MOUNTED(1900, 5700, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/s_mounted_vi.png", Pool.LEADERSHIP, 2),
 
     G1_MELEE(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_i.png", Pool.LEADERSHIP, 1),
     G1_RANGED(50, 150, UnitType.ARCHER, 1, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_i.png", Pool.LEADERSHIP, 1),

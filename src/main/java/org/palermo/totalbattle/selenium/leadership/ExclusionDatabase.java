@@ -29,6 +29,7 @@ public class ExclusionDatabase {
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 26), Exclusion.builder().ranged(true).mounted(true).build());
 
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 22), Exclusion.builder().melee(true).dragon(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 23), Exclusion.builder().melee(true).dragon(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 26), Exclusion.builder().mounted(true).elemental(true).melee(true).build());
         
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.INFERNO, 15), Exclusion.builder().ranged(true).elemental(true).mounted(true).build());
@@ -42,6 +43,7 @@ public class ExclusionDatabase {
 
         
         // COMMON
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 13), Exclusion.builder().melee(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 15), Exclusion.builder().mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 19), Exclusion.builder().mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.INFERNO, 22), Exclusion.builder().mounted(true).build());
