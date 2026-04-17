@@ -299,13 +299,13 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G2_MOUNTED, 1500);
                 output = increase(output, Unit.G3_MOUNTED, 1000);
                 output = increase(output, Unit.G4_MOUNTED, 550);
-                output = topUp(output, Unit.EC3_ENGINEER, 400);
+                output = topUp(output, Unit.EC4_ENGINEER, 400);
                 break;
             case ELANIN:   // Should defeat Level 10 citadel
                 output = increase(output, Unit.G2_RANGED, 1500);
                 output = increase(output, Unit.G3_RANGED, 1000);
-                output = increase(output, Unit.G4_RANGED, 500);
-                output = topUp(output, Unit.EC2_ENGINEER, 290);
+                output = increase(output, Unit.G4_RANGED, 550);
+                output = topUp(output, Unit.EC4_ENGINEER, 400);
                 break;
             default:
                 throw new RuntimeException("Not Implemented");
