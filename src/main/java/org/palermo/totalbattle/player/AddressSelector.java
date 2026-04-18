@@ -49,7 +49,7 @@ public class AddressSelector {
             "https://totalbattle.com/en/?present=ref2_march_26_s3vS",
             "https://totalbattle.com/en/?present=ref3_february_26_co8P",
             "https://totalbattle.com/en/?present=ref1_february_26_2NQy",
-            "https://totalbattle.com/de/?present=ref4_january_26_Zr1R",
+            "https://totalbattle.com/en/?present=ref4_january_26_Zr1R",
             "https://totalbattle.com/en/?present=merry_christmas_2025",
             "https://totalbattle.com/en/?present=ref3_december_25_u2R8",
             "https://totalbattle.com/en/?present=ref2_december_25_FYWg",
