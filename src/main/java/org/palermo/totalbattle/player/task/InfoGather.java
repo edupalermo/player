@@ -279,8 +279,14 @@ public class InfoGather {
                 .resourceName(resource.getIcon())
                 .build();
 
+        int count = 0;
+        
         while (!resourceNavigation.exist()) {
             iconNext.leftClick();
+            count++;
+            if (count >= 5) {
+                throw new RuntimeException("Could not find resource in the top menu");
+            }
         }
 
         switch (operation) {
