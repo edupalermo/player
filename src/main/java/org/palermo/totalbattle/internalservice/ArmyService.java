@@ -277,9 +277,10 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO: // Should defeat Level 20 citadel
-                output = increase(output, Unit.G4_MELEE, 1500);
-                output = increase(output, Unit.G5_MELEE, 1000);
-                output = increase(output, Unit.G6_MELEE, 500);
+                output = increase(output, Unit.G5_MELEE, 1500);
+                output = increase(output, Unit.G6_MELEE, 1000);
+                output = increase(output, Unit.G7_MELEE, 500);
+                output = increase(output, Unit.S6_MELEE, 500);
                 output = increase(output, Unit.G6_GRIFFIN, 500);
                 output = topUp(output, Unit.EC6_ENGINEER, 3874);
                 break;
@@ -348,8 +349,8 @@ public class ArmyService extends AbstractService {
         switch (player) {
             case PALERMO:
                 output = increase(output, Unit.G6_RANGED, 10000);
-                output = increase(output, Unit.G6_MELEE, 10000);
-                output = increase(output, Unit.G6_MOUNTED, 5000);
+                output = increase(output, Unit.G7_MELEE, 10000);
+                output = increase(output, Unit.G7_MOUNTED, 5000);
                 output = increase(output, Unit.G6_GRIFFIN, 500);
                 break;
             case PETER:
@@ -480,9 +481,7 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                units.add(Unit.S4_SWORDSMAN);
                 units.add(Unit.G4_RANGED);
-                units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
 
                 units.add(Unit.S5_SWORDSMAN);
@@ -505,6 +504,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G6_MOUNTED);
                 units.add(Unit.G6_GRIFFIN);
 
+                units.add(Unit.G7_MELEE);
                 units.add(Unit.G7_MOUNTED);
 
                 units.add(Unit.DRAGON_III);

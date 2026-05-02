@@ -44,7 +44,7 @@ public class BuildArmy {
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    private final boolean TEST = false; 
+    private final boolean TEST = true; 
 
     public BuildArmy(Player player) {
         this.player = player;
@@ -376,7 +376,7 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.S6_SPY, 1);
             //train(titleBarracksPoint, Unit.S6_MELEE, 1);
             //train(titleBarracksPoint, Unit.S6_MOUNTED, 1);
-            train(titleBarracksPoint, Unit.G5_MELEE, 1);
+            train(titleBarracksPoint, Unit.G7_MELEE, 1);
         }
     }
 
@@ -429,7 +429,7 @@ public class BuildArmy {
                 foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 814));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
-                 G6_MELEE,
+                 G6_MELEE, G7_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
@@ -675,7 +675,7 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
                 
-            case G6_MELEE:
+            case G6_MELEE, G7_MELEE:
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
 
@@ -953,7 +953,7 @@ public class BuildArmy {
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
-                 G6_MELEE,
+                 G6_MELEE, G7_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
