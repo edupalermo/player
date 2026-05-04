@@ -376,7 +376,9 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.S6_SPY, 1);
             //train(titleBarracksPoint, Unit.S6_MELEE, 1);
             //train(titleBarracksPoint, Unit.S6_MOUNTED, 1);
-            train(titleBarracksPoint, Unit.G7_MELEE, 1);
+            //train(titleBarracksPoint, Unit.G7_MELEE, 1);
+            train(titleBarracksPoint, Unit.G7_RANGED, 1);
+            //train(titleBarracksPoint, Unit.G7_MELEE, 1);
         }
     }
 
@@ -396,7 +398,7 @@ public class BuildArmy {
         
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
-                 G5_GRIFFIN, G6_GRIFFIN,
+                 G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN,
                  G6_MOUNTED, G7_MOUNTED,
                  DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
@@ -418,7 +420,7 @@ public class BuildArmy {
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
-                 G6_RANGED,
+                 G6_RANGED, G7_RANGED,
                  S5_VULTURE, S6_FLYING,
                  EC6_ENGINEER:
                 textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719));
@@ -641,7 +643,7 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
 
-            case G6_RANGED:
+            case G6_RANGED, G7_RANGED:
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
                 robot.sleep(wait);
@@ -722,7 +724,7 @@ public class BuildArmy {
                 robot.sleep(wait);
                 break;
                 
-            case G5_GRIFFIN, G6_GRIFFIN:
+            case G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN:
                 // Click on Guardsman left tab
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
                 robot.sleep(wait);
@@ -935,7 +937,7 @@ public class BuildArmy {
                  G6_MOUNTED, G7_MOUNTED,
                  DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
-                 G5_GRIFFIN, G6_GRIFFIN,
+                 G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
                  S5_LION_RIDER, S6_MOUNTED, S6_SPY:
                 
@@ -947,7 +949,7 @@ public class BuildArmy {
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
-                 G6_RANGED,
+                 G6_RANGED, G7_RANGED,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  S5_VULTURE, S6_FLYING, EC6_ENGINEER:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));

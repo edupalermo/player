@@ -55,8 +55,10 @@ public enum Unit {
     G6_MOUNTED(1900, 5700, UnitType.RIDER, 6, Attribute.GUARDSMAN_RIDER, "leadership/mounted_vi.png", Pool.LEADERSHIP, 2),
     G6_GRIFFIN(19000, 57000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING, Attribute.GUARDSMAN), "leadership/griffin_vi.png", Pool.LEADERSHIP, 20),
 
+    G7_RANGED(1700, 5100, UnitType.ARCHER, 7, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_vii.png", Pool.LEADERSHIP, 1),
     G7_MELEE(1700, 5100, UnitType.MELEE, 7, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_vii.png", Pool.LEADERSHIP, 1),
     G7_MOUNTED(3400, 10200, UnitType.RIDER, 7, Attribute.GUARDSMAN_RIDER, "leadership/mounted_vii.png", Pool.LEADERSHIP, 2),
+    G7_GRIFFIN(34000, 102000, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING, Attribute.GUARDSMAN), "leadership/griffin_vii.png", Pool.LEADERSHIP, 20),
     
     EC1_ENGINEER(250, 1500, UnitType.CATAPULT, 1, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_i.png", Pool.LEADERSHIP, 10),
     EC2_ENGINEER(450, 2700, UnitType.CATAPULT, 2, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_ii.png", Pool.LEADERSHIP, 10),
