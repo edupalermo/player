@@ -246,12 +246,18 @@ public class CaptainSelector {
                 return point;
             }
 
+            ayrin = ImageUtil.loadResource("player/hero/ayrin_66_1.png");
+            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
+            if (point != null) {
+                return point;
+            }
+
             BufferedImage julia = ImageUtil.loadResource("player/hero/julia_66.png");
             point = ImageUtil.searchSurroundings(julia, screen, area, 0.1, 20).orElse(null);
             if (point != null) {
                 return point;
             }
-        } while (System.currentTimeMillis() - start < 10000);
+        } while (System.currentTimeMillis() - start < 15000);
 
         throw new RuntimeException("Could not find hero picture");
     }
