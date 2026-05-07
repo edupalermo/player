@@ -94,24 +94,29 @@ public class Backend {
                         troops.add(Unit.ELEMENTAL_III);
                         troops.add(Unit.GIANT_III);
                         troops.add(Unit.BEAST_III);
-                    }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
+
                         troops.add(Unit.DRAGON_IV);
                         troops.add(Unit.ELEMENTAL_IV);
                         troops.add(Unit.GIANT_IV);
                         troops.add(Unit.BEAST_IV);
                     }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
                         troops.add(Unit.DRAGON_V);
                         troops.add(Unit.ELEMENTAL_V);
                         troops.add(Unit.GIANT_V);
                         troops.add(Unit.BEAST_V);
                     }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
                         troops.add(Unit.DRAGON_VI);
                         troops.add(Unit.ELEMENTAL_VI);
                         troops.add(Unit.GIANT_VI);
                         troops.add(Unit.BEAST_VI);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.DRAGON_VII);
+                        troops.add(Unit.ELEMENTAL_VII);
+                        troops.add(Unit.GIANT_VII);
+                        troops.add(Unit.BEAST_VII);
                     }
                 }
                 if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
