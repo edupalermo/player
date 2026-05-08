@@ -629,7 +629,6 @@ public class BuildArmy {
 
         long wait = 350;
 
-        try {
             switch (unit) {
                 case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED:
                     // Click on Guardsman left tab
@@ -929,9 +928,6 @@ public class BuildArmy {
                 default:
                     throw new RuntimeException("Not implemented for unit " + unit.name());
             }
-        } finally {
-            robot.sleep(500);
-        }
     }
 
     private int getCurrentUnitNumber(Point titleBarracksPoint, Unit unit) {
@@ -963,7 +959,11 @@ public class BuildArmy {
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  DRAGON_VII, ELEMENTAL_VII, GIANT_VII, BEAST_VII,
                  S5_VULTURE, S6_FLYING, EC6_ENGINEER:
-                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677), Point.of(912 + 261, 699));
+                
+                if (Sets.newHashSet(Unit.DRAGON_VII, Unit.ELEMENTAL_VII, Unit.GIANT_VII, Unit.BEAST_VII).contains(unit)) {
+                    shift = 41;
+                }
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677 + shift), Point.of(912 + 261, 699 + shift));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE, G7_MELEE,
