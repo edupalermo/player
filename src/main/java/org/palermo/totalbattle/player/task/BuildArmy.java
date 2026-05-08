@@ -627,7 +627,7 @@ public class BuildArmy {
     private void selectUnit(Point titleBarracksPoint, Unit unit) {
         long tierPos;
 
-        long wait = 350;
+        long wait = 500;
 
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED:
