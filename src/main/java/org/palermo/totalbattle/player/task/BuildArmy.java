@@ -627,306 +627,310 @@ public class BuildArmy {
     private void selectUnit(Point titleBarracksPoint, Unit unit) {
         long tierPos;
 
-        long wait = 500;
+        long wait = 350;
 
-        switch (unit) {
-            case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED:
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(wait);
+        try {
+            switch (unit) {
+                case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+                    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // It seems it has to click twice ?1?1?
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case G6_RANGED, G7_RANGED:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+    
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // It seems it has to click twice ?1?1?
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case G6_MELEE, G7_MELEE:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+    
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // It seems it has to click twice ?1?1?
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
                 
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // It seems it has to click twice ?1?1?
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case G6_RANGED, G7_RANGED:
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(wait);
-
-                // Scroll to the correct position
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE :
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(wait);
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // It seems it has to click twice ?1?1?
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case G6_MELEE, G7_MELEE:
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-
-                // Scroll to the correct position
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED :
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // It seems it has to click twice ?1?1?
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
-                robot.sleep(wait);
-                break;
-            
-            case G6_MOUNTED, G7_MOUNTED:
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(wait);
-
-                // Scroll to the correct position
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN:
-                // Click on Guardsman left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
-                robot.sleep(wait);
-
-                // Scroll to the correct position
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 5) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-                
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case S5_DEADSHOT, S6_RANGED:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 5) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case S5_LION_RIDER, S6_MOUNTED:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-                
-                // Scroll to second line
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 5) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case S6_MELEE:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-
-                // Scroll to second line
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-
-            case S5_VULTURE, S6_FLYING:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-
-                // Scroll to second line
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
-                robot.sleep(wait);
-                
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 5) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(wait);
-                break;
-
-            case S6_SPY:
-                // Click on Specialists left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
-                robot.sleep(wait);
-
-
-                // Scroll to second line
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case DRAGON_III, DRAGON_IV, DRAGON_V:
-                // Click on Dragons left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
-                robot.sleep(wait);
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-                break;
-
-            case ELEMENTAL_III, ELEMENTAL_IV, ELEMENTAL_V:
-                // Click on Elementals left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
-                robot.sleep(wait);
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-                break;
-
-            case GIANT_III, GIANT_IV, GIANT_V:
-                // Click on Giants left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
-                robot.sleep(wait);
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-                break;
-
-            case BEAST_III, BEAST_IV, BEAST_V:
-                // Click on Beats left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
-                robot.sleep(wait);
-
-                // Scroll up (player G6 needs to scroll up)
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
-                robot.sleep(wait);
-                break;
-
-            case DRAGON_VI, DRAGON_VII:
-                // Click on Dragons left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
-                robot.sleep(wait);
-                break;
-
-            case ELEMENTAL_VI, ELEMENTAL_VII:
-                // Click on Elementals left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
-                robot.sleep(wait);
-                break;
-
-            case GIANT_VI, GIANT_VII:
-                // Click on Giants left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
-                robot.sleep(wait);
-                break;
-
-            case BEAST_VI, BEAST_VII:
-                // Click on Beats left tab
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
-                robot.sleep(wait);
-                break;
-
-            case EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER:
-                // Click on Engineer corps
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 1) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
-                robot.sleep(wait);
-                break;
-                
-            case EC6_ENGINEER:
-                // Click on Engineer corps
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
-                robot.sleep(wait);
-
-                // Click on Tier
-                tierPos = 458 + ((unit.getTier() - 6) * 26);
-                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
-                robot.sleep(wait);
-                break;
-            default:
-                throw new RuntimeException("Not implemented for unit " + unit.name());
+                case G6_MOUNTED, G7_MOUNTED:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+    
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+    
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 5) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+                    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case S5_DEADSHOT, S6_RANGED:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 5) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case S5_LION_RIDER, S6_MOUNTED:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+                    
+                    // Scroll to second line
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 5) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case S6_MELEE:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+    
+                    // Scroll to second line
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+    
+                case S5_VULTURE, S6_FLYING:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+    
+                    // Scroll to second line
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 607)));
+                    robot.sleep(wait);
+                    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 5) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
+    
+                case S6_SPY:
+                    // Click on Specialists left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
+                    robot.sleep(wait);
+    
+    
+                    // Scroll to second line
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case DRAGON_III, DRAGON_IV, DRAGON_V:
+                    // Click on Dragons left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
+                    robot.sleep(wait);
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+                    break;
+    
+                case ELEMENTAL_III, ELEMENTAL_IV, ELEMENTAL_V:
+                    // Click on Elementals left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
+                    robot.sleep(wait);
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+                    break;
+    
+                case GIANT_III, GIANT_IV, GIANT_V:
+                    // Click on Giants left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
+                    robot.sleep(wait);
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+                    break;
+    
+                case BEAST_III, BEAST_IV, BEAST_V:
+                    // Click on Beats left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
+                    robot.sleep(wait);
+    
+                    // Scroll up (player G6 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
+                    break;
+    
+                case DRAGON_VI, DRAGON_VII:
+                    // Click on Dragons left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
+                    robot.sleep(wait);
+                    break;
+    
+                case ELEMENTAL_VI, ELEMENTAL_VII:
+                    // Click on Elementals left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
+                    robot.sleep(wait);
+                    break;
+    
+                case GIANT_VI, GIANT_VII:
+                    // Click on Giants left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
+                    robot.sleep(wait);
+                    break;
+    
+                case BEAST_VI, BEAST_VII:
+                    // Click on Beats left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
+                    robot.sleep(wait);
+                    break;
+    
+                case EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER:
+                    // Click on Engineer corps
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 1) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
+                case EC6_ENGINEER:
+                    // Click on Engineer corps
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
+                    robot.sleep(wait);
+    
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 6) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                default:
+                    throw new RuntimeException("Not implemented for unit " + unit.name());
+            }
+        } finally {
+            robot.sleep(500);
         }
     }
 
