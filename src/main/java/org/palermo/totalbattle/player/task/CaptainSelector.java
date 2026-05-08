@@ -241,13 +241,13 @@ public class CaptainSelector {
             }
 
             BufferedImage ayrin = ImageUtil.loadResource("player/hero/ayrin_66.png");
-            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
+            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.2, 20).orElse(null);
             if (point != null) {
                 return point;
             }
 
             ayrin = ImageUtil.loadResource("player/hero/ayrin_66_1.png");
-            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
+            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.2, 20).orElse(null);
             if (point != null) {
                 return point;
             }
