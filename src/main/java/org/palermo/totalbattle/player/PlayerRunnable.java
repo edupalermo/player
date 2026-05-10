@@ -71,6 +71,7 @@ public class PlayerRunnable implements Runnable {
             if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
                 log.info("Skipped! Player is ready to attack!");
                 MyRobot.INSTANCE.sleep(1000);
+                return;
             }
 
             log.info("Started new player");
