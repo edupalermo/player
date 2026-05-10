@@ -43,13 +43,7 @@ public class PlayerRunnable implements Runnable {
             try {
                 Player player = players.get(counter % players.size());
                 if (!SharedData.INSTANCE.isLocked(player)) {
-                    if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
-                        play(player);
-                    }
-                    else {
-                        log.info("Skipped! Player is ready to attack!");
-                        MyRobot.INSTANCE.sleep(1000);
-                    }
+                    play(player);
                 }
 
                 String playerName = gameStateService.getProperty(GameStateService.PROPERTY_NEXT);
@@ -73,6 +67,12 @@ public class PlayerRunnable implements Runnable {
         Process process = null;
         try {
             MDC.put("playerName", player.getName());
+
+            if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
+                log.info("Skipped! Player is ready to attack!");
+                MyRobot.INSTANCE.sleep(1000);
+            }
+
             log.info("Started new player");
             process = Task.openOrdinaryBrowser(player);
 
