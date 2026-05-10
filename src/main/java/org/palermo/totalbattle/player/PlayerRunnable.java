@@ -6,6 +6,7 @@ import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.task.*;
+import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
 import org.slf4j.MDC;
@@ -42,7 +43,13 @@ public class PlayerRunnable implements Runnable {
             try {
                 Player player = players.get(counter % players.size());
                 if (!SharedData.INSTANCE.isLocked(player)) {
-                    play(player);
+                    if (!lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
+                        play(player);
+                    }
+                    else {
+                        log.info("Skipped! Player is ready to attack!");
+                        MyRobot.INSTANCE.sleep(1000);
+                    }
                 }
 
                 String playerName = gameStateService.getProperty(GameStateService.PROPERTY_NEXT);
