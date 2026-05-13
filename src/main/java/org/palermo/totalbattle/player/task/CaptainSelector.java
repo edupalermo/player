@@ -235,7 +235,7 @@ public class CaptainSelector {
             }
 
             BufferedImage meriones = ImageUtil.loadResource("player/hero/meriones_66.png");
-            point = ImageUtil.searchSurroundings(garvel, screen, area, 0.1, 20).orElse(null);
+            point = ImageUtil.searchSurroundings(meriones, screen, area, 0.1, 20).orElse(null);
             if (point != null) {
                 return point;
             }
