@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scriptfile>
+    <settings program="actiona" version="3.10.1" scriptVersion="1.1.0" os="GNU/Linux"/>
+    <actions>
+        <action name="ActionVariable" version="1.0.0"/>
+        <action name="ActionPause" version="1.0.0"/>
+        <action name="ActionClick" version="1.0.0"/>
+        <action name="ActionMoveCursor" version="1.0.0"/>
+        <action name="ActionLoop" version="1.0.0"/>
+    </actions>
+    <parameters/>
+    <resources/>
+    <script pauseBefore="0" pauseAfter="0">
+        <action name="ActionVariable">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <parameter name="colorValue">
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="positionValue">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="type">
+                <subParameter name="value" code="0">integer</subParameter>
+            </parameter>
+            <parameter name="value">
+                <subParameter name="value" code="0">707</subParameter>
+            </parameter>
+            <parameter name="variable">
+                <subParameter name="value" code="0">x</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionVariable">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <parameter name="colorValue">
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="positionValue">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="type">
+                <subParameter name="value" code="0">integer</subParameter>
+            </parameter>
+            <parameter name="value">
+                <subParameter name="value" code="0">525</subParameter>
+            </parameter>
+            <parameter name="variable">
+                <subParameter name="value" code="0">y</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionMoveCursor">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <parameter name="position">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="1">new Point(x, y)</subParameter>
+            </parameter>
+            <parameter name="positionOffset">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+        </action>
+        <action name="ActionPause">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <parameter name="duration">
+                <subParameter name="value" code="0">500</subParameter>
+            </parameter>
+            <parameter name="unit">
+                <subParameter name="value" code="0">milliseconds</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionClick">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <exception id="33" action="0" line=""/>
+            <parameter name="action">
+                <subParameter name="value" code="0">pressRelease</subParameter>
+            </parameter>
+            <parameter name="amount">
+                <subParameter name="value" code="0">1</subParameter>
+            </parameter>
+            <parameter name="button">
+                <subParameter name="value" code="0">left</subParameter>
+            </parameter>
+            <parameter name="position">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="1">new Point(x, y)</subParameter>
+            </parameter>
+            <parameter name="positionOffset">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="restoreCursorPosition">
+                <subParameter name="value" code="0">false</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionPause">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <parameter name="duration">
+                <subParameter name="value" code="0">250</subParameter>
+            </parameter>
+            <parameter name="unit">
+                <subParameter name="value" code="0">milliseconds</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionVariable">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <parameter name="colorValue">
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="positionValue">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="type">
+                <subParameter name="value" code="0">integer</subParameter>
+            </parameter>
+            <parameter name="value">
+                <subParameter name="value" code="1">x + 87</subParameter>
+            </parameter>
+            <parameter name="variable">
+                <subParameter name="value" code="0">x</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionLoop">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <parameter name="count">
+                <subParameter name="value" code="0">5</subParameter>
+            </parameter>
+            <parameter name="line">
+                <subParameter name="value" code="0">003</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionVariable">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <parameter name="colorValue">
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="positionValue">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="type">
+                <subParameter name="value" code="0">integer</subParameter>
+            </parameter>
+            <parameter name="value">
+                <subParameter name="value" code="1">y + 87</subParameter>
+            </parameter>
+            <parameter name="variable">
+                <subParameter name="value" code="0">y</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionVariable">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <exception id="32" action="0" line=""/>
+            <parameter name="colorValue">
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="positionValue">
+                <subParameter name="unit" code="0">0</subParameter>
+                <subParameter name="value" code="0"></subParameter>
+            </parameter>
+            <parameter name="type">
+                <subParameter name="value" code="0">integer</subParameter>
+            </parameter>
+            <parameter name="value">
+                <subParameter name="value" code="0">707</subParameter>
+            </parameter>
+            <parameter name="variable">
+                <subParameter name="value" code="0">x</subParameter>
+            </parameter>
+        </action>
+        <action name="ActionLoop">
+            <exception id="0" action="0" line=""/>
+            <exception id="1" action="0" line=""/>
+            <exception id="2" action="1" line=""/>
+            <parameter name="count">
+                <subParameter name="value" code="0">3</subParameter>
+            </parameter>
+            <parameter name="line">
+                <subParameter name="value" code="0">003</subParameter>
+            </parameter>
+        </action>
+    </script>
+</scriptfile>
