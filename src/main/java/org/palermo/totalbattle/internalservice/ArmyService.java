@@ -279,10 +279,10 @@ public class ArmyService extends AbstractService {
             case PALERMO: // Should defeat Level 20 citadel
                 output = increase(output, Unit.G5_MELEE, 1500);
                 output = increase(output, Unit.G6_MELEE, 1000);
+                output = increase(output, Unit.S6_MELEE, 1000);
                 output = increase(output, Unit.G7_MELEE, 500);
-                output = increase(output, Unit.S6_MELEE, 500);
                 output = increase(output, Unit.G7_GRIFFIN, 500);
-                output = topUp(output, Unit.EC6_ENGINEER, 3874);
+                output = topUp(output, Unit.EC7_ENGINEER, 3000);
                 break;
             case PETER:  // Should defeat Level 15 citadel
                 output = increase(output, Unit.G3_MOUNTED, 750);
@@ -322,7 +322,7 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = topUp(output, Unit.EC6_ENGINEER, 1000);
+                output = topUp(output, Unit.EC7_ENGINEER, 1000);
                 break;
             case PETER:  
                 output = topUp(output, Unit.EC5_ENGINEER, 1000);

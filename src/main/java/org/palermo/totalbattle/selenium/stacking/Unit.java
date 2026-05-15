@@ -66,6 +66,7 @@ public enum Unit {
     EC4_ENGINEER(1460, 8750, UnitType.CATAPULT, 4, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_iv.png", Pool.LEADERSHIP, 10),
     EC5_ENGINEER(2630, 15800, UnitType.CATAPULT, 5, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_v.png", Pool.LEADERSHIP, 10),
     EC6_ENGINEER(4730, 28400, UnitType.CATAPULT, 6, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_vi.png", Pool.LEADERSHIP, 10),
+    EC7_ENGINEER(8500, 51000, UnitType.CATAPULT, 7, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_vii.png", Pool.LEADERSHIP, 10),
 
     SWIFT_MARKSMAN(1050, 3150, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/swift_marksman.png", Pool.AUTHORITY, 1),
     
