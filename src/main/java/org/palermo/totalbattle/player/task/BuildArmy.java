@@ -604,6 +604,7 @@ public class BuildArmy {
                 Navigate.builder()
                         .areaName("TOP_UP_SILVER_SLIDE_SUBSEQUENT_USE_BUTTON")
                         .resourceName("player/button_use.png")
+                        .waitLimit(2000)
                         .build()
                         .leftClick();
             }
