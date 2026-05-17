@@ -701,6 +701,36 @@ public class ImageUtil {
         return result;
     }
 
+    /* It only work with grayscale images */
+    /* Threshould alto vai pegar mais perto do preto */
+    public static BufferedImage applyThreshold(BufferedImage original, double threshold) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB); // This will support grayscale with transparency
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = original.getRGB(x, y);
+
+                // Extract color components
+                int alpha = (argb >> 24) & 0xFF;
+                int gray = argb & 0xFF;
+                
+                // O preto é zero e branco é 255
+                int normalizedGray = 0xFF; // White
+                if (gray <= 0xFF * (1 - threshold)) {
+                    normalizedGray = gray;
+                }
+                
+                int newPixel = (alpha << 24) | (normalizedGray << 16) | (normalizedGray << 8) | normalizedGray;
+                result.setRGB(x, y, newPixel);
+            }
+        }
+        return result;
+    }
+
+
+
     public static BufferedImage scaleUp(BufferedImage original, int scale) {
         BufferedImage scaled = new BufferedImage(original.getWidth() * scale, original.getHeight() * scale, original.getType());
         Graphics2D g2d = scaled.createGraphics();
