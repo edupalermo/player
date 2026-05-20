@@ -93,7 +93,9 @@ public class PlayerRunnable implements Runnable {
                 return;
             }
 
-            (new InfoGather(player)).evaluate();
+            if (!BUILD_ARMY) {
+                (new InfoGather(player)).evaluate();
+            }
             (new FixBrokenArmor(player)).fix();
             
             (new FreeSale(player)).freeSale();
@@ -104,7 +106,6 @@ public class PlayerRunnable implements Runnable {
             (new ClanContribution(player)).collectChests();
 
             if (!BUILD_ARMY) {
-
                 (new Telescope(player)).findArena();
                 (new Telescope(player)).findSilverMines();
                 (new Telescope(player)).findCitadels();
