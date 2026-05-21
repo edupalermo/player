@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.player.task;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.LockService;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.Scenario;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class FreeSale {
 
     private final MyRobot robot = MyRobot.INSTANCE;
@@ -26,11 +28,25 @@ public class FreeSale {
     public FreeSale(Player player) {
         this.player = player;
     }
-
+    
     public void freeSale() {
         if (lockService.isLocked(player, Scenario.BONUS_SALES_FREE)) {
             return;
         }
+        try {
+            internalFreeSale();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+
+    public void internalFreeSale() {
         
         BufferedImage screen = robot.captureScreen();
 

@@ -102,8 +102,6 @@ public class PlayerRunnable implements Runnable {
             if (!BUILD_ARMY) {
                 (new Quests(player)).evaluate();
             }
-            (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
 
             if (!BUILD_ARMY) {
                 (new Telescope(player)).findArena();
@@ -113,6 +111,9 @@ public class PlayerRunnable implements Runnable {
             }
 
             (new BuildArmy(player)).buildArmy();
+
+            (new ClanContribution(player)).helpClanMembers();
+            (new ClanContribution(player)).collectChests();
 
             if (!BUILD_ARMY) {
                 (new AttackCitadel(player)).attack();

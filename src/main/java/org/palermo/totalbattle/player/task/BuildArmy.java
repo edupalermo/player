@@ -49,8 +49,31 @@ public class BuildArmy {
     public BuildArmy(Player player) {
         this.player = player;
     }
-    
+
     public void buildArmy() {
+        if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
+            log.info("Building Army is locked because player is ready to ATTACK!");
+            return;
+        }
+
+        if (!armyService.shouldBuildArmy(player)) {
+            return;
+        }
+        
+        try {
+            internalBuildArmy();
+        } catch(Exception e) {
+            log.error(e.getMessage(), e);
+
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+
+        public void internalBuildArmy() {
         if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             log.info("Building Army is locked because player is ready to ATTACK!");
             return;

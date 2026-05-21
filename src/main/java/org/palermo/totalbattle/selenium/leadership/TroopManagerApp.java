@@ -52,6 +52,8 @@ public class TroopManagerApp extends JFrame {
     private JButton btnRetrieve;
     private JButton btnGenerate;
     private JButton btnAssign;
+    private JButton btnCpRun;
+    private JButton btnCpRunBig;
     private JButton btnClear;
     private JButton btnClearExclusions;
 
@@ -100,8 +102,12 @@ public class TroopManagerApp extends JFrame {
         // ===== Action buttons: Generate Stack / Assign troops =====
         JPanel buttonsRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         btnGenerate = new JButton("Generate Stack");
+        btnCpRun   = new JButton("CP run");
+        btnCpRunBig   = new JButton("CP run Big List");
         btnAssign   = new JButton("Assign troops");
         buttonsRow.add(btnGenerate);
+        buttonsRow.add(btnCpRun);
+        buttonsRow.add(btnCpRunBig);
         buttonsRow.add(btnAssign);
         content.add(buttonsRow);
         content.add(Box.createVerticalStrut(8));
@@ -155,6 +161,129 @@ public class TroopManagerApp extends JFrame {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, BorderLayout.CENTER);
 
+        btnCpRunBig.addActionListener(e -> {
+            troopQuantityList = null;
+            tableModel.clear();
+
+            java.util.List<Object[]> lines = new ArrayList<>();
+            troopQuantityList =  new ArrayList<>();
+
+            addUnit(lines, troopQuantityList, Unit.S5_SWORDSMAN, 74000);
+            addUnit(lines, troopQuantityList, Unit.S5_DEADSHOT, 74000);
+            addUnit(lines, troopQuantityList, Unit.S5_VULTURE, 74000);
+            addUnit(lines, troopQuantityList, Unit.S5_LION_RIDER, 37000);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.G5_MELEE, 74000);
+            addUnit(lines, troopQuantityList, Unit.G5_RANGED, 74000);
+            addUnit(lines, troopQuantityList, Unit.G5_MOUNTED, 37000);
+            addUnit(lines, troopQuantityList, Unit.G5_GRIFFIN, 3700);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.S6_MELEE, 42000);
+            addUnit(lines, troopQuantityList, Unit.S6_RANGED, 42000);
+            addUnit(lines, troopQuantityList, Unit.S6_FLYING, 42000);
+            addUnit(lines, troopQuantityList, Unit.S6_MOUNTED, 21000);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.G6_MELEE, 42000);
+            addUnit(lines, troopQuantityList, Unit.G6_RANGED, 42000);
+            addUnit(lines, troopQuantityList, Unit.G6_MOUNTED, 21000);
+            addUnit(lines, troopQuantityList, Unit.G6_GRIFFIN, 2100);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.G7_MELEE, 24000);
+            addUnit(lines, troopQuantityList, Unit.G7_RANGED, 24000);
+            addUnit(lines, troopQuantityList, Unit.G7_MOUNTED, 12000);
+            addUnit(lines, troopQuantityList, Unit.G7_GRIFFIN, 1200);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_V, 700);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_V, 700);
+            addUnit(lines, troopQuantityList, Unit.GIANT_V, 700);
+            addUnit(lines, troopQuantityList, Unit.BEAST_V, 700);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_VI, 300);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_VI, 300);
+            addUnit(lines, troopQuantityList, Unit.GIANT_VI, 300);
+            addUnit(lines, troopQuantityList, Unit.BEAST_VI, 300);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_VII, 140);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_VII, 140);
+            addUnit(lines, troopQuantityList, Unit.GIANT_VII, 140);
+            addUnit(lines, troopQuantityList, Unit.BEAST_VII, 140);
+
+            tableModel.setData(lines.toArray(new Object[lines.size()][]));
+
+            setTableVisible(true);
+        });
+        
+        btnCpRun.addActionListener(e -> {
+            troopQuantityList = null;
+            tableModel.clear();
+
+            java.util.List<Object[]> lines = new ArrayList<>();
+            troopQuantityList =  new ArrayList<>();
+
+            addUnit(lines, troopQuantityList, Unit.G4_MELEE, 14943);
+            addUnit(lines, troopQuantityList, Unit.G4_RANGED, 14943);
+            addUnit(lines, troopQuantityList, Unit.G4_MOUNTED, 7471);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.S5_SWORDSMAN, 8333);
+            addUnit(lines, troopQuantityList, Unit.S5_DEADSHOT, 8333);
+            addUnit(lines, troopQuantityList, Unit.S5_VULTURE, 8333);
+            addUnit(lines, troopQuantityList, Unit.S5_LION_RIDER, 4127);
+            lines.add(new Object[] { "", "", "", ""});
+            
+            addUnit(lines, troopQuantityList, Unit.G5_MELEE, 8333);
+            addUnit(lines, troopQuantityList, Unit.G5_RANGED, 8333);
+            addUnit(lines, troopQuantityList, Unit.G5_MOUNTED, 4127);
+            addUnit(lines, troopQuantityList, Unit.G5_GRIFFIN, 433);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.S6_MELEE, 4610);
+            addUnit(lines, troopQuantityList, Unit.S6_RANGED, 4610);
+            addUnit(lines, troopQuantityList, Unit.S6_FLYING, 4610);
+            addUnit(lines, troopQuantityList, Unit.S6_MOUNTED, 2281);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.G6_MELEE, 4610);
+            addUnit(lines, troopQuantityList, Unit.G6_RANGED, 4610);
+            addUnit(lines, troopQuantityList, Unit.G6_MOUNTED, 2281);
+            addUnit(lines, troopQuantityList, Unit.G6_GRIFFIN, 228);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.G7_MELEE, 2549);
+            addUnit(lines, troopQuantityList, Unit.G7_RANGED, 2549);
+            addUnit(lines, troopQuantityList, Unit.G7_MOUNTED, 1275);
+            addUnit(lines, troopQuantityList, Unit.G7_GRIFFIN, 127);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_V, 92);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_V, 92);
+            addUnit(lines, troopQuantityList, Unit.GIANT_V, 92);
+            addUnit(lines, troopQuantityList, Unit.BEAST_V, 92);
+            lines.add(new Object[] { "", "", "", ""});
+            
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_VI, 34);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_VI, 34);
+            addUnit(lines, troopQuantityList, Unit.GIANT_VI, 34);
+            addUnit(lines, troopQuantityList, Unit.BEAST_VI, 34);
+            lines.add(new Object[] { "", "", "", ""});
+
+            addUnit(lines, troopQuantityList, Unit.ELEMENTAL_VII, 14);
+            addUnit(lines, troopQuantityList, Unit.DRAGON_VII, 14);
+            addUnit(lines, troopQuantityList, Unit.GIANT_VII, 14);
+            addUnit(lines, troopQuantityList, Unit.BEAST_VII, 14);
+
+            tableModel.setData(lines.toArray(new Object[lines.size()][]));
+
+            setTableVisible(true);
+        });
+        
         // ===== Actions =====
         btnGenerate.addActionListener(e -> {
             
@@ -234,6 +363,12 @@ public class TroopManagerApp extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private void addUnit(java.util.List<Object[]> lines, java.util.List<TroopQuantity> troopQuantityList, Unit unit, int quantity) {
+        lines.add(new Object[] { unit.name(), quantity, unit.getHealth(), quantity});
+        TroopQuantity troopQuantity = TroopQuantity.builder().unit(unit).quantity(quantity).build();
+        troopQuantityList.add(troopQuantity);
+    }
+    
     private int computeWaves(int quantity, int wave) {
         double factor = 0;
 

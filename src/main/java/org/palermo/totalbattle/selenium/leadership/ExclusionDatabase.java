@@ -85,6 +85,7 @@ public class ExclusionDatabase {
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.ELVES, 29), Exclusion.builder().ranged(true).siege(true).melee(true).build());
 
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 12), Exclusion.builder().ranged(true).mounted(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 14), Exclusion.builder().ranged(true).melee(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 22), Exclusion.builder().ranged(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 23), Exclusion.builder().mounted(true).ranged(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.COMMON, EnemyType.CURSED, 26), Exclusion.builder().ranged(true).mounted(true).build());
