@@ -115,7 +115,7 @@ public class OcrUtil {
                 }
             }
 
-            if (manualOcr || HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
+            if (manualOcr && HOSTNAME_NOTEBOOK.equalsIgnoreCase(InetAddress.getLocalHost().getHostName())) {
                 stringValue = askManualOcr(image);
 
                 if (stringValue != null && stringValue.length() > 0) {

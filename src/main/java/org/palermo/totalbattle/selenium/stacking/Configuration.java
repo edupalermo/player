@@ -117,7 +117,26 @@ public class Configuration {
 
         return (int) Math.round(quantity * factor);
     }
-
+    
+    public static int computeWaves(Unit unit, int quantity, int wave) {
+        if (unit.getPool() == Pool.DOMINANCE) {
+            double total = quantity;
+            double before = quantity;
+            for (int i = 1; i < wave; i++) {
+                double needed = before * 1.01; // troops needed for this wave
+                total = total + (needed - (before * 0.9)); // Can revive 90%
+                before = needed;
+            }
+            return (int) Math.round(total);
+        }
+        else {
+            double factor = 0;
+            for (int i = 0; i < wave; i++) {
+                factor = factor + Math.pow(1.03, i);
+            }
+            return (int) Math.round(quantity * factor);
+        }
+    }
 
     public int getLowerHealth(int[] troops, Pool pool) {
         int lower = Integer.MAX_VALUE;

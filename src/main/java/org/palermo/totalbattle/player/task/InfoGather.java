@@ -310,7 +310,7 @@ public class InfoGather {
         }
 
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, OcrUtil.PATTERN_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR, manualOcr);
+        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, OcrUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, manualOcr);
         asString = asString.replace(",", "");
         return Integer.parseInt(asString);
     }

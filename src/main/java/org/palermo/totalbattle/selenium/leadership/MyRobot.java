@@ -50,9 +50,29 @@ public enum MyRobot {
         }
     }
 
+    public void fastLeftClick(int x, int y) {
+        try {
+            robot.mouseMove(x, y);
+            Thread.sleep(50);
+            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+            Thread.sleep(25);
+            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+            Thread.sleep(25);
+            robot.mouseMove(x, y);
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void leftClick(Point point) {
         leftClick(point.getX(), point.getY());
     }
+
+    public void fastLeftClick(Point point) {
+        fastLeftClick(point.getX(), point.getY());
+    }
+
 
     public void leftClick(Point point, BufferedImage image) {
         leftClick(point.getX() + (image.getWidth() / 2), point.getY() + (image.getHeight() / 2));

@@ -103,4 +103,8 @@ public class Area {
                 this.y < other.y + other.height &&
                 this.y + this.height > other.y;
     }    
+    
+    public Area move(int x, int y) {
+        return Area.of(this.x + x, this.y + y, this.width, this.height);
+    }
 }

@@ -199,8 +199,10 @@ public class ArmyService extends AbstractService {
         unitQuantities = addSpies(unitQuantities, player);
 
         unitQuantities = prepareForCitadel(unitQuantities, player);
-        
+
         unitQuantities = prepareForPvP(unitQuantities, player);
+        
+        unitQuantities = prepareQuickReplacementAfterUpgrade(unitQuantities, player);
 
         Army army = playerState.getArmy();
         army.getProductionOrder().clear();
@@ -315,6 +317,25 @@ public class ArmyService extends AbstractService {
         return output;
     }
 
+    private List<UnitQuantity> prepareQuickReplacementAfterUpgrade(List<UnitQuantity> input, Player player) {
+        List<UnitQuantity> output = input;
+
+        switch (player) {
+            case PALERMO:
+                output = topUp(output, Unit.G4_MOUNTED, 1500);
+                break;
+            case PETER, MIGHTSHAPER:
+                output = topUp(output, Unit.G2_MOUNTED, 1000);
+                break;
+            case GRIRANA:
+                break;
+            case ELANIN:
+                break;
+            default:
+                throw new RuntimeException("Not Implemented");
+        }
+        return output;
+    }
 
     private List<UnitQuantity> prepareForPvP(List<UnitQuantity> input, Player player) {
 
