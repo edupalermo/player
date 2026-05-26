@@ -188,7 +188,7 @@ public class ArmyService extends AbstractService {
         for (int i = 0; i < qtds.length; i++) {
             unitQuantities.add(UnitQuantity.builder()
                     .unit(units.get(i))
-                    .quantity(Configuration.computeWaves(qtds[i], armyTarget.getWaves()))
+                    .quantity(Configuration.computeWaves(units.get(i), qtds[i], armyTarget.getWaves()))
                     .build());
         }
 
