@@ -127,7 +127,8 @@ public class Configuration {
                 total = total + (needed - (before * 0.9)); // Can revive 90%
                 before = needed;
             }
-            return (int) Math.round(total);
+            double levelUpBonus = ((double )quantity) * 0.1;
+            return (int) Math.round(total + levelUpBonus);
         }
         else {
             double factor = 0;

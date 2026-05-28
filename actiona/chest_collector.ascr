@@ -3,8 +3,8 @@
     <settings program="actiona" version="3.10.1" scriptVersion="1.1.0" os="GNU/Linux"/>
     <actions>
         <action name="ActionPause" version="1.0.0"/>
-        <action name="ActionClick" version="1.0.0"/>
         <action name="ActionLoop" version="1.0.0"/>
+        <action name="ActionClick" version="1.0.0"/>
     </actions>
     <parameters/>
     <resources/>
@@ -26,7 +26,7 @@
             </parameter>
             <parameter name="position">
                 <subParameter name="unit" code="0">0</subParameter>
-                <subParameter name="value" code="0">1382:496</subParameter>
+                <subParameter name="value" code="0">1151:541</subParameter>
             </parameter>
             <parameter name="positionOffset">
                 <subParameter name="unit" code="0">0</subParameter>
@@ -52,7 +52,7 @@
             <exception id="1" action="0" line=""/>
             <exception id="2" action="1" line=""/>
             <parameter name="count">
-                <subParameter name="value" code="0">450</subParameter>
+                <subParameter name="value" code="0">90</subParameter>
             </parameter>
             <parameter name="line">
                 <subParameter name="value" code="0">001</subParameter>
