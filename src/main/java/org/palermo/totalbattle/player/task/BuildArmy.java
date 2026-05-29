@@ -73,7 +73,7 @@ public class BuildArmy {
         }
     }
 
-        public void internalBuildArmy() {
+    public void internalBuildArmy() {
         if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             log.info("Building Army is locked because player is ready to ATTACK!");
             return;
