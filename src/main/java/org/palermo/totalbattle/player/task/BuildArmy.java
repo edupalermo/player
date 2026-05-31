@@ -534,7 +534,7 @@ public class BuildArmy {
             robot.leftClick(inputPoint);
             robot.sleep(250);
             robot.typeString(String.valueOf(quantity));
-            robot.sleep(500);
+            robot.sleep(1000);
         }
 
         // handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
@@ -560,7 +560,7 @@ public class BuildArmy {
                 robot.leftClick(inputPoint);
                 robot.sleep(250);
                 robot.typeString(String.valueOf(target));
-                robot.sleep(500);
+                robot.sleep(1000);
             }
             
             counter = counter + 1;
