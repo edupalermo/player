@@ -532,8 +532,9 @@ public class BuildArmy {
         
         if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > quantity) {
             robot.leftClick(inputPoint);
-            robot.typeString(String.valueOf(quantity));
             robot.sleep(250);
+            robot.typeString(String.valueOf(quantity));
+            robot.sleep(500);
         }
 
         // handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
