@@ -439,7 +439,9 @@ public class OcrUtil {
         if (image.getHeight() < OcrUtil.OCR_HEIGHT) {
             image = ImageUtil.resize(image, OcrUtil.OCR_HEIGHT);
         }
-        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, OcrUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, false);
+        
+        // ImageUtil.showImageAndWait(image);
+        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, OcrUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, true);
         return toNumberWithMultiplier(asString);
 
     }

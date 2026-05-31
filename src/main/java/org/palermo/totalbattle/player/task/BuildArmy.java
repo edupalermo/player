@@ -538,15 +538,16 @@ public class BuildArmy {
         }
 
         // handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
+        robot.mouseMove(titleBarracksPoint);
         if (!isResourceEnough(silverArea)) {
             robot.leftClick(silverPoint);
             fillResource();
         }
+        robot.mouseMove(titleBarracksPoint);
         if (!isResourceEnough(foodArea)) {
             robot.leftClick(foodPoint);
             fillResource();
         }
-
 
         int target;
         int counter = 0;
@@ -564,7 +565,8 @@ public class BuildArmy {
             }
             
             counter = counter + 1;
-            
+
+            robot.mouseMove(titleBarracksPoint);
             if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
                 
                 log.info("Training {}: {}", unit.name(), target);
