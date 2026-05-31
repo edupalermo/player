@@ -3,6 +3,7 @@ package org.palermo.totalbattle.util;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.dao.OcrDao;
 import org.palermo.totalbattle.entity.ProcessedImage;
+import org.palermo.totalbattle.internalservice.GameStateService;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -46,6 +47,7 @@ public class OcrUtil {
     public static final String WHITELIST_FOR_SPEED_UPS = "0123456789dhm.";
     public static final String WHITELIST_FOR_COUNTDOWN = "0123456789:dhms";
     public static final String WHITELIST_FOR_ONLY_NUMBERS = "0123456789";
+    public static final String WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR_AND_PLUS = "0123456789,+";
     public static final String WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = "0123456789,";
     public static final String WHITELIST_FOR_NUMBERS_AND_MULTIPLIER = "0123456789.KM";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER = "0123456789,./K";
@@ -84,6 +86,11 @@ public class OcrUtil {
         return ocr(image, whitelist, pageSegMode, null);
     }
 
+    public static String ocr(BufferedImage image, String whitelist, boolean manualOcr) {
+        return ocr(image, whitelist, null, manualOcr);
+    }
+
+
     public static String ocr(BufferedImage image, String whitelist, Pattern pattern, boolean manualOcr) {
 
         try {
@@ -93,21 +100,21 @@ public class OcrUtil {
                     .findAny()
                     .orElse(null);
             if (databaseAnswer != null) {
-                if (pattern.matcher(databaseAnswer.getText()).matches()) {
+                if (pattern == null || pattern.matcher(databaseAnswer.getText()).matches()) {
                     return databaseAnswer.getText();
                 }
             }
 
             String stringValue = ocrBestMethod(image, whitelist);
             if (stringValue != null && stringValue.length() > 0) {
-                if (pattern.matcher(stringValue).matches()) {
+                if (pattern == null || pattern.matcher(stringValue).matches()) {
                     return stringValue;
                 }
                 else {
                     if (whitelist.equals(WHITELIST_FOR_COUNTDOWN)) {
                         stringValue = replaceLastDigitIfFive(stringValue);
                         stringValue = replaceSExceptLast(stringValue);
-                        if (pattern.matcher(stringValue).matches()) {
+                        if (pattern == null || pattern.matcher(stringValue).matches()) {
                             return stringValue;
                         }
                     }
@@ -119,7 +126,7 @@ public class OcrUtil {
                 stringValue = askManualOcr(image);
 
                 if (stringValue != null && stringValue.length() > 0) {
-                    if (pattern.matcher(stringValue).matches()) {
+                    if (pattern == null || pattern.matcher(stringValue).matches()) {
                         ocrDao.persist(image, stringValue, whitelist);
                         return stringValue;
                     }
@@ -419,4 +426,39 @@ public class OcrUtil {
 
         return Optional.of(answer);
     }
+
+    public static int ocrWithMultiplier(BufferedImage input, String fontColor) {
+        return ocrWithMultiplier(input, new String[] {fontColor});
+    }
+
+    public static int ocrWithMultiplier(BufferedImage input, String[] fontColor) {
+        BufferedImage image = ImageUtil.toGrayscale(input, fontColor);
+        image = ImageUtil.linearNormalization(image);
+        image =ImageUtil.cropText(image);
+        image = ImageUtil.linearNormalization(image);
+        if (image.getHeight() < OcrUtil.OCR_HEIGHT) {
+            image = ImageUtil.resize(image, OcrUtil.OCR_HEIGHT);
+        }
+        String asString = OcrUtil.ocr(image, OcrUtil.WHITELIST_FOR_NUMBERS_AND_MULTIPLIER, OcrUtil.PATTERN_FOR_NUMBERS_WITH_MULTIPLIER, false);
+        return toNumberWithMultiplier(asString);
+
+    }
+
+    private static int toNumberWithMultiplier(String input) {
+        int multiplier = 1;
+
+        switch (input.charAt(input.length() - 1)) {
+            case 'K':
+                multiplier = 1_000;
+                input = input.substring(0, input.length() - 1);
+                break;
+            case 'M':
+                multiplier = 1_000_000;
+                input = input.substring(0, input.length() - 1);
+                break;
+        }
+
+        return (int) Math.round(multiplier * Double.parseDouble(input));
+    }
+    
 }

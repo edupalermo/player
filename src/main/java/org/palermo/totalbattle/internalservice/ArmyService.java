@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.internalservice;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.SharedData;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 public class ArmyService extends AbstractService {
 
     private LockService lockService = new  LockService();
@@ -56,6 +58,7 @@ public class ArmyService extends AbstractService {
         Army army = playerState.getArmy();
         
         if (army == null || army.getTarget() == null) {
+            log.info("Player has no army definition");
             return false;
         }
         
@@ -249,7 +252,6 @@ public class ArmyService extends AbstractService {
     }
 
     private List<UnitQuantity> addSpies(List<UnitQuantity> input, Player player) {
-
         List<UnitQuantity> output = input;
 
         switch (player) {
@@ -264,7 +266,9 @@ public class ArmyService extends AbstractService {
             case GRIRANA, ELANIN:
                 output = increase(output, Unit.S1_SPY, 1500);
                 break;
-
+            case LORVEN:
+                output = increase(output, Unit.S1_SPY, 100);
+                break;
             default:
                 throw new RuntimeException("Not Implemented");
         }
@@ -310,6 +314,8 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G4_RANGED, 550);
                 output = topUp(output, Unit.EC4_ENGINEER, 400);
                 break;
+            case LORVEN:
+                break;
             default:
                 throw new RuntimeException("Not Implemented");
         }
@@ -330,6 +336,8 @@ public class ArmyService extends AbstractService {
             case GRIRANA:
                 break;
             case ELANIN:
+                break;
+            case LORVEN:
                 break;
             default:
                 throw new RuntimeException("Not Implemented");
@@ -354,6 +362,8 @@ public class ArmyService extends AbstractService {
             case GRIRANA:
                 break;
             case ELANIN:
+                break;
+            case LORVEN:
                 break;
             default:
                 throw new RuntimeException("Not Implemented");
@@ -391,7 +401,8 @@ public class ArmyService extends AbstractService {
                 output = increase(output, Unit.G4_RANGED, 2000);
                 output = increase(output, Unit.G4_MELEE, 4000);
                 break;
-
+            case LORVEN:
+                break;
             default:
                 throw new RuntimeException("Not Implemented");
         }
@@ -653,6 +664,13 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.GIANT_IV);
                 units.add(Unit.BEAST_IV);
                 break;
+            case LORVEN:
+                units.add(Unit.S1_SWORDSMAN);
+                units.add(Unit.G1_RANGED);
+                units.add(Unit.G1_MELEE);
+                units.add(Unit.G1_MOUNTED);
+                break;
+
             default:
                 throw new RuntimeException("Not Implemented for " + player.getName());
         }

@@ -31,7 +31,7 @@ public enum MyRobot {
     }
     
     private long getDelayBetweenTasks() {
-        return ThreadLocalRandom.current().nextInt(125, 451);
+        return ThreadLocalRandom.current().nextInt(155, 421);
     }
 
     public void leftClick(int x, int y) {

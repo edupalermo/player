@@ -16,11 +16,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
 @Slf4j
@@ -114,6 +116,15 @@ public class ImageUtil {
     public static Optional<org.palermo.totalbattle.selenium.leadership.Point> searchSurroundings(BufferedImage item, BufferedImage screen, double limit, int variation) {
         return searchSurroundings(item, screen, Area.of(0,0,screen.getWidth(),screen.getHeight()), limit, variation);
     }
+
+    public static Optional<org.palermo.totalbattle.selenium.leadership.Point> searchSurroundings(BufferedImage[] items, BufferedImage screen, Area area, double limit, int variation) {
+        return Stream.of(items).parallel()
+                .map((item) -> searchSurroundings(item, screen, area, limit, variation))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findAny();
+    }
+
 
     public static Optional<org.palermo.totalbattle.selenium.leadership.Point> searchSurroundings(BufferedImage item, BufferedImage screen, Area area, double limit, int variation) {
         long crc = crcImage(item);

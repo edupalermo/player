@@ -89,7 +89,6 @@ public class CaptainSelector {
 
     public void select(Captain captain) {
         Point heroPoint = openCaptainManagementArea();
-        enableCaptainsLeftPane(heroPoint);
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
         if (isCaptainSelected(player, selectedArea, captain)) {
@@ -97,9 +96,11 @@ public class CaptainSelector {
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
             robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(150);
+            robot.sleep(300);
             return;
         }
+
+        enableCaptainsLeftPane(heroPoint);
 
         // Remove captain from the spot
         switch(captain) {
@@ -228,43 +229,24 @@ public class CaptainSelector {
         do {
             BufferedImage screen = robot.captureScreen();
             
-            BufferedImage garvel = ImageUtil.loadResource("player/hero/garvel_66.png");
-            Point point = ImageUtil.searchSurroundings(garvel, screen, area, 0.1, 20).orElse(null);
-            if (point != null) {
-                return point;
-            }
+            System.out.println("LOOP!!!!");
 
-            BufferedImage meriones = ImageUtil.loadResource("player/hero/meriones_66.png");
-            point = ImageUtil.searchSurroundings(meriones, screen, area, 0.1, 20).orElse(null);
-            if (point != null) {
-                return point;
-            }
-
-            BufferedImage thelensia = ImageUtil.loadResource("player/hero/thelensia_66.png");
-            point = ImageUtil.searchSurroundings(thelensia, screen, area, 0.1, 20).orElse(null);
-            if (point != null) {
-                return point;
-            }
-
-            BufferedImage ayrin = ImageUtil.loadResource("player/hero/ayrin_66.png");
-            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
-            if (point != null) {
-                return point;
-            }
-
-            ayrin = ImageUtil.loadResource("player/hero/ayrin_66_1.png");
-            point = ImageUtil.searchSurroundings(ayrin, screen, area, 0.1, 20).orElse(null);
-            if (point != null) {
-                return point;
-            }
-
-            BufferedImage julia = ImageUtil.loadResource("player/hero/julia_66.png");
-            point = ImageUtil.searchSurroundings(julia, screen, area, 0.1, 20).orElse(null);
+            BufferedImage items[] = new BufferedImage[6];
+            items[0] = ImageUtil.loadResource("player/hero/garvel_66.png");
+            items[1] = ImageUtil.loadResource("player/hero/meriones_66.png");
+            items[2] = ImageUtil.loadResource("player/hero/thelensia_66.png");
+            items[3] = ImageUtil.loadResource("player/hero/ayrin_66.png");
+            items[4] = ImageUtil.loadResource("player/hero/ayrin_66_1.png");
+            items[5] = ImageUtil.loadResource("player/hero/julia_66.png");
+            
+            Point point = ImageUtil.searchSurroundings(items, screen, area, 0.1, 20).orElse(null);
             if (point != null) {
                 return point;
             }
         } while (System.currentTimeMillis() - start < 15000);
 
+        
+        System.out.println("Waited: " + ((System.currentTimeMillis() - start) / 1000));
         throw new RuntimeException("Could not find hero picture");
     }
     

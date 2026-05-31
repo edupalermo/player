@@ -16,6 +16,7 @@ import org.palermo.totalbattle.player.task.shared.SpeedUp;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
@@ -45,12 +46,16 @@ public class BuildArmy {
     private final GameStateService gameStateService = new GameStateService();
     
     private final boolean TEST = false; 
+    
+    private Unit lastSelected = null;
 
     public BuildArmy(Player player) {
         this.player = player;
     }
 
     public void buildArmy() {
+        this.lastSelected = null;
+        
         if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             log.info("Building Army is locked because player is ready to ATTACK!");
             return;
@@ -89,22 +94,49 @@ public class BuildArmy {
                 (new CaptainSelector(player)).select(captain);
             }
         }
-        
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage labelArmy = ImageUtil.loadResource("player/barracks/label_army.png");
-        Area labelArmyArea = Area.fromTwoPoints(927, 1018, 998, 1038);
-        Point labelQuestesPoint = ImageUtil.searchSurroundings(labelArmy, screen, labelArmyArea, 0.1, 20).orElse(null);
 
-        if (labelQuestesPoint == null) {
-            ImageUtil.write(ImageUtil.crop(screen, labelArmyArea), "error_screen.png");
-            ImageUtil.write(labelArmy, "error_image.png");
-            throw new RuntimeException("Couldn't find Army label!");
+        Point labelArmyPoint = findArmyLabel();
+
+        // Click on Army Label
+        robot.leftClick(labelArmyPoint.move(12, -30));
+        robot.sleep(1000);
+        
+        playBarracksPopUp();
+
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(300);
+        robot.type(KeyEvent.VK_ESCAPE);
+        robot.sleep(150);
+    }
+    
+    private Point findArmyLabel() {
+        BufferedImage screen = robot.captureScreen();
+        
+        Area area = Area.fromTwoPoints(927, 1018, 998, 1038);
+        Navigate navigate = Navigate.builder()
+                .resourceName("player/barracks/label_army.png")
+                .area(area)
+                .waitLimit(3000)
+                .build();
+
+        if (navigate.exist()) {
+            return navigate.getPoint();
         }
 
-        robot.leftClick(labelQuestesPoint.move(12, -30));
-        robot.sleep(1000);
+        BufferedImage labelArmy = ImageUtil.loadResource("player/barracks/label_army_02.png");
+        Point labelArmyPoint = ImageUtil.searchSurroundings(labelArmy, screen, area, 0.1, 20).orElse(null);
 
-        screen = robot.captureScreen();
+        if (labelArmyPoint != null) {
+            return labelArmyPoint;
+        }
+
+        ImageUtil.write(ImageUtil.crop(screen, area), "error_screen.png");
+        ImageUtil.write(labelArmy, "error_image.png");
+        throw new RuntimeException("Couldn't find Army label!");
+    }
+    
+    private void playBarracksPopUp() {
+        BufferedImage screen = robot.captureScreen();
         BufferedImage titleBarracks = ImageUtil.loadResource("player/barracks/title_barracks.png");
         Area titleBarracksArea = Area.fromTwoPoints(920, 306, 1044, 338);
         Point titleBarracksPoint = ImageUtil.searchSurroundings(titleBarracks, screen, titleBarracksArea, 0.1, 20).orElse(null);
@@ -115,13 +147,13 @@ public class BuildArmy {
             throw new RuntimeException("Couldn't find Barracks title!");
         }
 
-        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));         
+        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
         Navigate navigateHelpButton = Navigate.builder()
                 .resourceName("player/barracks/button_help.png")
                 .area(buttonArea)
                 .waitLimit(1500)
                 .build();
-        
+
         if (navigateHelpButton.exist()) {
             navigateHelpButton.leftClick();
             robot.sleep(200);
@@ -132,37 +164,16 @@ public class BuildArmy {
                     .resourceName("player/barracks/icon_hourglass.png")
                     .waitLimit(1500)
                     .build();
-            
+
             if (navigateHourglass.exist()) {
-                BufferedImage timeLeft = ImageUtil.crop(screen, Area.of(navigateHourglass.getPoint(), 18, -2, 92, 18));
+                // Click of the speed-up button
+                robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
+                robot.sleep(350);
 
-                try {
-                    String timeLeftAsText = treatTimeLeft(timeLeft);
-                    System.out.println("Time Left: " + timeLeftAsText);
-
-                    LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-                    if (nextLocalDateTime == null) {
-                        throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
-                    }
-
-                    // Click of the speed-up button
-                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
-                    robot.sleep(350);
-
-                    speedUp(15, nextLocalDateTime);
-                } catch (RuntimeException e) {
-                    // Click of the speed-up button
-                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
-                    robot.sleep(350);
-
-
-                    speedUp(1, LocalDateTime.now().plusMinutes(20));
-                }
+                playSpeedUpPopup(15);
             }
-            
-            if (navigateHelpButton.searchAgain().isEmpty() &&
-                    navigateHourglass.searchAgain().isEmpty()) {
-                
+
+            if (navigateHelpButton.searchAgain().isEmpty()) {
                 Navigate.builder()
                         .resourceName("player/barracks/button_complete.png")
                         .area(buttonArea)
@@ -172,13 +183,7 @@ public class BuildArmy {
 
                 chooseTroopToBuild(titleBarracksPoint);
             }
-            
         }
-
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(150);
     }
     
     private void updateTroopQuantities(Point titleBarracksPoint) {
@@ -188,7 +193,24 @@ public class BuildArmy {
         }
     }
     
+    private LocalDateTime getTimeLeft(Navigate navigateHourglass) {
+        BufferedImage timeLeft = robot.captureScreen(Area.of(navigateHourglass.getPoint(), 18, -2, 92, 18));
+        String timeLeftAsText = treatTimeLeft(timeLeft);
+        System.out.println("Time Left: " + timeLeftAsText);
+        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
+        if (nextLocalDateTime == null) {
+            throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
+        }
+        return nextLocalDateTime;
+    }
+    
     private String treatTimeLeft(BufferedImage input) {
+        BufferedImage limit = ImageUtil.loadResource("player/speed_up/limit.png");
+        Point limitPoint = ImageUtil.search(limit, input, 0.01).orElse(null);
+        if (limitPoint != null) {
+            input = ImageUtil.crop(input, Area.of(0, 0, limitPoint.getX() ,input.getHeight()));
+        }
+
         BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"FFF7BF"});
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
@@ -200,6 +222,23 @@ public class BuildArmy {
         boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
         return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
     }
+
+    private int treatCurrentInputFieldValue(BufferedImage input) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"4C2727"});
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        timeLeft = ImageUtil.cropText(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        if (timeLeft.getHeight() < OcrUtil.OCR_HEIGHT) {
+            timeLeft = ImageUtil.resize(timeLeft, OcrUtil.OCR_HEIGHT);
+        }
+        // ImageUtil.showImageAndWait(timeLeft);
+        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
+        String temporary = OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR_AND_PLUS, manualOcr);
+        temporary = temporary.replaceAll("\\+", "");
+        temporary = temporary.replaceAll(",", "");
+        return Integer.parseInt(temporary);
+    }
+    
     
     public void testSpeedUps() {
         BufferedImage screen = robot.captureScreen();
@@ -218,20 +257,26 @@ public class BuildArmy {
         }
     }
 
-
-    private void speedUp(int turns, LocalDateTime dateTime) {
-
-        long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
-
+    
+    public void playSpeedUpPopup(int turns) {
         Navigate speedUpsTitle = Navigate.builder()
                 .resourceName("player/speed_up/title_speed_ups.png")
                 .area(Area.fromTwoPoints(910, 325, 1066, 361))
-                .waitLimit(1000)
+                .waitLimit(5000)
                 .build();
+
+        Navigate navigateHourglass = Navigate.builder()
+                .area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
+                .resourceName("player/barracks/icon_hourglass.png")
+                .waitLimit(1500)
+                .build();
+
+        LocalDateTime dateTime = getTimeLeft(navigateHourglass);
+        long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
         
         Set<String> exclusionSet = new HashSet<>();
 
-        outer: for (int r = 0; r < turns; r++) {
+        for (int r = 0; r < turns; r++) {
             
             if (r == 0) {
                 speedUpsTitle.ensureExistence();
@@ -240,35 +285,9 @@ public class BuildArmy {
                 return;
             }
 
-            if (r != 0) {
-                // Scroll up
-                robot.leftClick(Point.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1258, 494)));
-                robot.sleep(500);
-            }
-
-            SpeedUpBean bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
-
-            if (bestSpeedUp == null) {
-                log.info("Shouldn't use speed ups! Seconds: " + seconds);
-                break;
-            }
-
-            // log.info("Best: {} Remaining: {}", bestSpeedUp.getLabel(), secondsToReadable(seconds));
+            SpeedUpBean clickedSpeedUp = clickOnSpeedUp(speedUpsTitle, seconds, exclusionSet);
             
-            while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
-                if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
-                    break outer;
-                }
-
-                exclusionSet.add(bestSpeedUp.getLabel());
-                bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
-                
-                if (bestSpeedUp == null) {
-                    break outer;
-                }
-            }
-            
-            seconds = seconds - bestSpeedUp.getSeconds();
+            seconds = seconds - clickedSpeedUp.getSeconds();
         }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
@@ -277,6 +296,30 @@ public class BuildArmy {
         }
     }
 
+    private SpeedUpBean clickOnSpeedUp(Navigate speedUpsTitle, long seconds, Set<String> exclusionSet) {
+
+        SpeedUpBean bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
+
+        if (bestSpeedUp == null) {
+            log.info("Shouldn't use speed ups! Seconds: " + seconds);
+            return null;
+        }
+
+        while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+            if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
+                return null;
+            }
+
+            exclusionSet.add(bestSpeedUp.getLabel());
+            bestSpeedUp = findBestSpeedUp(seconds, exclusionSet).orElse(null);
+
+            if (bestSpeedUp == null) {
+                return null;
+            }
+        }
+        return bestSpeedUp;
+    }
+    
     private static Optional<SpeedUpBean> findBestSpeedUp(long seconds, Set<String> exclusionSet) {
         SpeedUpBean bestSpeedUp = null;
         for (SpeedUpBean bean : SpeedUp.speedUps) {
@@ -413,7 +456,11 @@ public class BuildArmy {
 
         selectUnit(titleBarracksPoint, unit);
 
-        Point textPoint = null;
+
+        Area inputArea = null;
+
+
+        Point inputPoint = null;
         Area silverArea = null;
         Area foodArea = null;
         Point trainButtonPoint = null;
@@ -421,7 +468,12 @@ public class BuildArmy {
         Point silverPoint = null;
         Point foodPoint = null;
 
-        int shift = 0; 
+        int shift = 0;
+
+        Transformation transformation = Transformation.builder()
+                .reference(titleBarracksPoint)
+                .real(Point.of(961, 324))
+                .build();
         
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
@@ -435,12 +487,13 @@ public class BuildArmy {
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
                     shift = 41;
                 }
-                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822, 719 + shift));
-                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + shift), Point.of(798, 783 + shift));
-                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790, 775 + 35 + shift), Point.of(798, 818 + shift));
-                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864, 814 + shift));
-                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 780 + shift));
-                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(745, 814 + shift));
+                inputArea = transformation.transform(Point.of(817, 711 + shift), Point.of(914, 730 + shift));
+                inputPoint = transformation.transform(Point.of(822, 719 + shift));
+                silverArea = transformation.transform(Point.of(790, 775 + shift), Point.of(798, 783 + shift));
+                foodArea = transformation.transform(Point.of(790, 775 + 35 + shift), Point.of(798, 818 + shift));
+                trainButtonPoint = transformation.transform(Point.of(864, 814 + shift));
+                silverPoint = transformation.transform(Point.of(745, 780 + shift));
+                foodPoint = transformation.transform(Point.of(745, 814 + shift));
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
@@ -452,34 +505,47 @@ public class BuildArmy {
                 if (Sets.newHashSet(Unit.DRAGON_VII, Unit.ELEMENTAL_VII, Unit.GIANT_VII, Unit.BEAST_VII).contains(unit)) {
                     shift = 41;
                 }
-                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 261, 719 + shift));
-                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + shift), Point.of(798 + 261, 783 + shift));
-                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 261, 775 + 35 + shift), Point.of(798 + 261, 783 + 35 + shift));
-                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 261, 814 + shift));
-                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 780 + shift));
-                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1005, 814 + shift));
+                inputArea = transformation.transform(Point.of(817 + 261, 711 + shift), Point.of(914 + 261, 730 + shift));
+                inputPoint = transformation.transform(Point.of(822 + 261, 719 + shift));
+                silverArea = transformation.transform(Point.of(790 + 261, 775 + shift), Point.of(798 + 261, 783 + shift));
+                foodArea = transformation.transform(Point.of(790 + 261, 775 + 35 + shift), Point.of(798 + 261, 783 + 35 + shift));
+                trainButtonPoint = transformation.transform(Point.of(864 + 261, 814 + shift));
+                silverPoint = transformation.transform(Point.of(1005, 780 + shift));
+                foodPoint = transformation.transform(Point.of(1005, 814 + shift));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE, G7_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE:
-                textPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(822 + 523, 719));
-                silverArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775), Point.of(798 + 522, 783));
-                foodArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
-                trainButtonPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(864 + 522, 814));
-                silverPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1268, 780));
-                foodPoint = Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1268, 814));
+                inputArea = transformation.transform(Point.of(817 + 523, 711 + shift), Point.of(914 + 523, 730 + shift));
+                inputPoint = transformation.transform(Point.of(822 + 523, 719));
+                silverArea = transformation.transform(Point.of(790 + 522, 775), Point.of(798 + 522, 783));
+                foodArea = transformation.transform(Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
+                trainButtonPoint = transformation.transform(Point.of(864 + 522, 814));
+                silverPoint = transformation.transform(Point.of(1268, 780));
+                foodPoint = transformation.transform(Point.of(1268, 814));
                 break;
 
             default:
                 throw new RuntimeException("Not implemented for unit " + unit.name());
         }
+        
+        if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > quantity) {
+            robot.leftClick(inputPoint);
+            robot.typeString(String.valueOf(quantity));
+            robot.sleep(250);
+        }
 
-        robot.leftClick(textPoint);
-        robot.typeString(String.valueOf(quantity));
-        robot.sleep(250);
+        // handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
+        if (!isResourceEnough(silverArea)) {
+            robot.leftClick(silverPoint);
+            fillResource();
+        }
+        if (!isResourceEnough(foodArea)) {
+            robot.leftClick(foodPoint);
+            fillResource();
+        }
 
-        handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
 
         int target;
         int counter = 0;
@@ -488,18 +554,17 @@ public class BuildArmy {
         do {
             target = Math.max((int) Math.round(quantity / Math.pow(2, counter)), 1);
 
-
-            robot.leftClick(titleBarracksPoint); // I need to take the focus from the text area
-            robot.leftClick(textPoint);
-            robot.sleep(250);
-            robot.typeString(String.valueOf(target));
-            robot.sleep(500);
+            if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > target) {
+                robot.leftClick(titleBarracksPoint); // I need to take the focus from the text area
+                robot.leftClick(inputPoint);
+                robot.sleep(250);
+                robot.typeString(String.valueOf(target));
+                robot.sleep(500);
+            }
             
             counter = counter + 1;
             
-            boolean isSilverEnough = isResourceEnough(silverArea); 
-            
-            if (isSilverEnough && isResourceEnough(foodArea)) {
+            if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
                 
                 log.info("Training {}: {}", unit.name(), target);
                 
@@ -648,7 +713,82 @@ public class BuildArmy {
         }
     }
 
+
+    public void fillResource() {
+
+        Navigate navigateTitle = Navigate.builder()
+                .resourceName("player/barracks/title_detail_fill_rss.png")
+                .areaName("BARRACKS_FILL_RSS_DETAIL_TITLE")
+                .waitLimit(5000)
+                .build()
+                .ensureExistence();
+
+        Transformation transformation = Transformation.builder()
+                .reference(navigateTitle.getPoint())
+                .real(Point.of(973, 340))
+                .build();
+        
+        int c = 0;
+        
+        do {
+            Navigate navigateUseButton = Navigate.builder()
+                    .resourceName("player/button_use.png")
+                    .area(transformation.transform(Point.of(1135, 535), Point.of(1181, 566)))
+                    .build();
+
+            if (!navigateUseButton.exist()) {
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(300);
+
+                System.out.println("No resource available!");
+                return;
+            }
+
+            navigateUseButton.leftClick();
+            
+            playOpenBoostersPopUp();
+            
+            c++;
+            
+            if (c >= 50) {
+                throw new RuntimeException("Stuck?");
+            }
+            
+        } while(navigateTitle.searchAgain().isPresent());
+    }
+
+    public void playOpenBoostersPopUp() {
+        Navigate navigateOpenBoostersTitle = Navigate.builder()
+                .resourceName("player/barracks/title_open_boosters.png")
+                .areaName("BARRACKS_OPEN_BOOSTERS_TITLE")
+                .build();
+        
+        if (!navigateOpenBoostersTitle.exist()) {
+            return;
+        }
+        
+        Transformation transformation = Transformation.builder()
+                .reference(navigateOpenBoostersTitle.getPoint())
+                .real(Point.of(939, 422))
+                .build();
+        
+        Area area = transformation.transform(Point.of(974, 654), Point.of(1034, 677));
+        int resourceAmount = OcrUtil.ocrWithMultiplier(robot.captureScreen(area), "4C2727");
+        
+        if (resourceAmount < 1000000) {
+            robot.leftClick(transformation.transform(1142, 722)); // Use all!
+        }
+        
+        robot.leftClick(transformation.transform(1054, 768)); // Click on USse Button
+    }
+
+
     private void selectUnit(Point titleBarracksPoint, Unit unit) {
+        
+        if (this.lastSelected == unit) {
+            return;
+        }
+        
         long tierPos;
 
         long wait = 350;
@@ -952,6 +1092,7 @@ public class BuildArmy {
                 default:
                     throw new RuntimeException("Not implemented for unit " + unit.name());
             }
+            this.lastSelected = unit;
     }
 
     private int getCurrentUnitNumber(Point titleBarracksPoint, Unit unit) {
