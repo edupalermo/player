@@ -286,7 +286,7 @@ public class BuildArmy {
             LocalDateTime dateTime = getTimeLeft(navigateHourglass);
             long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
-            SpeedUpBean clickedSpeedUp = clickOnSpeedUp(speedUpsTitle, seconds, exclusionSet);
+            clickOnSpeedUp(speedUpsTitle, seconds, exclusionSet);
         }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
