@@ -266,15 +266,6 @@ public class BuildArmy {
                 .waitLimit(5000)
                 .build();
 
-        Navigate navigateHourglass = Navigate.builder()
-                .area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
-                .resourceName("player/barracks/icon_hourglass.png")
-                .waitLimit(1500)
-                .build();
-
-        LocalDateTime dateTime = getTimeLeft(navigateHourglass);
-        long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
-        
         Set<String> exclusionSet = new HashSet<>();
 
         for (int r = 0; r < turns; r++) {
@@ -286,9 +277,16 @@ public class BuildArmy {
                 return;
             }
 
+            Navigate navigateHourglass = Navigate.builder()
+                    .area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
+                    .resourceName("player/barracks/icon_hourglass.png")
+                    .waitLimit(1500)
+                    .build();
+
+            LocalDateTime dateTime = getTimeLeft(navigateHourglass);
+            long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
+
             SpeedUpBean clickedSpeedUp = clickOnSpeedUp(speedUpsTitle, seconds, exclusionSet);
-            
-            seconds = seconds - clickedSpeedUp.getSeconds();
         }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
