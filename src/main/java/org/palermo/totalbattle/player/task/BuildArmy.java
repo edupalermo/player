@@ -170,7 +170,7 @@ public class BuildArmy {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                 robot.sleep(350);
 
-                playSpeedUpPopup(25);
+                playSpeedUpPopup(24);
             }
 
             if (navigateHourglass.searchAgain().isEmpty() && 
