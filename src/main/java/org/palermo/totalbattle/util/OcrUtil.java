@@ -92,7 +92,6 @@ public class OcrUtil {
 
 
     public static String ocr(BufferedImage image, String whitelist, Pattern pattern, boolean manualOcr) {
-
         try {
             List<ProcessedImage> list =  ocrDao.retrieve(image.getWidth(), image.getHeight(), whitelist);
             ProcessedImage databaseAnswer = list.stream()

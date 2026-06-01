@@ -173,7 +173,8 @@ public class BuildArmy {
                 playSpeedUpPopup(15);
             }
 
-            if (navigateHelpButton.searchAgain().isEmpty()) {
+            if (navigateHourglass.searchAgain().isEmpty() && 
+                    navigateHelpButton.searchAgain().isEmpty()) {
                 Navigate.builder()
                         .resourceName("player/barracks/button_complete.png")
                         .area(buttonArea)

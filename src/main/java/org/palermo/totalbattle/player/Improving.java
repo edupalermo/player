@@ -13,9 +13,9 @@ public class Improving {
         
         BuildArmy buildArmy = new BuildArmy(Player.PALERMO);
         
-        buildArmy.buildArmy();
+        //buildArmy.buildArmy();
         
-        //buildArmy.playSpeedUpPopup(60);
+        buildArmy.playSpeedUpPopup(60);
         
         // buildArmy.fillResource(13900000);
         // buildArmy.playOpenBoostersPopUp();
