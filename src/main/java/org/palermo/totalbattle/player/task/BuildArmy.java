@@ -170,7 +170,7 @@ public class BuildArmy {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                 robot.sleep(350);
 
-                playSpeedUpPopup(15);
+                playSpeedUpPopup(25);
             }
 
             if (navigateHourglass.searchAgain().isEmpty() && 
@@ -267,6 +267,8 @@ public class BuildArmy {
                 .build();
 
         Set<String> exclusionSet = new HashSet<>();
+        
+        long doubleCheck = -1;
 
         for (int r = 0; r < turns; r++) {
             
@@ -286,6 +288,15 @@ public class BuildArmy {
             LocalDateTime dateTime = getTimeLeft(navigateHourglass);
             long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
+            if (doubleCheck == -1) {
+                doubleCheck = seconds;
+            }
+            if (doubleCheck != -1 && seconds > doubleCheck) {
+                log.info("Spped up cannot go up, never!");
+                continue;
+            }
+            doubleCheck = seconds;
+            
             clickOnSpeedUp(speedUpsTitle, seconds, exclusionSet);
         }
 
