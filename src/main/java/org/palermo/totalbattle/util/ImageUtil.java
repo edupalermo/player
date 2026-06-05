@@ -2,6 +2,9 @@ package org.palermo.totalbattle.util;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.opencv.global.opencv_imgcodecs;
+import org.bytedeco.opencv.opencv_core.Mat;
 import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -24,6 +27,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.CRC32;
+
+import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_COLOR;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_GRAYSCALE;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_UNCHANGED;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imdecode;
 
 @Slf4j
 public class ImageUtil {
@@ -51,6 +59,27 @@ public class ImageUtil {
             BufferedImage imageRead = ImageIO.read(is);
             imageCache.put(resourceName, imageRead);
             return imageRead;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Mat loadResourceAsMat(String resourceName) {
+        try (InputStream is = Thread.currentThread()
+                .getContextClassLoader().getResourceAsStream(resourceName)) {
+            if (is == null) {
+                if (resourceName.charAt(0) != '/') {
+                    return loadResourceAsMat("/" + resourceName);
+                }
+                throw new RuntimeException("Resource not found: " + resourceName);
+            }
+            byte[] bytes = is.readAllBytes();
+
+            Mat buffer = new Mat(1, 
+                                       bytes.length, 
+                                       org.bytedeco.opencv.global.opencv_core.CV_8U,
+                                       new BytePointer(bytes));
+            return imdecode(buffer, IMREAD_GRAYSCALE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

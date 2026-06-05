@@ -63,7 +63,6 @@ public class NavigationUtil {
                 .areaName(Area.MAP_MAGNIFIER)
                 .waitLimit(10000)
                 .build().leftClick();
-        robot.sleep(1000);
 
         // Wait GO Button to appear (it will not click on it)
         BufferedImage buttonGo = ImageUtil.loadResource("player/button_go.png");

@@ -595,6 +595,7 @@ public class BuildArmy {
             if (target == 1) {
                 continueTrying = false;
                 log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
+                lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
             }
             
         } while(continueTrying);
