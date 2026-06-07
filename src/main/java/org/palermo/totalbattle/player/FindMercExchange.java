@@ -73,8 +73,8 @@ public class FindMercExchange {
         System.out.println(String.format("Using position %d %d", buttonGoNavigate.getPoint().getX(), buttonGoNavigate.getPoint().getY()));
 
         Transformation transformation = Transformation.builder()
-                .reference(buttonGoNavigate.getPoint())
-                .real(Point.of(981, 617))
+                .real(buttonGoNavigate.getPoint())
+                .reference(Point.of(981, 617))
                 .build();
 
         Point point = transformation.transform(Point.of(922, 580));
