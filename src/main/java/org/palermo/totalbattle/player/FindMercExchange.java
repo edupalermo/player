@@ -67,6 +67,8 @@ public class FindMercExchange {
                     .build().ensureExistence();
             System.out.println(String.format("Found button go at %d %d", buttonGoNavigate.getPoint().getX(), buttonGoNavigate.getPoint().getY()));
         }
+        
+        System.out.println(String.format("Using position %d %d", buttonGoNavigate.getPoint().getX(), buttonGoNavigate.getPoint().getY()));
 
         Transformation transformation = Transformation.builder()
                 .reference(buttonGoNavigate.getPoint())
