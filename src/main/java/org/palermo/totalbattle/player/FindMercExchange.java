@@ -32,13 +32,15 @@ public class FindMercExchange {
     public static void main(String[] args) {
         
         NavigationUtil.switchToMapIfNeeded();
+        
+        NavigationUtil.zoomInIfNeeded();
 
         
         int kingdoms[] = new int[] {280, 281, 284, 288, 289, 279, 283, 287}; 
         
         Random random = new Random();
         
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             int kingdom = kingdoms[random.nextInt(kingdoms.length)];
             int x = random.nextInt(20, 999 - 20);
             int y = random.nextInt(15, 999 - 15);
