@@ -38,7 +38,7 @@ public class FindMercExchange {
         
         Random random = new Random();
         
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             int kingdom = kingdoms[random.nextInt(kingdoms.length)];
             int x = random.nextInt(20, 999 - 20);
             int y = random.nextInt(15, 999 - 15);
@@ -75,6 +75,9 @@ public class FindMercExchange {
                 .real(Point.of(981, 617))
                 .build();
 
+        Point point = transformation.transform(Point.of(922, 580));
+        System.out.println(String.format("Field %d %d", point.getX(), point.getY()));
+        
         robot.leftClick(transformation.transform(Point.of(922, 580)));
         robot.clearText();
         robot.sleep(200);
