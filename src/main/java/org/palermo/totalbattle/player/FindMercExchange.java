@@ -40,7 +40,7 @@ public class FindMercExchange {
         
         Random random = new Random();
         
-        for (int i = 0; i < 2; i++) {
+        for (; ; ) {
             int kingdom = kingdoms[random.nextInt(kingdoms.length)];
             int x = random.nextInt(20, 999 - 20);
             int y = random.nextInt(15, 999 - 15);
@@ -97,7 +97,7 @@ public class FindMercExchange {
 
         buttonGoNavigate.leftClick();
         
-        robot.sleep(1500);
+        robot.sleep(2500);
 
         Mat screen = bufferedImageToGrayMat(robot.captureScreen());
         
