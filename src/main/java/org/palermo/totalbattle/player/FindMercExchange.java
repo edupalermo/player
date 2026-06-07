@@ -13,6 +13,7 @@ import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.Random;
@@ -64,6 +65,7 @@ public class FindMercExchange {
                     .resourceName("player/button_go.png")
                     .waitLimit(5000)
                     .build().ensureExistence();
+            System.out.println(String.format("Found button go at %d %d", buttonGoNavigate.getPoint().getX(), buttonGoNavigate.getPoint().getY()));
         }
 
         Transformation transformation = Transformation.builder()
@@ -100,6 +102,8 @@ public class FindMercExchange {
                 robot.sleep(5000);
             }
         }
+
+        robot.type(KeyEvent.VK_ESCAPE);
     }
 
     private static org.bytedeco.opencv.opencv_core.Point findTemplate(Mat screenGray, Mat templateGray) {
