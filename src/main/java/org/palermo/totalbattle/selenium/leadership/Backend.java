@@ -406,14 +406,31 @@ public class Backend {
         }
         leadershipText = leadershipText.substring(slashIndex + 1);
         int multiplier = 1;
+        int toAdd = 0;
         if (leadershipText.charAt(leadershipText.length() - 1) == 'K') {
             multiplier = 1000;
             leadershipText = leadershipText.substring(0, leadershipText.length() - 1);
+            toAdd = missingNines(leadershipText);
         }
         
-        return (int) Math.round(Double.parseDouble(leadershipText) * multiplier);
+        return (int) Math.round(Double.parseDouble(leadershipText) * multiplier) + toAdd;
     }
 
+    public static int missingNines(String input) {
+        int decimalPos = input.indexOf('.');
+
+        int decimalDigits = decimalPos < 0
+                ? 0
+                : input.length() - decimalPos - 1;
+
+        int missing = 3 - decimalDigits;
+
+        if (missing <= 0) {
+            return 0;
+        }
+
+        return Integer.parseInt("9".repeat(missing));
+    }
     private static void enableDragon(MyRobot robot, BufferedImage screen) {
         Point closeButtonLocation = getCloseButtonLocation(robot, screen);
         Area area = Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(636, 639), Point.of(772, 693));

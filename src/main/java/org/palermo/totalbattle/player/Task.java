@@ -200,8 +200,8 @@ public class Task {
         System.out.println("User already logged");
 
         BufferedImage labelClan = ImageUtil.loadResource("player/label_clan.png");
-        BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
-        BufferedImage screen = robot.captureScreen();
+        //BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
+        BufferedImage screen = null;
         long start = System.currentTimeMillis();
         boolean found = false;
         do {
@@ -233,6 +233,7 @@ public class Task {
         if (!found) {
             ImageUtil.write(screen, "error_screen.png");
             ImageUtil.write(labelClan, "error_image.png");
+            CdpUtil.clearBorwserCache();
             throw new RuntimeException("Not found image!");
         }
         

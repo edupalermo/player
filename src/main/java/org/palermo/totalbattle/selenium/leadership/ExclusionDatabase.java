@@ -31,6 +31,7 @@ public class ExclusionDatabase {
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 23), Exclusion.builder().melee(true).elemental(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 26), Exclusion.builder().ranged(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 29), Exclusion.builder().mounted(true).beast(true).ranged(true).build());
+        exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.CURSED, 30), Exclusion.builder().ranged(true).melee(true).elemental(true).build());
 
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 22), Exclusion.builder().melee(true).dragon(true).mounted(true).build());
         exclusions.put(ExclusionKey.of(EnemyRarity.RARE, EnemyType.ELVES, 23), Exclusion.builder().melee(true).dragon(true).mounted(true).build());
