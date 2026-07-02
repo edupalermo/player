@@ -1,5 +1,13 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import org.palermo.totalbattle.selenium.leadership.model.CitadelQueryResult;
 import org.palermo.totalbattle.selenium.leadership.model.EnemyRarity;
 import org.palermo.totalbattle.selenium.leadership.model.EnemyType;
 import org.palermo.totalbattle.selenium.leadership.model.Exclusion;
@@ -17,14 +25,24 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class TroopManagerApp extends JFrame {
+
+    private static final Sheets service = buildSheetsService();
+    private static final String SPREAD_SHEET_ID = "1egdLR8A1-hXZDr0xssNb3-UZx8iwJHr9xqj1KaV6Ibo";    
 
     private static MyRobot robot = MyRobot.INSTANCE;
 
@@ -286,13 +304,41 @@ public class TroopManagerApp extends JFrame {
         
         // ===== Actions =====
         btnGenerate.addActionListener(e -> {
+
+            CitadelQueryResult citadelQueryResult = null;
+
+            if (targetRarity.getSelectedItem().toString().equals("Citadel")) {
+                citadelQueryResult = querySheet(getSelectedPlayerName(), getCitadelSelected()).orElse(null);
+                if (citadelQueryResult == null) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Player / Citadel not in the sheet",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                }
+            }
             
             java.util.List<Unit> units = Backend.getUnits(getSelectedPlayerName(), 
                     getSelectedExclusions(), 
                     getSelectedLayers(),
                     (Backend.MonsterOverride) monsterOverride.getSelectedItem());
-            units = limitUnits(units);
-            int[] quantities = Backend.getUnitQuantity(getInformedHeadCount(), units);
+            
+            units = limitUnits(units); // Limit to one or two for attaking common or rare monsters
+
+            int[] informedHeadCount =  getInformedHeadCount();
+            
+            if (citadelQueryResult != null) {
+                informedHeadCount[0] = informedHeadCount[0] - (citadelQueryResult.getUnit().getHeadCount() * citadelQueryResult.getQtd());
+            }
+            
+            int[] quantities = Backend.getUnitQuantity(informedHeadCount, units);
+
+            if (citadelQueryResult != null) {
+                quantities = append(quantities, citadelQueryResult.getQtd());
+                units.add(citadelQueryResult.getUnit());
+            }
+
 
             java.util.List<Object[]> lines = new ArrayList<>();
             for (int i = 0; i < quantities.length; i++) {
@@ -362,7 +408,69 @@ public class TroopManagerApp extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
+    
+    private int[] append(int[] array, int toBeAdded) {
+        int[] response = Arrays.copyOf(array, array.length + 1);
+        response[response.length - 1] = toBeAdded;
+        return response;
+    }
 
+    private String getCitadelSelected() {
+        StringBuilder sb = new StringBuilder();
+
+        if (targetType.getSelectedItem().toString().equals("Elves")) {
+            sb.append("Elven Citadel");
+        }
+        else {
+            throw new RuntimeException("Error!");
+        }
+        sb.append(" ");
+        sb.append(targetLevel.getSelectedItem().toString());
+        return sb.toString();
+    }
+
+    private Optional<CitadelQueryResult> querySheet(String playerName, String citadelType) {
+        try {
+            ValueRange valueRange = service.spreadsheets().values()
+                    .get(SPREAD_SHEET_ID, "Citadel!A1:D10")
+                    .execute();
+
+            java.util.List<java.util.List<Object>> rows = valueRange.getValues();
+
+            for (List<Object> row : rows) {
+                if (row.get(0).toString().equals(playerName) &&
+                        row.get(1).toString().equals(citadelType)) {
+                    return Optional.of(CitadelQueryResult.builder()
+                                    .qtd(Integer.parseInt(row.get(3).toString()))
+                                    .unit(Unit.valueOf(row.get(2).toString()))
+                            .build());
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
+    private static Sheets buildSheetsService() {
+        try {
+            GoogleCredentials credentials = GoogleCredentials
+                    .fromStream(new FileInputStream("/home/eduardo/tokens/credentials.json"))
+                    .createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
+
+            return new Sheets.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    new HttpCredentialsAdapter(credentials))
+                    .setApplicationName("Troop Manager")
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     private void addUnit(java.util.List<Object[]> lines, java.util.List<TroopQuantity> troopQuantityList, Unit unit, int quantity) {
         lines.add(new Object[] { unit.name(), quantity, unit.getHealth(), quantity});
         TroopQuantity troopQuantity = TroopQuantity.builder().unit(unit).quantity(quantity).build();

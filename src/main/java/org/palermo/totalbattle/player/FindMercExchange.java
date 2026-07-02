@@ -35,8 +35,8 @@ public class FindMercExchange {
         
         NavigationUtil.zoomInIfNeeded();
 
-        
-        int kingdoms[] = new int[] {280, 281, 284, 288, 289, 279, 283, 287}; 
+        // Cannot interact with 281
+        int kingdoms[] = new int[] {280, 284, 288, 289, 279, 283, 287}; 
         
         Random random = new Random();
         
