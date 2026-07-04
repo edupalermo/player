@@ -458,7 +458,7 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.DRAGON_VII, 1);
             //train(titleBarracksPoint, Unit.ELEMENTAL_VII, 1);
             //train(titleBarracksPoint, Unit.GIANT_VII, 1);
-            train(titleBarracksPoint, Unit.EC7_ENGINEER, 1);
+            train(titleBarracksPoint, Unit.G8_RANGED, 1);
         }
     }
 
@@ -509,7 +509,7 @@ public class BuildArmy {
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  DRAGON_VII, ELEMENTAL_VII, GIANT_VII, BEAST_VII,
-                 G6_RANGED, G7_RANGED,
+                 G6_RANGED, G7_RANGED, G8_RANGED,
                  S5_VULTURE, S6_FLYING,
                  EC6_ENGINEER, EC7_ENGINEER:
                 if (Sets.newHashSet(Unit.DRAGON_VII, Unit.ELEMENTAL_VII, Unit.GIANT_VII, Unit.BEAST_VII).contains(unit)) {
@@ -907,6 +907,21 @@ public class BuildArmy {
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
                     robot.sleep(wait);
                     break;
+
+                case G8_RANGED:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
+                    robot.sleep(wait);
+
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 8) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
+                    robot.sleep(wait);
+                    break;
                     
                 case G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN:
                     // Click on Guardsman left tab
@@ -1134,7 +1149,7 @@ public class BuildArmy {
                 break;
             case G1_MELEE, G2_MELEE, G3_MELEE, G4_MELEE, G5_MELEE,
                  S1_SPY, S2_SPY, S3_SPY, S4_SPY, S5_SPY,
-                 G6_RANGED, G7_RANGED,
+                 G6_RANGED, G7_RANGED, G8_RANGED,
                  DRAGON_IV, ELEMENTAL_IV, GIANT_IV, BEAST_IV,
                  DRAGON_VII, ELEMENTAL_VII, GIANT_VII, BEAST_VII,
                  S5_VULTURE, S6_FLYING, EC6_ENGINEER, EC7_ENGINEER:

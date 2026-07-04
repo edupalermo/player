@@ -372,17 +372,23 @@ public class ArmyService extends AbstractService {
         return output;
     }
 
+    private int halfOfLeaderShip(int leadership, Unit unit) {
+        return (int) Math.round(((double) leadership / (double) unit.getHeadCount()) / 2d);
+    }
 
     private List<UnitQuantity> incrementLastGuardsmanLayer(List<UnitQuantity> input, Player player) {
 
         List<UnitQuantity> output = input;
 
+        int aydaeLeadership;
+
         switch (player) {
             case PALERMO:
-                output = topUp(output, Unit.G7_RANGED, 30000);
-                output = topUp(output, Unit.G7_MELEE, 30000);
-                output = topUp(output, Unit.G7_MOUNTED, 15000);
-                output = topUp(output, Unit.G7_GRIFFIN, 1500);
+                aydaeLeadership = 72000;
+                output = topUp(output, Unit.G8_RANGED, halfOfLeaderShip(aydaeLeadership, Unit.G8_RANGED));
+                output = topUp(output, Unit.G7_MELEE, halfOfLeaderShip(aydaeLeadership, Unit.G7_MELEE));
+                output = topUp(output, Unit.G7_MOUNTED, halfOfLeaderShip(aydaeLeadership, Unit.G7_MOUNTED));
+                output = topUp(output, Unit.G7_GRIFFIN, halfOfLeaderShip(aydaeLeadership, Unit.G7_GRIFFIN));
                 break;
             case PETER:
                 output = increase(output, Unit.G5_RANGED, 8000);
@@ -514,11 +520,9 @@ public class ArmyService extends AbstractService {
         switch (player) {
             case PALERMO:
                 units.add(Unit.S5_SWORDSMAN);
-                units.add(Unit.S5_DEADSHOT);
                 units.add(Unit.S5_VULTURE);
                 units.add(Unit.S5_LION_RIDER);
                 
-                units.add(Unit.G5_RANGED);
                 units.add(Unit.G5_MELEE);
                 units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
@@ -537,6 +541,8 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G7_MELEE);
                 units.add(Unit.G7_MOUNTED);
                 units.add(Unit.G7_GRIFFIN);
+
+                units.add(Unit.G8_RANGED);
 
                 units.add(Unit.DRAGON_V);
                 units.add(Unit.ELEMENTAL_V);
