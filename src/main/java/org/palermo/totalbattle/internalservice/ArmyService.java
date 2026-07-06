@@ -373,7 +373,7 @@ public class ArmyService extends AbstractService {
     }
 
     private int halfOfLeaderShip(int leadership, Unit unit) {
-        return (int) Math.round(((double) leadership / (double) unit.getHeadCount()) / 2d);
+        return (int) Math.round(((double) leadership / 2d * (double) unit.getHeadCount()) );
     }
 
     private List<UnitQuantity> incrementLastGuardsmanLayer(List<UnitQuantity> input, Player player) {
