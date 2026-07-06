@@ -1,12 +1,14 @@
 package org.palermo.totalbattle.selenium.leadership;
 
 import org.palermo.totalbattle.player.Player;
+import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.model.TroopQuantity;
 import org.palermo.totalbattle.selenium.stacking.Attribute;
 import org.palermo.totalbattle.selenium.stacking.Configuration;
 import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
 
 import javax.swing.*;
@@ -24,6 +26,8 @@ import java.util.stream.IntStream;
 
 public class Backend {
     
+    private static final MyRobot robot = MyRobot.INSTANCE;
+    
     public enum MonsterOverride {
           DEFAULT("Default"), EXCLUDE_ALL("Exclude all"), INCLUDE_ALL("Include all");
 
@@ -37,7 +41,7 @@ public class Backend {
         public String toString() {
             return label;
         }
-    };
+    }
 
     
     public static List<Unit> getUnits(String playerName, 
@@ -352,29 +356,32 @@ public class Backend {
         return OcrUtil.ocr(croppedImage, OcrUtil.WHITELIST_FOR_USERNAME, OcrUtil.SINGLE_LINE_MODE);
     }
 
-    public static int[] getHeadCount(MyRobot robot) {
+    public static int[] getHeadCount() {
         BufferedImage screen = robot.captureScreen();
-        BufferedImage closeButtonImage = ImageUtil.loadResource("leadership/close_button.png");
-        Point closeButtonLocation = ImageUtil.search(closeButtonImage, screen, 1380, 300, 250, 250, 0.05)
-                .orElseThrow(() -> new RuntimeException("Cannot find the close button"));
+
+        Point startMarchButtonLocation = getStartMarchButtonLocation();
+        System.out.println(String.format("Start Button Location %d %d", startMarchButtonLocation.getX(), startMarchButtonLocation.getY()));
+        Transformation transformation = Transformation.builder()
+                .reference(Point.of(853, 877))
+                .real(startMarchButtonLocation)
+                .build();
+
+        enableDragon(transformation);
 
         int[] result;
         
         ExecutorService pool = Executors.newFixedThreadPool(3);
         try {
             CompletableFuture<Integer> leadershipF = CompletableFuture.supplyAsync(
-                    () -> getHeadCountLimit(robot, screen,
-                            Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(562, 839), Point.of(642, 856))),
+                    () -> getHeadCountLimit(screen, transformation.transform(Point.of(562, 820), Point.of(642, 837))),
                     pool);
 
             CompletableFuture<Integer> dominanceF = CompletableFuture.supplyAsync(
-                    () -> getHeadCountLimit(robot, screen,
-                            Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(787, 839), Point.of(867, 856))),
+                    () -> getHeadCountLimit(screen, transformation.transform(Point.of(787, 820), Point.of(867, 837))),
                     pool);
 
             CompletableFuture<Integer> authorityF = CompletableFuture.supplyAsync(
-                    () -> getHeadCountLimit(robot, screen,
-                            Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(674, 839), Point.of(754, 856))),
+                    () -> getHeadCountLimit(screen, transformation.transform(Point.of(674, 820), Point.of(754, 837))),
                     pool);
 
             int leadership  = leadershipF.join();
@@ -390,9 +397,9 @@ public class Backend {
         return result;
     }
 
-    private static int getHeadCountLimit(MyRobot robot, BufferedImage screen, Area area) {
-
-        enableDragon(robot, screen);
+    private static int getHeadCountLimit(BufferedImage screen, Area area) {
+        // showImageAndWait(ImageUtil.crop(screen, area));
+        ImageUtil.write(ImageUtil.crop(screen, area), "debug.png");
         
         BufferedImage imageWithText = screen.getSubimage(area.getX(), area.getY(), area.getWidth(), area.getHeight());
         BufferedImage invertedGray = ImageUtil.invertGrayscale(imageWithText);
@@ -434,10 +441,10 @@ public class Backend {
 
         return Integer.parseInt("9".repeat(missing));
     }
-    private static void enableDragon(MyRobot robot, BufferedImage screen) {
-        Point closeButtonLocation = getCloseButtonLocation(robot, screen);
-        Area area = Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(636, 639), Point.of(772, 693));
+    private static void enableDragon(Transformation transformation) {
+        Area area = transformation.transform(Point.of(636, 639), Point.of(772, 693));
         BufferedImage sendDragonCheckBox = ImageUtil.loadResource("leadership/send_dragon.png");
+        BufferedImage screen = robot.captureScreen();
         Point sendDragonLocation = ImageUtil.search(sendDragonCheckBox, screen, area, 0.01).orElse(null);
         if (sendDragonLocation != null) {
             robot.leftClick(sendDragonLocation.move(20, 8));
@@ -447,8 +454,6 @@ public class Backend {
             System.out.println("Dragon is not enabled");
         }
     }
-
-
 
     private static void showImageAndWait(BufferedImage image) {
         showImageAndWait(image, null);
@@ -478,50 +483,58 @@ public class Backend {
                 throw new RuntimeException("Failed to show image", e);
             }
         }
+    }   
+
+    private static Point getStartMarchButtonLocation() {
+        //Area area = RegionSelector.selectArea("FILL_TROOPS_START_MARCH_BUTTON", robot.captureScreen());
+        //ImageUtil.showImageAndWait(robot.captureScreen(), area);
+        Navigate navigate = Navigate.builder()
+                .resourceName("player/army/button_start_march.png")
+                .areaName("FILL_TROOPS_START_MARCH_BUTTON")
+                .build()
+                .ensureExistence();
+        return navigate.getPoint();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    private static Point getCloseButtonLocation(MyRobot robot, BufferedImage screen) {
+    private static Point getCloseButtonLocation() {
+        BufferedImage screen = robot.captureScreen();
+        Area area = Area.of(1380, 300, 250, 250);    
+        
+        ImageUtil.showImageAndWait(screen, area);
         BufferedImage closeButtonImage = ImageUtil.loadResource("leadership/close_button.png");
-        return ImageUtil.search(closeButtonImage, screen, 1380, 300, 250, 250, 0.05)
+        return ImageUtil.search(closeButtonImage, screen, area, 0.05)
                 .orElseThrow(() -> new RuntimeException("Cannot find the close button"));
+                
     }    
     
 
 
     public static void fillTroops(MyRobot robot, List<TroopQuantity> stack) {
 
-        BufferedImage screen = robot.captureScreen();
+        Point startMarchButtonLocation = getStartMarchButtonLocation();
+        System.out.println(String.format("Start Button Location %d %d", startMarchButtonLocation.getX(), startMarchButtonLocation.getY()));
+        Transformation transformation = Transformation.builder()
+                .reference(Point.of(853, 877))
+                .real(startMarchButtonLocation)
+                .build();
+        
+        enableDragon(transformation);
 
-        enableDragon(robot, screen);
-
-        Point closeButtonLocation = getCloseButtonLocation(robot, screen);
-
-        stack(robot, closeButtonLocation, stack);
+        stack(transformation, stack);
 
         Toolkit.getDefaultToolkit().beep();
     }
 
-    private static void stack(MyRobot robot, Point closeButtonLocation, List<TroopQuantity> stack) {
+    private static void stack(Transformation transformation, List<TroopQuantity> stack) {
         BufferedImage screen = robot.captureScreen();
 
-        Area leftPanel = Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(552, 420), Point.of(624, 820));
-        // ImageUtil.write(ImageUtil.crop(screen, leftPanel), "left_panel.png");
+        Area leftPanel = transformation.transform(Point.of(552, 403), Point.of(624, 803));
+        //ImageUtil.write(ImageUtil.crop(screen, leftPanel), "left_panel.png");
 
-        Area rightPanel = Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(772, 420), Point.of(844, 820));
-        // ImageUtil.write(ImageUtil.crop(screen, rightPanel), "right_panel.png");
+        Area rightPanel = transformation.transform(Point.of(772, 403), Point.of(844, 803));
+        //ImageUtil.write(ImageUtil.crop(screen, rightPanel), "right_panel.png");
 
-        Area scrollBarArea = Area.of(closeButtonLocation, Point.of(1438, 356), Point.of(970, 437), Point.of(986, 802));
+        Area scrollBarArea = transformation.transform(Point.of(970, 420), Point.of(986, 785));
         BufferedImage oldPosition;
         BufferedImage newPosition = ImageUtil.crop(screen, scrollBarArea);
 
@@ -550,7 +563,7 @@ public class Backend {
             final int delta = 32;
 
             if (processed.size() < stack.size()) {
-                Point scroolBar = Point.of(closeButtonLocation, Point.of(1438, 356), Point.of(978, 448));
+                Point scroolBar = transformation.transform(Point.of(978, 448));
                 scroolBar = scroolBar.move(0, (count * delta));
                 robot.mouseDrag(scroolBar, 0, delta);
                 robot.sleep(150);
@@ -577,7 +590,7 @@ public class Backend {
             }
         }
         
-        Point startMarchButton = Point.of(closeButtonLocation, Point.of(1448, 351), Point.of(899, 898));
+        Point startMarchButton = transformation.transform(Point.of(899, 880));
         robot.mouseMove(startMarchButton);
     }
 

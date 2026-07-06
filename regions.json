@@ -340,5 +340,11 @@
     "y" : 588,
     "width" : 135,
     "height" : 66
+  },
+  "FILL_TROOPS_START_MARCH_BUTTON" : {
+    "x" : 804,
+    "y" : 789,
+    "width" : 385,
+    "height" : 119
   }
 }

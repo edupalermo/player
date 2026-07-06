@@ -125,7 +125,7 @@ public class AttackCitadel {
             return;
         }
         
-        int[] headCount = Backend.getHeadCount(robot);
+        int[] headCount = Backend.getHeadCount();
         
         // System.out.println(headCount[0] + " - " + headCount[1] + " - " + headCount[2]);
         

@@ -395,7 +395,7 @@ public class TroopManagerApp extends JFrame {
             }
             
             //Set Head Count
-            int[] headCount = Backend.getHeadCount(robot);
+            int[] headCount = Backend.getHeadCount();
 
             leadershipField.setValue(headCount[0]);
             dominanceField.setValue(headCount[1]);
@@ -700,7 +700,7 @@ public class TroopManagerApp extends JFrame {
         targetType.addActionListener(commonActionListener);
 
         targetLevel = new JComboBox<>(new String[]{
-                "Undefined", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+                "Undefined", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"
         });
         targetLevel.addActionListener(commonActionListener);
         
