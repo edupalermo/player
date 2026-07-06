@@ -204,7 +204,7 @@ public class ArmyService extends AbstractService {
         unitQuantities = prepareForCitadel(unitQuantities, player);
 
         unitQuantities = prepareForPvP(unitQuantities, player);
-        
+
         unitQuantities = prepareQuickReplacementAfterUpgrade(unitQuantities, player);
 
         Army army = playerState.getArmy();
@@ -230,6 +230,14 @@ public class ArmyService extends AbstractService {
                 LocalDateTime.now().plusHours(1));
     }
 
+    private void print(List<UnitQuantity> list, Unit unit) {
+        long qtd = list.stream().filter(item -> item.getUnit() == unit)
+                .findAny()
+                .map(UnitQuantity::getQuantity)
+                .orElse(0L);
+        System.out.println(unit.name() + " - " + qtd);
+    }
+    
     private List<UnitQuantity> addMiners(List<UnitQuantity> input) {
         List<UnitQuantity> output = new ArrayList<>();
         boolean found = false;
@@ -373,7 +381,7 @@ public class ArmyService extends AbstractService {
     }
 
     private int halfOfLeaderShip(int leadership, Unit unit) {
-        return (int) Math.round(((double) leadership / 2d * (double) unit.getHeadCount()) );
+        return (int) Math.round(((double) leadership / (2d * (double) unit.getHeadCount())));
     }
 
     private List<UnitQuantity> incrementLastGuardsmanLayer(List<UnitQuantity> input, Player player) {
