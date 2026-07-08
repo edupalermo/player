@@ -291,10 +291,10 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO: // Should defeat Level 20 citadel
-                output = topUp(output, Unit.G5_MELEE, 1500);
-                output = topUp(output, Unit.G6_MELEE, 1000);
-                output = topUp(output, Unit.S6_MELEE, 1000);
-                output = topUp(output, Unit.G7_MELEE, 500);
+                output = topUp(output, Unit.G6_MELEE, 20000);
+                output = topUp(output, Unit.S6_MELEE, 1500);
+                output = topUp(output, Unit.G7_MELEE, 25000);
+                output = topUp(output, Unit.G8_MELEE, 12500);
                 output = topUp(output, Unit.G7_GRIFFIN, 500);
                 output = topUp(output, Unit.EC7_ENGINEER, 3000);
                 break;
@@ -394,7 +394,7 @@ public class ArmyService extends AbstractService {
             case PALERMO:
                 aydaeLeadership = 72000;
                 output = topUp(output, Unit.G8_RANGED, halfOfLeaderShip(aydaeLeadership, Unit.G8_RANGED));
-                output = topUp(output, Unit.G7_MELEE, halfOfLeaderShip(aydaeLeadership, Unit.G7_MELEE));
+                output = topUp(output, Unit.G8_MELEE, halfOfLeaderShip(aydaeLeadership, Unit.G8_MELEE));
                 output = topUp(output, Unit.G7_MOUNTED, halfOfLeaderShip(aydaeLeadership, Unit.G7_MOUNTED));
                 output = topUp(output, Unit.G7_GRIFFIN, halfOfLeaderShip(aydaeLeadership, Unit.G7_GRIFFIN));
                 break;
@@ -527,11 +527,9 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                units.add(Unit.S5_SWORDSMAN);
                 units.add(Unit.S5_VULTURE);
                 units.add(Unit.S5_LION_RIDER);
                 
-                units.add(Unit.G5_MELEE);
                 units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
 
@@ -551,6 +549,7 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G7_GRIFFIN);
 
                 units.add(Unit.G8_RANGED);
+                units.add(Unit.G8_MELEE);
 
                 units.add(Unit.DRAGON_V);
                 units.add(Unit.ELEMENTAL_V);

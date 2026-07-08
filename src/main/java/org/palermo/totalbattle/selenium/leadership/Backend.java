@@ -56,42 +56,43 @@ public class Backend {
         switch(player) {
             case PALERMO -> {
                 if (tiers >= 4) {
-                    troops.add(Unit.S4_SWORDSMAN);
-                    troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
 
+                    troops.add(Unit.S5_SWORDSMAN);
                     troops.add(Unit.S5_DEADSHOT);
+                    
                     troops.add(Unit.G5_RANGED);
+                    troops.add(Unit.G5_MELEE);
                 }
                 if (tiers >= 3) {
-                    troops.add(Unit.S5_SWORDSMAN);
                     troops.add(Unit.S5_VULTURE);
                     troops.add(Unit.S5_LION_RIDER);
 
-                    troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_MOUNTED);
                     troops.add(Unit.G5_GRIFFIN);
 
+                    troops.add(Unit.S6_MELEE);
                     troops.add(Unit.S6_RANGED);
+                    
                     troops.add(Unit.G6_RANGED);
+                    troops.add(Unit.G6_MELEE);
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.S6_MELEE);
                     troops.add(Unit.S6_FLYING);
                     troops.add(Unit.S6_MOUNTED);
 
-                    troops.add(Unit.G6_MELEE);
                     troops.add(Unit.G6_MOUNTED);
                     troops.add(Unit.G6_GRIFFIN);
 
                     troops.add(Unit.G7_RANGED);
+                    troops.add(Unit.G7_MELEE);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G7_MELEE);
                     troops.add(Unit.G7_MOUNTED);
                     troops.add(Unit.G7_GRIFFIN);
 
                     troops.add(Unit.G8_RANGED);
+                    troops.add(Unit.G8_MELEE);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
@@ -491,8 +492,16 @@ public class Backend {
         Navigate navigate = Navigate.builder()
                 .resourceName("player/army/button_start_march.png")
                 .areaName("FILL_TROOPS_START_MARCH_BUTTON")
-                .build()
-                .ensureExistence();
+                .build();
+        
+        if (!navigate.exist()) {
+            navigate = Navigate.builder()
+                    .resourceName("player/army/button_create_eq.png")
+                    .areaName("FILL_TROOPS_START_MARCH_BUTTON")
+                    .build()
+                    .ensureExistence();
+        }
+
         return navigate.getPoint();
     }
 

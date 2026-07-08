@@ -458,7 +458,7 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.DRAGON_VII, 1);
             //train(titleBarracksPoint, Unit.ELEMENTAL_VII, 1);
             //train(titleBarracksPoint, Unit.GIANT_VII, 1);
-            train(titleBarracksPoint, Unit.G8_RANGED, 1);
+            train(titleBarracksPoint, Unit.G8_MELEE, 1);
         }
     }
 
@@ -524,7 +524,7 @@ public class BuildArmy {
                 foodPoint = transformation.transform(Point.of(1005, 814 + shift));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
-                 G6_MELEE, G7_MELEE,
+                 G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE:
                 inputArea = transformation.transform(Point.of(817 + 523, 711 + shift), Point.of(914 + 523, 730 + shift));
@@ -922,7 +922,22 @@ public class BuildArmy {
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
                     robot.sleep(wait);
                     break;
-                    
+
+                case G8_MELEE:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 734)));
+                    robot.sleep(wait);
+
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 8) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
+
                 case G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN:
                     // Click on Guardsman left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
@@ -1160,7 +1175,7 @@ public class BuildArmy {
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 261, 677 + shift), Point.of(912 + 261, 699 + shift));
                 break;
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
-                 G6_MELEE, G7_MELEE,
+                 G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE:
                 area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
