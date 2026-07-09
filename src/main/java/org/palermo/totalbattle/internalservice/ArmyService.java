@@ -336,7 +336,7 @@ public class ArmyService extends AbstractService {
 
         switch (player) {
             case PALERMO:
-                output = topUp(output, Unit.G4_MOUNTED, 1500);
+                output = topUp(output, Unit.G5_MOUNTED, 1500); // Depois deve virar Griffin
                 break;
             case PETER, MIGHTSHAPER:
                 output = topUp(output, Unit.G2_MOUNTED, 1000);
@@ -395,7 +395,7 @@ public class ArmyService extends AbstractService {
                 aydaeLeadership = 72000;
                 output = topUp(output, Unit.G8_RANGED, halfOfLeaderShip(aydaeLeadership, Unit.G8_RANGED));
                 output = topUp(output, Unit.G8_MELEE, halfOfLeaderShip(aydaeLeadership, Unit.G8_MELEE));
-                output = topUp(output, Unit.G7_MOUNTED, halfOfLeaderShip(aydaeLeadership, Unit.G7_MOUNTED));
+                output = topUp(output, Unit.G8_MOUNTED, halfOfLeaderShip(aydaeLeadership, Unit.G8_MOUNTED));
                 output = topUp(output, Unit.G7_GRIFFIN, halfOfLeaderShip(aydaeLeadership, Unit.G7_GRIFFIN));
                 break;
             case PETER:
