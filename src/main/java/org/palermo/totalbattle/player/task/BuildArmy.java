@@ -45,7 +45,7 @@ public class BuildArmy {
     private final LockService lockService = new LockService();
     private final GameStateService gameStateService = new GameStateService();
     
-    private final boolean TEST = false; 
+    private final boolean TEST = true; 
     
     private Unit lastSelected = null;
 
@@ -458,7 +458,7 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.DRAGON_VII, 1);
             //train(titleBarracksPoint, Unit.ELEMENTAL_VII, 1);
             //train(titleBarracksPoint, Unit.GIANT_VII, 1);
-            train(titleBarracksPoint, Unit.G8_MELEE, 1);
+            train(titleBarracksPoint, Unit.G8_MOUNTED, 1);
         }
     }
 
@@ -488,13 +488,13 @@ public class BuildArmy {
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED, S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
                  G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN,
-                 G6_MOUNTED, G7_MOUNTED,
+                 G6_MOUNTED, G7_MOUNTED, G8_MOUNTED,
                  DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
                  S5_LION_RIDER,
                  S6_SPY, S6_MOUNTED:
-                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
+                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI, Unit.G8_MOUNTED).contains(unit)) {
                     shift = 41;
                 }
                 inputArea = transformation.transform(Point.of(817, 711 + shift), Point.of(914, 730 + shift));
@@ -908,6 +908,21 @@ public class BuildArmy {
                     robot.sleep(wait);
                     break;
 
+                case G8_MOUNTED:
+                    // Click on Guardsman left tab
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
+                    robot.sleep(wait);
+
+                    // Scroll to the correct position
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 861)));
+                    robot.sleep(wait);
+
+                    // Click on Tier
+                    tierPos = 483 + ((unit.getTier() - 8) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(689, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
                 case G8_RANGED:
                     // Click on Guardsman left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 382)));
@@ -1149,14 +1164,14 @@ public class BuildArmy {
         switch (unit) {
             case G1_RANGED, G2_RANGED, G3_RANGED, G4_RANGED, G5_RANGED,
                  S1_SWORDSMAN, S2_SWORDSMAN, S3_SWORDSMAN, S4_SWORDSMAN, S5_SWORDSMAN,
-                 G6_MOUNTED, G7_MOUNTED,
+                 G6_MOUNTED, G7_MOUNTED, G8_MOUNTED,
                  DRAGON_III, ELEMENTAL_III, GIANT_III, BEAST_III,
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
                  S5_LION_RIDER, S6_MOUNTED, S6_SPY:
                 
-                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI).contains(unit)) {
+                if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI, Unit.G8_MOUNTED).contains(unit)) {
                     shift = 41;
                 }
                 

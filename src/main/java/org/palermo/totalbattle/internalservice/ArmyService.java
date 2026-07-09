@@ -528,9 +528,7 @@ public class ArmyService extends AbstractService {
         switch (player) {
             case PALERMO:
                 units.add(Unit.S5_VULTURE);
-                units.add(Unit.S5_LION_RIDER);
                 
-                units.add(Unit.G5_MOUNTED);
                 units.add(Unit.G5_GRIFFIN);
 
                 units.add(Unit.S6_RANGED);
@@ -550,6 +548,7 @@ public class ArmyService extends AbstractService {
 
                 units.add(Unit.G8_RANGED);
                 units.add(Unit.G8_MELEE);
+                units.add(Unit.G8_MOUNTED);
 
                 units.add(Unit.DRAGON_V);
                 units.add(Unit.ELEMENTAL_V);
