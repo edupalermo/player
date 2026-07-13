@@ -63,6 +63,7 @@ public enum Unit {
     G8_RANGED(3060, 9180, UnitType.ARCHER, 8, Attribute.GUARDSMAN_ARCHER, "leadership/ranged_viii.png", Pool.LEADERSHIP, 1),
     G8_MELEE(3060, 9180, UnitType.MELEE, 8, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_viii.png", Pool.LEADERSHIP, 1),
     G8_MOUNTED(6120, 18360, UnitType.RIDER, 8, Attribute.GUARDSMAN_RIDER, "leadership/mounted_viii.png", Pool.LEADERSHIP, 2),
+    G8_COURAX(61200, 183600, UnitType.UNKNOWN, 8, ImmutableSet.of(Attribute.FLYING, Attribute.GUARDSMAN, Attribute.HUMAN), "leadership/courax_viii.png", Pool.LEADERSHIP, 20),
     
     EC1_ENGINEER(250, 1500, UnitType.CATAPULT, 1, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_i.png", Pool.LEADERSHIP, 10),
     EC2_ENGINEER(450, 2700, UnitType.CATAPULT, 2, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_ii.png", Pool.LEADERSHIP, 10),

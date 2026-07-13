@@ -58,40 +58,36 @@ public class Backend {
                 if (tiers >= 4) {
                     troops.add(Unit.S5_SWORDSMAN);
                     troops.add(Unit.S5_DEADSHOT);
+                    troops.add(Unit.S5_VULTURE);
                     troops.add(Unit.S5_LION_RIDER);
                     
                     troops.add(Unit.G5_RANGED);
                     troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_MOUNTED);
+                    troops.add(Unit.G5_GRIFFIN);
                 }
                 if (tiers >= 3) {
-                    troops.add(Unit.S5_VULTURE);
-
-                    troops.add(Unit.G5_GRIFFIN);
-
                     troops.add(Unit.S6_MELEE);
                     troops.add(Unit.S6_RANGED);
+                    troops.add(Unit.S6_FLYING);
                     troops.add(Unit.S6_MOUNTED);
                     
                     troops.add(Unit.G6_RANGED);
                     troops.add(Unit.G6_MELEE);
                     troops.add(Unit.G6_MOUNTED);
+                    troops.add(Unit.G6_GRIFFIN);
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.S6_FLYING);
-
-                    troops.add(Unit.G6_GRIFFIN);
-
                     troops.add(Unit.G7_RANGED);
                     troops.add(Unit.G7_MELEE);
                     troops.add(Unit.G7_MOUNTED);
+                    troops.add(Unit.G7_GRIFFIN);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G7_GRIFFIN);
-
                     troops.add(Unit.G8_RANGED);
                     troops.add(Unit.G8_MELEE);
                     troops.add(Unit.G8_MOUNTED);
+                    troops.add(Unit.G8_COURAX);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL || 
