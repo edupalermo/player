@@ -237,6 +237,7 @@ public class BuildArmy {
         String temporary = OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR_AND_PLUS, manualOcr);
         temporary = temporary.replaceAll("\\+", "");
         temporary = temporary.replaceAll(",", "");
+        temporary = temporary.trim();
         return Integer.parseInt(temporary);
     }
     
