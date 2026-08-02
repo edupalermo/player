@@ -102,24 +102,34 @@ public class Backend {
                         troops.add(Unit.ELEMENTAL_IV);
                         troops.add(Unit.GIANT_IV);
                         troops.add(Unit.BEAST_IV);
-                    }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
+
+                        troops.add(Unit.DRAGON_IV);
+                        troops.add(Unit.ELEMENTAL_IV);
+                        troops.add(Unit.GIANT_IV);
+                        troops.add(Unit.BEAST_IV);
+                        
                         troops.add(Unit.DRAGON_V);
                         troops.add(Unit.ELEMENTAL_V);
                         troops.add(Unit.GIANT_V);
                         troops.add(Unit.BEAST_V);
                     }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 3) {
                         troops.add(Unit.DRAGON_VI);
                         troops.add(Unit.ELEMENTAL_VI);
                         troops.add(Unit.GIANT_VI);
                         troops.add(Unit.BEAST_VI);
                     }
-                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 2) {
                         troops.add(Unit.DRAGON_VII);
                         troops.add(Unit.ELEMENTAL_VII);
                         troops.add(Unit.GIANT_VII);
                         troops.add(Unit.BEAST_VII);
+                    }
+                    if (monsterOverride == MonsterOverride.INCLUDE_ALL || tiers >= 1) {
+                        troops.add(Unit.DRAGON_VIII);
+                        troops.add(Unit.ELEMENTAL_VIII);
+                        troops.add(Unit.GIANT_VIII);
+                        troops.add(Unit.BEAST_VIII);
                     }
                 }
                 if (monsterOverride != MonsterOverride.EXCLUDE_ALL) {
@@ -233,20 +243,22 @@ public class Backend {
             case GRIRANA -> {
                 if (tiers >= 3) {
                     troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_RANGED);
                     troops.add(Unit.G2_MELEE);
                     troops.add(Unit.G2_MOUNTED);
                     
+                    troops.add(Unit.G3_RANGED);
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.G3_RANGED);
                     troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_MOUNTED);
+                    
+                    troops.add(Unit.G4_RANGED);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G4_RANGED);
                     troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_MOUNTED);
+
+                    troops.add(Unit.G5_RANGED);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
@@ -265,7 +277,7 @@ public class Backend {
                     }
                 }
 
-                troops.add(Unit.EPIC_MONSTER_HUNTER_VI);
+                troops.add(Unit.EPIC_MONSTER_HUNTER_VII);
             }
             case ELANIN -> {
                 if (tiers >= 3) {

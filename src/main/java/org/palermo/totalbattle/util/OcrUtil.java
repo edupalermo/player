@@ -51,7 +51,7 @@ public class OcrUtil {
     public static final String WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR = "0123456789,";
     public static final String WHITELIST_FOR_NUMBERS_AND_MULTIPLIER = "0123456789.KM";
     public static final String WHITELIST_FOR_NUMBERS_AND_SLASH_AND_MULTIPLIER = "0123456789,./K";
-    public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter II", "Grirana", "Elanin");
+    public static final String WHITELIST_FOR_USERNAME = buildWhitelist("Mightshaper", "Palermo", "Peter", "Grirana", "Elanin");
     public static final String WHITELIST_FOR_NUMBERS = "0123456789,";
     public static final int PSM_DEFAULT = 3;
     public static final int LINE_OF_PRINTED_TEXT = 6;

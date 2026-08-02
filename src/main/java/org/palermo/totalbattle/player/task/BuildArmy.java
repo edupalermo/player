@@ -78,6 +78,52 @@ public class BuildArmy {
         }
     }
 
+    private void chooseTroopToBuild(Point titleBarracksPoint) {
+
+        List<TroopQuantity> list = armyService.getProductionList(player);
+
+        boolean trainedSomething = false;
+
+        if (!TEST) {
+            // I don't think I should check every thing.
+            for (int i = 0; i < list.size(); i++) {
+                TroopQuantity troopQuantity = list.get(i);
+                System.out.println("Trying " + troopQuantity.getUnit().name());
+                int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
+                armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+
+                if (currentSize < troopQuantity.getTarget()) {
+                    if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
+                        lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                        log.info("Player finished to train Guardsmen and Specialists");
+                        if (player == Player.PALERMO) {
+                            WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
+                        }
+                    }
+                    train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
+                    trainedSomething = true;
+                    break;
+                }
+                else {
+                    log.info("Troop {} is not needed {} / {}", troopQuantity.getUnit().name(), currentSize, troopQuantity.getTarget());
+                }
+            }
+
+            if (!trainedSomething) {
+                lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
+                lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
+                log.info("Player is ready to ATTACK!");
+                WhatsappUtil.send(player.getName() + " has finished building the army");
+            }
+        }
+        else {
+            //train(titleBarracksPoint, Unit.DRAGON_VIII, 1);
+            //train(titleBarracksPoint, Unit.ELEMENTAL_VIII, 1);
+            //train(titleBarracksPoint, Unit.GIANT_VIII, 1);
+            train(titleBarracksPoint, Unit.BEAST_VIII, 1);
+        }
+    }
+
     public void internalBuildArmy() {
         if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
             log.info("Building Army is locked because player is ready to ATTACK!");
@@ -386,83 +432,6 @@ public class BuildArmy {
         }
     }
 
-    private void chooseTroopToBuild(Point titleBarracksPoint) {
-
-        List<TroopQuantity> list = armyService.getProductionList(player);
-
-        boolean trainedSomething = false;
-        
-        if (!TEST) {
-            // I don't think I should check every thing.
-            for (int i = 0; i < list.size(); i++) {
-                TroopQuantity troopQuantity = list.get(i);
-                System.out.println("Trying " + troopQuantity.getUnit().name());
-                int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
-                armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
-
-                if (currentSize < troopQuantity.getTarget()) {
-                    if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
-                        lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-                        log.info("Player finished to train Guardsmen and Specialists");
-                        if (player == Player.PALERMO) {
-                            WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
-                        }
-                    }
-                    train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
-                    trainedSomething = true;
-                    break;
-                }
-                else {
-                    log.info("Troop {} is not needed {} / {}", troopQuantity.getUnit().name(), currentSize, troopQuantity.getTarget());
-                }
-            }
-
-            if (!trainedSomething) {
-                lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-                lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
-                log.info("Player is ready to ATTACK!");
-                WhatsappUtil.send(player.getName() + " has finished building the army");
-            }
-        }
-        else {
-            //train(titleBarracksPoint, Unit.G4_RANGED, 1);
-            //train(titleBarracksPoint, Unit.G5_MELEE, 1);
-            // train(titleBarracksPoint, Unit.G3_MELEE, 1);
-            // train(titleBarracksPoint, Unit.G3_MOUNTED, 1);
-            // train(titleBarracksPoint, Unit.S5_SWORDSMAN, 1);
-            // train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
-            // train(titleBarracksPoint, Unit.S5_SPY, 1);
-            //train(titleBarracksPoint, Unit.S5_LION_RIDER, 1);
-            //train(titleBarracksPoint, Unit.S5_VULTURE, 1);
-            //train(titleBarracksPoint, Unit.G6_RANGED, 1);
-            //train(titleBarracksPoint, Unit.G6_MELEE, 1);
-            //train(titleBarracksPoint, Unit.G6_MOUNTED, 1);
-            //train(titleBarracksPoint, Unit.G6_GRIFFIN, 1);
-            //train(titleBarracksPoint, Unit.DRAGON_III, 1);
-            //train(titleBarracksPoint, Unit.DRAGON_VI, 1);
-            //train(titleBarracksPoint, Unit.ELEMENTAL_VI, 1);
-            //train(titleBarracksPoint, Unit.GIANT_VI, 1);
-            //train(titleBarracksPoint, Unit.BEAST_VI, 1);
-            // train(titleBarracksPoint, Unit.EC6_ENGINEER, 1);
-
-            //train(titleBarracksPoint, Unit.S5_DEADSHOT, 1);
-            // train(titleBarracksPoint, Unit.S6_RANGED, 1);
-            // train(titleBarracksPoint, Unit.BEAST_VI, 1);
-
-            //train(titleBarracksPoint, Unit.S6_FLYING, 1);
-            //train(titleBarracksPoint, Unit.S6_SPY, 1);
-            //train(titleBarracksPoint, Unit.S6_MELEE, 1);
-            //train(titleBarracksPoint, Unit.S6_MOUNTED, 1);
-            //train(titleBarracksPoint, Unit.G7_MELEE, 1);
-            //train(titleBarracksPoint, Unit.G7_RANGED, 1);
-            //train(titleBarracksPoint, Unit.G7_MELEE, 1);
-            //train(titleBarracksPoint, Unit.DRAGON_VII, 1);
-            //train(titleBarracksPoint, Unit.ELEMENTAL_VII, 1);
-            //train(titleBarracksPoint, Unit.GIANT_VII, 1);
-            train(titleBarracksPoint, Unit.G8_COURAX, 1);
-        }
-    }
-
     private void train(Point titleBarracksPoint, Unit unit, int quantity) {
 
         selectUnit(titleBarracksPoint, unit);
@@ -527,14 +496,18 @@ public class BuildArmy {
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
-                 S5_DEADSHOT, S6_RANGED, S6_MELEE:
+                 S5_DEADSHOT, S6_RANGED, S6_MELEE, DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII:
+
+                if (Sets.newHashSet(Unit.DRAGON_VIII, Unit.ELEMENTAL_VIII, Unit.GIANT_VIII, Unit.BEAST_VIII).contains(unit)) {
+                    shift = 41;
+                }
                 inputArea = transformation.transform(Point.of(817 + 523, 711 + shift), Point.of(914 + 523, 730 + shift));
-                inputPoint = transformation.transform(Point.of(822 + 523, 719));
-                silverArea = transformation.transform(Point.of(790 + 522, 775), Point.of(798 + 522, 783));
-                foodArea = transformation.transform(Point.of(790 + 522, 775 + 35), Point.of(798 + 522, 783 + 35));
-                trainButtonPoint = transformation.transform(Point.of(864 + 522, 814));
-                silverPoint = transformation.transform(Point.of(1268, 780));
-                foodPoint = transformation.transform(Point.of(1268, 814));
+                inputPoint = transformation.transform(Point.of(822 + 523, 719 + shift));
+                silverArea = transformation.transform(Point.of(790 + 522, 775 + shift), Point.of(798 + 522, 783 + shift));
+                foodArea = transformation.transform(Point.of(790 + 522, 775 + 35 + shift), Point.of(798 + 522, 783 + 35 + shift));
+                trainButtonPoint = transformation.transform(Point.of(864 + 522, 814 + shift));
+                silverPoint = transformation.transform(Point.of(1268, 780 + shift));
+                foodPoint = transformation.transform(Point.of(1268, 814 + shift));
                 break;
 
             default:
@@ -1119,25 +1092,25 @@ public class BuildArmy {
                     robot.sleep(wait);
                     break;
     
-                case DRAGON_VI, DRAGON_VII:
+                case DRAGON_VI, DRAGON_VII, DRAGON_VIII :
                     // Click on Dragons left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 538)));
                     robot.sleep(wait);
                     break;
     
-                case ELEMENTAL_VI, ELEMENTAL_VII:
+                case ELEMENTAL_VI, ELEMENTAL_VII, ELEMENTAL_VIII:
                     // Click on Elementals left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 590)));
                     robot.sleep(wait);
                     break;
     
-                case GIANT_VI, GIANT_VII:
+                case GIANT_VI, GIANT_VII, GIANT_VIII:
                     // Click on Giants left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 642)));
                     robot.sleep(wait);
                     break;
     
-                case BEAST_VI, BEAST_VII:
+                case BEAST_VI, BEAST_VII, BEAST_VIII:
                     // Click on Beats left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 694)));
                     robot.sleep(wait);
@@ -1209,8 +1182,12 @@ public class BuildArmy {
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
-                 S5_DEADSHOT, S6_RANGED, S6_MELEE:
-                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677), Point.of(912 + 522, 699));
+                 S5_DEADSHOT, S6_RANGED, S6_MELEE,
+                 DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII :
+                if (Sets.newHashSet(Unit.DRAGON_VIII, Unit.ELEMENTAL_VIII, Unit.GIANT_VIII, Unit.BEAST_VIII).contains(unit)) {
+                    shift = 41;
+                }
+                area = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(852 + 522, 677 + shift), Point.of(912 + 522, 699 + shift));
                 break;
                 
             default:

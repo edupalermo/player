@@ -548,11 +548,6 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G8_MOUNTED);
                 units.add(Unit.G8_COURAX);
 
-                units.add(Unit.DRAGON_V);
-                units.add(Unit.ELEMENTAL_V);
-                units.add(Unit.GIANT_V);
-                units.add(Unit.BEAST_V);
-
                 units.add(Unit.DRAGON_VI);
                 units.add(Unit.ELEMENTAL_VI);
                 units.add(Unit.GIANT_VI);
@@ -562,6 +557,11 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.ELEMENTAL_VII);
                 units.add(Unit.GIANT_VII);
                 units.add(Unit.BEAST_VII);
+
+                units.add(Unit.DRAGON_VIII);
+                units.add(Unit.ELEMENTAL_VIII);
+                units.add(Unit.GIANT_VIII);
+                units.add(Unit.BEAST_VIII);
                 break;
 
             case PETER:
@@ -628,7 +628,6 @@ public class ArmyService extends AbstractService {
                 break;
             case GRIRANA:
                 units.add(Unit.S2_SWORDSMAN);
-                units.add(Unit.G2_RANGED);
                 units.add(Unit.G2_MELEE);
                 units.add(Unit.G2_MOUNTED);
 
@@ -639,7 +638,9 @@ public class ArmyService extends AbstractService {
                 units.add(Unit.G4_RANGED);
                 units.add(Unit.G4_MELEE);
                 units.add(Unit.G4_MOUNTED);
-                
+
+                units.add(Unit.G5_RANGED);
+
                 units.add(Unit.DRAGON_III);
                 units.add(Unit.ELEMENTAL_III);
                 units.add(Unit.GIANT_III);
