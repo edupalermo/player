@@ -242,23 +242,20 @@ public class Backend {
             }
             case GRIRANA -> {
                 if (tiers >= 3) {
-                    troops.add(Unit.S2_SWORDSMAN);
-                    troops.add(Unit.G2_MELEE);
-                    troops.add(Unit.G2_MOUNTED);
-                    
+                    troops.add(Unit.G3_MELEE);
                     troops.add(Unit.G3_RANGED);
+                    troops.add(Unit.G3_MOUNTED);
                 }
                 if (tiers >= 2) {
-                    troops.add(Unit.G3_MELEE);
-                    troops.add(Unit.G3_MOUNTED);
-                    
+                    troops.add(Unit.G4_MELEE);
                     troops.add(Unit.G4_RANGED);
+                    troops.add(Unit.G4_MOUNTED);
                 }
                 if (tiers >= 1) {
-                    troops.add(Unit.G4_MELEE);
-                    troops.add(Unit.G4_MOUNTED);
-
+                    troops.add(Unit.G5_MELEE);
                     troops.add(Unit.G5_RANGED);
+                    troops.add(Unit.G5_MOUNTED);
+                    troops.add(Unit.G5_GRIFFIN);
                 }
 
                 if (monsterOverride == MonsterOverride.INCLUDE_ALL ||
