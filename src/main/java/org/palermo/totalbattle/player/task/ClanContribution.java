@@ -107,14 +107,22 @@ public class ClanContribution {
             BufferedImage buttonOpen = ImageUtil.loadResource("player/my_clan/button_open.png");
             BufferedImage buttonDelete = ImageUtil.loadResource("player/my_clan/button_delete.png");
             
+            int counter = 0;
+            
             boolean shouldContinue = true;
-            do {
+            while(shouldContinue) {
+                
+                if (counter >= 50) {
+                    break;
+                }
+                
                 screen = robot.captureScreen();
                 Point buttonPoint = ImageUtil.search(buttonOpen, screen, buttonArea, 0.1).orElse(null);
 
                 if (buttonPoint != null) {
                     robot.leftClick(buttonPoint, buttonOpen);
                     robot.sleep(50);
+                    counter++;
                     continue;
                 }
 
@@ -122,10 +130,11 @@ public class ClanContribution {
                 if (buttonPoint != null) {
                     robot.leftClick(buttonPoint, buttonDelete);
                     robot.sleep(50);
+                    counter++;
                     continue;
                 }
                 shouldContinue = false;
-            } while(shouldContinue);
+            }
         }
 
         robot.sleep(500);
