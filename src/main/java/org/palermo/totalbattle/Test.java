@@ -1,8 +1,10 @@
 package org.palermo.totalbattle;
 
 import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.OcrUtil;
+import org.palermo.totalbattle.util.ServerFacade;
 
 import java.awt.image.BufferedImage;
 
@@ -10,6 +12,27 @@ import java.awt.image.BufferedImage;
 public class Test {
 
     public static void main(String[] args) {
+        ServerFacade server = new ServerFacade();
+
+        Player player = server.startPlaying().orElse(null);
+        
+        if (player == null) {
+            System.out.println("No player to play");
+            return;
+        }
+        
+        System.out.println("Playing with " + player.getName());
+        
+        server.stopPlaying(player);
+
+        
+        //Player stop = new Player();
+        //stop.setName("Robur");
+        //server.stopPlaying(stop);
+        
+    }
+
+    public static void main3(String[] args) {
         BufferedImage image = ImageUtil.loadResource("player/watchtower/icon_checkmark.png");
         System.out.println(ImageUtil.crcImage(image));
     }

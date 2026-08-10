@@ -1,64 +1,42 @@
 package org.palermo.totalbattle.player;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.task.*;
-import org.palermo.totalbattle.selenium.leadership.MyRobot;
+import org.palermo.totalbattle.player.task.BuildArmy;
+import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.CdpUtil;
-import org.palermo.totalbattle.util.WhatsappUtil;
+import org.palermo.totalbattle.util.ServerFacade;
 import org.slf4j.MDC;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 public class PlayerRunnable implements Runnable {
 
-    private LockService lockService = new LockService();
-    private GameStateService gameStateService = new GameStateService();
-    private PlayerStateService playerStateService = new PlayerStateService();
-    
-    private final static boolean BUILD_ARMY = true;
-    
-    private static List<Player> players = new ArrayList<>();
-    static {
-        players.add(Player.PALERMO);
-        players.add(Player.PETER);
-        players.add(Player.MIGHTSHAPER);
-        players.add(Player.GRIRANA);
-        players.add(Player.ELANIN);
-    }
+    private ServerFacade serverFacade = new ServerFacade();
 
     @Override
     public void run() {
         log.info("Player Thread running");
 
-        int counter = 0;
+        Player player = null;
         
         while (true) {
             try {
-                Player player = players.get(counter % players.size());
-                if (!SharedData.INSTANCE.isLocked(player)) {
-                    play(player);
+                player = serverFacade.startPlaying().orElse(null);
+                if (player == null) {
+                    log.warn("Couldn't retrieve a player to play, waiting 10 seconds");
+                    Thread.sleep(10000);
+                    continue;
                 }
-
-                String playerName = gameStateService.getProperty(GameStateService.PROPERTY_NEXT);
-                if (StringUtils.isNoneBlank(playerName)) {
-                    Player adHocPlayer = Player.findPlayerByName(playerName).orElse(null);
-                    if (adHocPlayer != null) {
-                        play(adHocPlayer);
-                        gameStateService.removeProperty(GameStateService.PROPERTY_NEXT);
-                    }
-                }
-                    
-            } catch (RuntimeException e) {
+                play(player);
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-            counter++;
+            finally {
+                if (player != null) {
+                    serverFacade.stopPlaying(player);
+                }
+            }
         }
     }
     
@@ -68,66 +46,15 @@ public class PlayerRunnable implements Runnable {
         try {
             MDC.put("playerName", player.getName());
 
-            if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
-                log.info("Skipped! Player is ready to attack!");
-                MyRobot.INSTANCE.sleep(1000);
-                return;
-            }
-
             log.info("Started new player");
             process = Task.openOrdinaryBrowser(player);
 
             SharedData.INSTANCE.robot.sleep(1500);
-            CdpUtil.closeAllTabsExceptOne();
+            // CdpUtil.closeAllTabsExceptOne();// This is probably not needed anymore!
 
             Task.login(player);
             
-
-            if (SharedData.INSTANCE.shouldHalt(player)) {
-                Task.showPauseDialog("Click on the button to continue");
-                SharedData.INSTANCE.removeHalt(player);
-            }
-
-            if ((new CheckHeroHealth(player)).isDead()) {
-                WhatsappUtil.send(String.format("Player %s is dead", player.name()));
-                return;
-            }
-
-            if (!BUILD_ARMY) {
-                (new InfoGather(player)).evaluate();
-            }
-            (new FixBrokenArmor(player)).fix();
-            
-            (new FreeSale(player)).freeSale();
-            if (!BUILD_ARMY) {
-                (new Quests(player)).evaluate();
-            }
-
-            if (!BUILD_ARMY) {
-                (new Telescope(player)).findArena();
-                (new Telescope(player)).findSilverMines();
-                (new Telescope(player)).findCitadels();
-                (new Telescope(player)).findCrypts();
-            }
-
             (new BuildArmy(player)).buildArmy();
-
-            (new ClanContribution(player)).helpClanMembers();
-            (new ClanContribution(player)).collectChests();
-
-            if (!BUILD_ARMY) {
-                (new AttackCitadel(player)).attack();
-                (new AttackArena(player)).attack();
-                (new MineSilver(player)).mine();
-                (new ExploreCrypt(player)).explore();
-            }
-            
-            // (new Donate(player)).evaluate();
-
-            if (!BUILD_ARMY) {
-                (new PayTaxes(player)).pay();
-                (new SummoningCircle(SharedData.INSTANCE.robot, player)).evaluate();
-            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);

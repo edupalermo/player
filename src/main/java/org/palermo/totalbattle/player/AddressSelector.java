@@ -1,5 +1,7 @@
 package org.palermo.totalbattle.player;
 
+import org.palermo.totalbattle.server.model.Player;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,11 +118,5 @@ public class AddressSelector {
         }
 
         return size - 1;
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            System.out.println(select(Player.PALERMO));
-        }
     }
 }

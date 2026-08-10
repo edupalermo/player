@@ -1,0 +1,369 @@
+{
+  "playerStates" : {
+    "PALERMO" : {
+      "commonTar" : 96549,
+      "silver" : 32293868,
+      "lumber" : 40158366,
+      "iron" : 38747526,
+      "stone" : 64348789,
+      "exploringCrypt" : null,
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ {
+          "current" : 0,
+          "target" : 2000,
+          "unit" : "G1_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 1800,
+          "unit" : "G8_COURAX"
+        }, {
+          "current" : 0,
+          "target" : 36000,
+          "unit" : "G8_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 18000,
+          "unit" : "G8_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 36000,
+          "unit" : "G8_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 44376,
+          "unit" : "G7_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 44376,
+          "unit" : "G7_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 22186,
+          "unit" : "G7_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 2217,
+          "unit" : "G7_GRIFFIN"
+        }, {
+          "current" : 0,
+          "target" : 3000,
+          "unit" : "EC7_ENGINEER"
+        }, {
+          "current" : 0,
+          "target" : 80355,
+          "unit" : "S6_FLYING"
+        }, {
+          "current" : 0,
+          "target" : 80355,
+          "unit" : "S6_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 80355,
+          "unit" : "S6_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 80347,
+          "unit" : "G6_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 80347,
+          "unit" : "G6_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 39753,
+          "unit" : "S6_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 39749,
+          "unit" : "G6_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 3974,
+          "unit" : "G6_GRIFFIN"
+        }, {
+          "current" : 0,
+          "target" : 1000,
+          "unit" : "S6_SPY"
+        }, {
+          "current" : 0,
+          "target" : 2000,
+          "unit" : "S5_SPY"
+        }, {
+          "current" : 0,
+          "target" : 1500,
+          "unit" : "G5_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 37,
+          "unit" : "ELEMENTAL_VIII"
+        }, {
+          "current" : 0,
+          "target" : 36,
+          "unit" : "GIANT_VIII"
+        }, {
+          "current" : 0,
+          "target" : 37,
+          "unit" : "DRAGON_VIII"
+        }, {
+          "current" : 0,
+          "target" : 87,
+          "unit" : "GIANT_VII"
+        }, {
+          "current" : 0,
+          "target" : 85,
+          "unit" : "DRAGON_VII"
+        }, {
+          "current" : 0,
+          "target" : 90,
+          "unit" : "BEAST_VII"
+        }, {
+          "current" : 0,
+          "target" : 82,
+          "unit" : "ELEMENTAL_VII"
+        }, {
+          "current" : 0,
+          "target" : 39,
+          "unit" : "BEAST_VIII"
+        }, {
+          "current" : 0,
+          "target" : 214,
+          "unit" : "DRAGON_VI"
+        }, {
+          "current" : 0,
+          "target" : 234,
+          "unit" : "GIANT_VI"
+        }, {
+          "current" : 0,
+          "target" : 198,
+          "unit" : "ELEMENTAL_VI"
+        }, {
+          "current" : 0,
+          "target" : 198,
+          "unit" : "BEAST_VI"
+        } ],
+        "target" : {
+          "goal" : "any",
+          "waves" : 4,
+          "leadership" : 218999,
+          "dominance" : 50699,
+          "authority" : 101999
+        }
+      },
+      "resourcesTarget" : {
+        "lumber" : 19000000,
+        "iron" : 19000000,
+        "stone" : 19000000,
+        "silver" : 2000000
+      },
+      "locks" : {
+        "BUILD_TROOPS_REEVALUATE" : "2026-08-02T03:11:28.425475666",
+        "FINISHED_TRAINING_ALL_TROOPS" : "2026-08-02T03:11:52.030634022"
+      },
+      "captains" : [ ]
+    },
+    "GRIRANA" : {
+      "commonTar" : 0,
+      "silver" : 0,
+      "lumber" : 0,
+      "iron" : 0,
+      "stone" : 0,
+      "exploringCrypt" : null,
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ ],
+        "target" : null
+      },
+      "resourcesTarget" : null,
+      "locks" : {
+        "FINISHED_TRAINING_NON_MONSTERS" : "2026-05-15T23:23:43.577862992"
+      },
+      "captains" : [ ]
+    },
+    "LORVEN" : {
+      "commonTar" : 0,
+      "silver" : 0,
+      "lumber" : 0,
+      "iron" : 0,
+      "stone" : 0,
+      "exploringCrypt" : null,
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ {
+          "current" : 0,
+          "target" : 1309,
+          "unit" : "G1_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 1309,
+          "unit" : "S1_SWORDSMAN"
+        }, {
+          "current" : 0,
+          "target" : 653,
+          "unit" : "G1_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 100,
+          "unit" : "S1_SPY"
+        } ],
+        "target" : {
+          "goal" : "three",
+          "waves" : 4,
+          "leadership" : 1250,
+          "dominance" : 425,
+          "authority" : 850
+        }
+      },
+      "resourcesTarget" : {
+        "lumber" : 250000,
+        "iron" : 250000,
+        "stone" : 250000,
+        "silver" : 0
+      },
+      "locks" : {
+        "BUILD_TROOPS_REEVALUATE" : "2026-05-30T08:25:21.916089459"
+      },
+      "captains" : [ ]
+    },
+    "PETER" : {
+      "commonTar" : 24178,
+      "silver" : 283888,
+      "lumber" : 5145170,
+      "iron" : 20109976,
+      "stone" : 16594976,
+      "exploringCrypt" : null,
+      "army" : {
+        "productionReduction" : 1,
+        "checkedExistingQuantity" : false,
+        "productionOrder" : [ {
+          "current" : 14259,
+          "target" : 16407,
+          "unit" : "G5_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 1000,
+          "unit" : "EC5_ENGINEER"
+        }, {
+          "current" : 0,
+          "target" : 8039,
+          "unit" : "G4_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 15081,
+          "unit" : "G4_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 15081,
+          "unit" : "G4_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 15081,
+          "unit" : "S4_SWORDSMAN"
+        }, {
+          "current" : 0,
+          "target" : 14418,
+          "unit" : "G3_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 27342,
+          "unit" : "G3_RANGED"
+        }, {
+          "current" : 0,
+          "target" : 27342,
+          "unit" : "S3_SWORDSMAN"
+        }, {
+          "current" : 0,
+          "target" : 27339,
+          "unit" : "G3_MELEE"
+        }, {
+          "current" : 0,
+          "target" : 1000,
+          "unit" : "S3_SPY"
+        }, {
+          "current" : 0,
+          "target" : 2000,
+          "unit" : "S2_SPY"
+        }, {
+          "current" : 0,
+          "target" : 1000,
+          "unit" : "G2_MOUNTED"
+        }, {
+          "current" : 0,
+          "target" : 40,
+          "unit" : "BEAST_V"
+        }, {
+          "current" : 0,
+          "target" : 44,
+          "unit" : "DRAGON_V"
+        }, {
+          "current" : 0,
+          "target" : 38,
+          "unit" : "GIANT_V"
+        }, {
+          "current" : 0,
+          "target" : 41,
+          "unit" : "ELEMENTAL_V"
+        }, {
+          "current" : 0,
+          "target" : 108,
+          "unit" : "ELEMENTAL_IV"
+        }, {
+          "current" : 0,
+          "target" : 123,
+          "unit" : "DRAGON_IV"
+        }, {
+          "current" : 0,
+          "target" : 143,
+          "unit" : "GIANT_IV"
+        }, {
+          "current" : 0,
+          "target" : 155,
+          "unit" : "BEAST_IV"
+        }, {
+          "current" : 0,
+          "target" : 980,
+          "unit" : "ELEMENTAL_III"
+        }, {
+          "current" : 0,
+          "target" : 414,
+          "unit" : "DRAGON_III"
+        }, {
+          "current" : 0,
+          "target" : 358,
+          "unit" : "GIANT_III"
+        }, {
+          "current" : 0,
+          "target" : 477,
+          "unit" : "BEAST_III"
+        } ],
+        "target" : {
+          "goal" : "three",
+          "waves" : 3,
+          "leadership" : 65850,
+          "dominance" : 16444,
+          "authority" : 32053
+        }
+      },
+      "resourcesTarget" : null,
+      "locks" : {
+        "BONUS_SALES_FREE" : "2026-05-22T14:39:30.852392261",
+        "BUILD_TROOPS_REEVALUATE" : "2026-05-31T03:56:51.253639921"
+      },
+      "captains" : [ ]
+    }
+  },
+  "locations" : [ {
+    "type" : "org.palermo.totalbattle.player.state.location.Crypt",
+    "position" : {
+      "x" : 396,
+      "y" : 510
+    },
+    "rarity" : null,
+    "level" : 15
+  } ],
+  "properties" : { },
+  "messages" : [ ]
+}

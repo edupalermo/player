@@ -19,6 +19,7 @@ import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
+import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
@@ -29,6 +30,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -152,9 +155,10 @@ public class Task {
                 chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
             }
 
-            String userDataDir = new File(player.getProfileFolder()).getAbsolutePath();
             String url = AddressSelector.select(player);
 
+            Path userDataDir = Files.createTempDirectory("chrome-profile-");
+            
             ProcessBuilder pb = new ProcessBuilder(
                     chromePath,
                     "--start-maximized",
@@ -166,9 +170,7 @@ public class Task {
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
                     "--remote-debugging-port=9222",
-                    //"--new-window",
-                    "--user-data-dir=" + userDataDir,
-                    // "--profile-directory=Default",
+                    "--user-data-dir=" + userDataDir.toAbsolutePath(),
                     url
             );
             
