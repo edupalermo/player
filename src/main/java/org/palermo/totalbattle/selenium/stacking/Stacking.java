@@ -1,7 +1,5 @@
 package org.palermo.totalbattle.selenium.stacking;
 
-import org.palermo.totalbattle.player.Player;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -66,7 +64,7 @@ public class Stacking {
         
         //custom(Player.PALERMO, set, 4, 43446 - (36 * 10)); // Citadel
 
-        custom(Player.PETER, set, 2, 8058);
+        //custom(Player.PETER, set, 2, 8058);
         //custom(Player.PETER_II, set, 3, 11679);
         
         //custom(Player.PETER_II, set, 2, 7599);
@@ -151,35 +149,6 @@ public class Stacking {
         //System.out.println();
         //System.out.println("Damage: " + configuration.damage(troops));
 
-    }
-    
-    private static void custom(Player player, Set<Attribute> exclusions, int tiers, int leadership) {
-
-        List<Unit> units;
-        switch (player) {
-            case PALERMO:
-                units = getPalermoUnits(tiers);
-                break;
-            case PETER:
-                units = getPeterIIUnits(tiers);
-                break;
-            default:
-                throw new RuntimeException("Not implemented");
-        }
-
-        ConfigurationBuilder builder = Configuration.builder()
-                .leadership(leadership)
-                .authority(leadership)
-                .dominance(leadership);
-
-        for (Unit unit: units) {
-            if (!unit.wasExcluded(exclusions)) {
-                builder.addUnit(unit);
-            }
-
-        }
-
-        int[] troops = builder.build().resolve();
     }
     
     private static List<Unit> getPalermoUnits(int tiers) {

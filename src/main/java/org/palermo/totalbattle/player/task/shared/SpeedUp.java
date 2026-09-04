@@ -1,25 +1,21 @@
 package org.palermo.totalbattle.player.task.shared;
 
 import lombok.extern.slf4j.Slf4j;
-import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.util.ImageUtil;
-import org.palermo.totalbattle.util.Navigate;
 
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 public class SpeedUp {
     
-    private static MyRobot robot = SharedData.INSTANCE.robot;
+    private static MyRobot robot = MyRobot.INSTANCE;
 
     public static final List<SpeedUpBean> speedUps = new ArrayList<>();
     static {

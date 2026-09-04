@@ -1,13 +1,12 @@
 package org.palermo.totalbattle.player.task;
 
 import lombok.extern.slf4j.Slf4j;
-import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.Player;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.stacking.Captain;
+import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 
@@ -21,8 +20,6 @@ public class CaptainSelector {
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
     
-    private PlayerStateService playerStateService = new PlayerStateService();
-
     public CaptainSelector(Player player) {
         this.player = player;
     }
@@ -88,19 +85,54 @@ public class CaptainSelector {
     }
 
     public void select(Captain captain) {
+        try {
+            innerSelect(captain);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+    
+    public void innerSelect(Captain captain) {
         Point heroPoint = openCaptainManagementArea();
 
         Area selectedArea = Area.of(heroPoint, Point.of(591, 875), Point.of(686, 833), Point.of(987, 927));
         if (isCaptainSelected(player, selectedArea, captain)) {
-            System.out.println("Captain is already selected");
-            robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(300);
-            robot.type(KeyEvent.VK_ESCAPE);
-            robot.sleep(300);
+            log.info("Captain is already selected");
             return;
         }
 
         enableCaptainsLeftPane(heroPoint);
+
+        Area availableAra = Area.of(heroPoint, Point.of(591, 875), Point.of(1078, 458), Point.of(1442, 899));
+
+        // We should do a loop and only proceed if we find the Captain
+        boolean foundCaptain = false;
+        for (int i = 0; i < 10; i++) {
+            BufferedImage screen = robot.captureScreen();
+
+            if (ImageUtil.search(captain.getImage72(), screen, selectedArea, 0.1).isPresent()) {
+                log.info("Captain is already selected");
+                return;
+            }
+
+            if (ImageUtil.search(captain.getImage72(), screen, availableAra, 0.1).isPresent()) {
+                foundCaptain = true;
+                break;
+            }
+            
+            robot.sleep(1000);            
+        }
+        
+        if (!foundCaptain) {
+            throw new RuntimeException("Captain " + captain.name() + " not found!");
+        }
+        
 
         // Remove captain from the spot
         switch(captain) {
@@ -140,6 +172,8 @@ public class CaptainSelector {
 
         if (targetCaptainPoint == null) {
             throw new RuntimeException(String.format("Captain %s not found!", captain.name()));
+            // log.warn("Cannot find captain, we will assume that the captain is already selected");
+            //return false;
         }
 
         robot.leftClick(targetCaptainPoint.move(33, 30));
@@ -229,8 +263,6 @@ public class CaptainSelector {
         do {
             BufferedImage screen = robot.captureScreen();
             
-            System.out.println("LOOP!!!!");
-
             BufferedImage items[] = new BufferedImage[6];
             items[0] = ImageUtil.loadResource("player/hero/garvel_66.png");
             items[1] = ImageUtil.loadResource("player/hero/meriones_66.png");
@@ -242,6 +274,9 @@ public class CaptainSelector {
             Point point = ImageUtil.searchSurroundings(items, screen, area, 0.1, 20).orElse(null);
             if (point != null) {
                 return point;
+            }
+            else {
+                robot.sleep(450);
             }
         } while (System.currentTimeMillis() - start < 15000);
 
@@ -277,8 +312,6 @@ public class CaptainSelector {
             }
         }
 
-        playerStateService.setCaptains(player, captains);
-        
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
 

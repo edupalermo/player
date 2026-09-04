@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -8,87 +9,35 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.palermo.totalbattle.internalservice.ArmyService;
-import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.internalservice.PlayerStateService;
-import org.palermo.totalbattle.player.state.ArmyTarget;
-import org.palermo.totalbattle.player.state.Resources;
-import org.palermo.totalbattle.player.state.location.Crypt;
-import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.CdpUtil;
+import org.palermo.totalbattle.util.EmailUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
+import org.palermo.totalbattle.util.ServerFacade;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 public class Task {
 
-    private static final ArmyService armyService = new ArmyService();
-    private static final PlayerStateService playerStateService = new PlayerStateService();
-    private static final GameStateService gameStateService = new GameStateService();
-    private static final LockService lockService = new LockService();
-
     private static MyRobot robot = MyRobot.INSTANCE;
-
-
-    public static void main(String[] args) {
-        play(Player.PALERMO);
-        //play(Player.GRIRANA);
-    }
-
+    
+    private static final ServerFacade serverFacade = new ServerFacade(); 
 
     public static void play(Player player) {
-        
-        playerStateService.getState(Player.PALERMO).getArmy().setTarget(ArmyTarget.builder()
-                        .leadership(18912)
-                        .dominance(4768)
-                        .authority(9456)
-                        .goal("any")
-                        .waves(3)
-                .build());
-
-        playerStateService.getState(Player.PALERMO).setResourcesTarget(Resources.builder()
-                .lumber(19_000_000)
-                .stone(19_000_000)
-                .iron(19_000_000)
-                .silver(2_000_000)
-                .build());
-        
-        playerStateService.getState(Player.LORVEN).setResourcesTarget(Resources.builder()
-                .lumber(250_000)
-                .stone(250_000)
-                .iron(250_000)
-                .build());
-
-        /*
-        gameStateService.add(Citadel.builder()
-                .level(15)
-                .position(Point.of(341, 523))
-                .build());
-         */
-
-        gameStateService.add(Crypt.builder()
-                .level(15)
-                .position(Point.of(396, 510))
-                .build());
-
-        lockService.lock(Player.GRIRANA, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
 
         Process process = null;
         try {
@@ -102,7 +51,7 @@ public class Task {
             //(new InfoGather(player)).evaluate();
             //(new Quests(player)).evaluate();
             // (new Donate(player)).evaluate();
-            (new BuildArmy(player)).buildArmy();
+            //(new BuildArmy(player)).buildArmy();
             
             waitUntilProcessIsRunning(process);
         } catch (Exception e) {
@@ -125,12 +74,15 @@ public class Task {
         }
     }
     
+    @SneakyThrows
     public static WebDriver openBrowser(Player player) {
         WebDriverManager.chromedriver().setup();
 
+        Path userDataDir = Files.createTempDirectory("chrome-profile-");
+
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
-        options.addArguments("--user-data-dir=" + new java.io.File(player.getProfileFolder()).getAbsolutePath());
+        options.addArguments("--user-data-dir=" + userDataDir.toAbsolutePath());
         options.addArguments("--profile-directory=Default"); // Default profile in that dir
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         options.setExperimentalOption("useAutomationExtension", false);
@@ -155,9 +107,20 @@ public class Task {
                 chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
             }
 
-            String url = AddressSelector.select(player);
-
             Path userDataDir = Files.createTempDirectory("chrome-profile-");
+
+            Path defaultDir = userDataDir.resolve("Default");
+            Files.createDirectories(defaultDir);
+            Path preferences = defaultDir.resolve("Preferences");
+            String json = """
+                {
+                  "credentials_enable_service": false,
+                  "profile": {
+                    "password_manager_enabled": false
+                  }
+                }
+                """;
+            Files.writeString(preferences, json);
             
             ProcessBuilder pb = new ProcessBuilder(
                     chromePath,
@@ -170,11 +133,21 @@ public class Task {
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
                     "--remote-debugging-port=9222",
-                    "--user-data-dir=" + userDataDir.toAbsolutePath(),
-                    url
+                    "--user-data-dir=" + userDataDir.toAbsolutePath()
             );
-            
-            return pb.start();
+
+            Process process = pb.start();
+
+            robot.sleep(2000);
+            CdpUtil.setTotalBattleCookies(player.getCookies());
+            robot.sleep(1000);
+
+            CdpUtil.evaluate("""
+                        window.location.href = '%s';
+                        true;
+                    """.formatted(AddressSelector.select(player)));
+
+            return process;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -189,17 +162,45 @@ public class Task {
         Navigate linkLogin = Navigate.builder()
                 .resourceName("player/link_login.png")
                 .area(Area.fromTwoPoints(347, 459, 591, 548))
-                .waitLimit(3000)
+                .waitLimit(5000)
                 .build();
         
+        boolean loginNeeded = false;
+        
         if (linkLogin.exist()) {
+            loginNeeded = true;
             System.out.println("Login link found");
+
+            // Click on Login link
+            linkLogin.leftClick();
+            robot.sleep(350);
+            
             login(player, linkLogin);
         }
-        
+        else {
+            System.out.println("User already logged");
+        }
+
         robot.sleep(5000);
+
+        // Search and click accept all cookies button
+        Navigate.builder()
+                .resourceName("player/button_accept_cookies.png")
+                //.areaName("ACCEPT_COOKIES")
+                .waitLimit(2000)
+                .build()
+                .leftClickIfExists();
         
-        System.out.println("User already logged");
+        if (loginNeeded) {
+            var cookies = CdpUtil.getTotalBattleCookies();
+            for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                System.out.println(entry.getKey() + " = " + entry.getValue());
+            }
+
+            player.getCookies().put("PTBHSSID", cookies.get("PTBHSSID"));
+            serverFacade.updatePlayer(player);
+        }
+        
 
         BufferedImage labelClan = ImageUtil.loadResource("player/label_clan.png");
         //BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
@@ -235,7 +236,7 @@ public class Task {
         if (!found) {
             ImageUtil.write(screen, "error_screen.png");
             ImageUtil.write(labelClan, "error_image.png");
-            CdpUtil.clearBorwserCache();
+            CdpUtil.clearBrowserCache();
             throw new RuntimeException("Not found image!");
         }
         
@@ -322,18 +323,6 @@ public class Task {
 
 
     private static void login(Player player, Navigate linkLogin) {
-        // Search and click accept all cookies button
-        Navigate.builder()
-                .resourceName("player/button_accept_cookies.png")
-                .areaName("ACCEPT_COOKIES")
-                .waitLimit(2000)
-                .build()
-                .leftClickIfExists();
-
-        // Click on Login link
-        linkLogin.leftClick();
-        robot.sleep(350);
-
         // Provide username
         robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(358, 494)));
         robot.clearText();
@@ -348,6 +337,38 @@ public class Task {
         robot.leftClick(Point.of(linkLogin.getPoint(), Point.of(450, 515), Point.of(438, 650)));
         robot.sleep(3000);
         
+        // Test for verification code
+        Navigate enterVerificationCodeLabel = Navigate.builder()
+                .resourceName("player/login/label_enter_verification_code.png")
+                .waitLimit(2000)
+                .build();
+
+        if (enterVerificationCodeLabel.exist()) {
+            
+            if (player.getName().equals("Palermo")) {
+                Task.showPauseDialog("Get the CODE!");
+            }
+            else {
+                robot.sleep(2000);
+                String verificationCode = EmailUtil.getVerificationCode().orElse("");
+                System.out.println("Verification Code: " + verificationCode);
+
+                if (verificationCode == null) {
+                    throw new RuntimeException("Cannot retrieve verification code!");
+                }
+
+                // Provide Verification code
+                robot.leftClick(enterVerificationCodeLabel.getPoint().move(-45, 46));
+                robot.sleep(750);
+                robot.typeString(verificationCode);
+                robot.sleep(750);
+
+                // Click on Login again
+                robot.leftClick(enterVerificationCodeLabel.getPoint().move(75, 116));
+            }
+        }
+
+
         // Search and click 
         searchAndClick("player/button_chrome_save.png");
     }

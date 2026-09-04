@@ -1,6 +1,5 @@
 package org.palermo.totalbattle;
 
-import org.palermo.totalbattle.internalservice.GameStateService;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;

@@ -187,19 +187,22 @@ public enum MyRobot {
     }
 
     public void clearText() {
-        // Select all
-        robot.keyPress(KeyEvent.VK_CONTROL);
-        robot.keyPress(KeyEvent.VK_A);
-        robot.keyRelease(KeyEvent.VK_A);
-        robot.keyRelease(KeyEvent.VK_CONTROL);
+        selectAllText();
         
-        sleep(200);
-
         // Delete selection
         robot.keyPress(KeyEvent.VK_DELETE);
         robot.keyRelease(KeyEvent.VK_DELETE);
     }
 
+    public void selectAllText() {
+        // Select all
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_A);
+        robot.keyRelease(KeyEvent.VK_A);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+
+        sleep(200);
+    }
 
     public void typeString(String text) {
         for (char c : text.toCharArray()) {

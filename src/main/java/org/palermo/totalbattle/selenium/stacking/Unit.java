@@ -17,10 +17,10 @@ public enum Unit {
     S5_SPY(260, 780, UnitType.SPY, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     S6_SPY(470, 1410, UnitType.SPY, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.SCOUT, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 5),
     
-    S1_SWORDSMAN(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_i.png", Pool.LEADERSHIP, 1),
-    S2_SWORDSMAN(90, 270, UnitType.MELEE, 2, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_ii.png", Pool.LEADERSHIP, 1),
-    S3_SWORDSMAN(160, 480, UnitType.MELEE, 3, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_iii.png", Pool.LEADERSHIP, 1),
-    S4_SWORDSMAN(290, 870, UnitType.MELEE, 4, Attribute.GUARDSMAN_SPEARMAN, "leadership/swordsman_iv.png", Pool.LEADERSHIP, 1),
+    S1_SWORDSMAN(50, 150, UnitType.MELEE, 1, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_i.png", Pool.LEADERSHIP, 1),
+    S2_SWORDSMAN(90, 270, UnitType.MELEE, 2, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_ii.png", Pool.LEADERSHIP, 1),
+    S3_SWORDSMAN(160, 480, UnitType.MELEE, 3, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_iii.png", Pool.LEADERSHIP, 1),
+    S4_SWORDSMAN(290, 870, UnitType.MELEE, 4, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_iv.png", Pool.LEADERSHIP, 1),
     
     S5_SWORDSMAN(520, 1560, UnitType.MELEE, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/swordsman_v.png", Pool.LEADERSHIP, 1),
     S5_VULTURE(520, 1560, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_v.png", Pool.LEADERSHIP, 1),
@@ -72,6 +72,7 @@ public enum Unit {
     EC5_ENGINEER(2630, 15800, UnitType.CATAPULT, 5, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_v.png", Pool.LEADERSHIP, 10),
     EC6_ENGINEER(4730, 28400, UnitType.CATAPULT, 6, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_vi.png", Pool.LEADERSHIP, 10),
     EC7_ENGINEER(8500, 51000, UnitType.CATAPULT, 7, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_vii.png", Pool.LEADERSHIP, 10),
+    EC8_ENGINEER(15310, 91800, UnitType.CATAPULT, 8, ImmutableSet.of(Attribute.ENGINEER_CORPS, Attribute.HUMAN, Attribute.SIEGE_ENGINE), "leadership/engineer_viii.png", Pool.LEADERSHIP, 10),
 
     SWIFT_MARKSMAN(1050, 3150, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.GUARDSMAN, Attribute.HUMAN, Attribute.RANGED), "leadership/swift_marksman.png", Pool.AUTHORITY, 1),
     
@@ -112,7 +113,7 @@ public enum Unit {
     BEAST_V(46000, 138000, UnitType.UNKNOWN, 5, ImmutableSet.of(Attribute.BEAST, Attribute.FLYING), "leadership/fearsome_manticore.png", Pool.DOMINANCE, 22),
     BEAST_VI(130000, 390000, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.BEAST, Attribute.MELEE), "leadership/beast_vi.png", Pool.DOMINANCE, 34),
     BEAST_VII(280000, 840000, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.BEAST, Attribute.MOUNTED), "leadership/beast_vii.png", Pool.DOMINANCE, 41),
-    BEAST_VIII(640_000, 1_920_000, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.BEAST, Attribute.RANGED), "leadership/beast_viii.png", Pool.DOMINANCE, 52);
+    BEAST_VIII(640_000, 1_920_000, UnitType.UNKNOWN, 8, ImmutableSet.of(Attribute.BEAST, Attribute.RANGED), "leadership/beast_viii.png", Pool.DOMINANCE, 52);
 
     private int strength;
     private int health;

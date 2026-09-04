@@ -3,12 +3,12 @@ package org.palermo.totalbattle.util;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.palermo.totalbattle.player.SharedData;
 import org.palermo.totalbattle.selenium.leadership.Area;
+import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.model.SearchResponse;
+import org.palermo.totalbattle.util.bean.MatchResult;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +27,15 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
-import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_COLOR;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_GRAYSCALE;
-import static org.bytedeco.opencv.global.opencv_imgcodecs.IMREAD_UNCHANGED;
 import static org.bytedeco.opencv.global.opencv_imgcodecs.imdecode;
 
 @Slf4j
 public class ImageUtil {
 
-    private static final int GRAY_THRESHOLD = 20;
+    private static final MyRobot robot = MyRobot.INSTANCE;
 
-    
-    private static final String HOSTNAME_NOTEBOOK = "eduardo-XPS-15-9500";
+    private static final int GRAY_THRESHOLD = 20;
 
     private static Map<String, BufferedImage> imageCache = new HashMap<>();
     
@@ -233,37 +229,27 @@ public class ImageUtil {
     }
 
 
+    
+    private static final ServerFacade serverFacade = new ServerFacade();
 
     public static Optional<SearchResponse> realSearch(BufferedImage item, BufferedImage screen, int x, int y, int width, int height, double limit) {
-        long itemCrc = crcImage(item);
-        long screenCrc = crcImage(screen);
+
+        BufferedImage screenPart = ImageUtil.crop(screen, Area.of(x, y , width, height));
+
+        MatchResult matchResult = serverFacade.compare(screenPart, item).orElse(null);
         
-        File searchFolder = createFolderIsThereIsNot(new File("."), "search");
-        File imageFolder =  createFolderIsThereIsNot(searchFolder, Long.toString(itemCrc));
-        
-        File itemFile = new File(searchFolder, itemCrc + ".png");
-        if (!itemFile.exists()) {
-            ImageUtil.write(item, itemFile);
+        if (matchResult == null || !matchResult.found()) {
+            return Optional.empty();
         }
         
-        File positiveFolder =  createFolderIsThereIsNot(imageFolder, "positive");
-        File negativeFolder =  createFolderIsThereIsNot(imageFolder, "negative");
-        
-        SearchResponse searchResponse = internalRealSearch(item, screen, x, y, width, height, limit).orElse(null);
-        
-        if (searchResponse == null) {
-            File file = new File(negativeFolder, screenCrc + ".png");
-            if (!file.exists()) {
-                ImageUtil.write(ImageUtil.crop(screen, Area.of(x, y, width, height)), file);
-            }
+        if (matchResult.confidence() + limit < 1) {
+            return Optional.empty();
         }
-        else {
-            File file = new File(positiveFolder, screenCrc +".png");
-            if (!file.exists()) {
-                ImageUtil.write(ImageUtil.crop(screen, Area.of(x, y, width, height)), file);
-            }
-        }
-        return Optional.ofNullable(searchResponse);
+        
+        return Optional.of(SearchResponse.builder()
+                .difference(matchResult.confidence())
+                .point(Point.of(matchResult.x() + x, matchResult.y() + y))
+                .build());
     }
     
     private static File createFolderIsThereIsNot(File parentFolder, String name) {
@@ -836,7 +822,7 @@ public class ImageUtil {
     }
     
     public static void showScreenAndWait(Area area) {
-        BufferedImage screen = SharedData.INSTANCE.robot.captureScreen();
+        BufferedImage screen = robot.captureScreen();
         showImageAndWait(crop(screen, area), (String) null);
     }
 

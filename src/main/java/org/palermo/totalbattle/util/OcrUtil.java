@@ -3,7 +3,6 @@ package org.palermo.totalbattle.util;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.dao.OcrDao;
 import org.palermo.totalbattle.entity.ProcessedImage;
-import org.palermo.totalbattle.internalservice.GameStateService;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -14,7 +14,6 @@ import org.palermo.totalbattle.selenium.stacking.Unit;
 @AllArgsConstructor
 public class TroopQuantity {
 
-    private int current;
     private int target;
     private Unit unit;
 

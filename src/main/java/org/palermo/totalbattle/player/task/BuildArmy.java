@@ -3,14 +3,10 @@ package org.palermo.totalbattle.player.task;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.internalservice.ArmyService;
-import org.palermo.totalbattle.internalservice.GameStateService;
-import org.palermo.totalbattle.internalservice.LockService;
-import org.palermo.totalbattle.internalservice.PlayerStateService;
 import org.palermo.totalbattle.player.RegionSelector;
-import org.palermo.totalbattle.player.Scenario;
 import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
-import org.palermo.totalbattle.player.state.TroopQuantity;
+import org.palermo.totalbattle.player.bean.UnitQuantity;
 import org.palermo.totalbattle.player.task.shared.SpeedUp;
 import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
@@ -19,16 +15,22 @@ import org.palermo.totalbattle.selenium.leadership.Transformation;
 import org.palermo.totalbattle.selenium.stacking.Captain;
 import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
+import org.palermo.totalbattle.server.model.FlagInfo;
+import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
+import org.palermo.totalbattle.util.SheetUtil;
 import org.palermo.totalbattle.util.WhatsappUtil;
+import org.palermo.totalbattle.util.bean.Army;
+import org.palermo.totalbattle.util.bean.State;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -40,11 +42,8 @@ public class BuildArmy {
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
     
-    private final ArmyService armyService = new ArmyService();
-    private final PlayerStateService playerStateService = new PlayerStateService();
-    private final LockService lockService = new LockService();
-    private final GameStateService gameStateService = new GameStateService();
-    
+    private static final ArmyService armyService = new ArmyService();
+
     private final boolean TEST = false; 
     
     private Unit lastSelected = null;
@@ -54,19 +53,20 @@ public class BuildArmy {
     }
 
     public void buildArmy() {
+        buildArmy(true);
+    }
+
+    public void buildArmy(boolean checkCaptain) {
         this.lastSelected = null;
-        
-        if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
-            log.info("Building Army is locked because player is ready to ATTACK!");
+
+        FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
+        if (flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
+            log.info("Building Army is blocked: " + flagInfo.getMessage());
             return;
         }
 
-        if (!armyService.shouldBuildArmy(player)) {
-            return;
-        }
-        
         try {
-            internalBuildArmy();
+            internalBuildArmy(checkCaptain);
         } catch(Exception e) {
             log.error(e.getMessage(), e);
 
@@ -78,74 +78,83 @@ public class BuildArmy {
         }
     }
 
-    private void chooseTroopToBuild(Point titleBarracksPoint) {
 
-        List<TroopQuantity> list = armyService.getProductionList(player);
+    private void chooseTroopToBuild(Point titleBarracksPoint) {
+        State state = SheetUtil.getState(player.getName()).orElseThrow(() -> new RuntimeException());
+        Army army = SheetUtil.getArmy(player.getName()).orElseThrow(() -> new RuntimeException());
+        
+        List<UnitQuantity> list = armyService.getProductionOrder(state, army);
+
+        Unit lastBuiltUnit = null;
+        if (player.getBuildingUnit() != null) {
+            lastBuiltUnit = Unit.valueOf(player.getBuildingUnit());
+            log.info("Last building troop was: " + lastBuiltUnit.name());
+        }
+        if (lastBuiltUnit != null && list.stream().map(UnitQuantity::getUnit).anyMatch((it) -> it == Unit.valueOf(player.getBuildingUnit()))) {
+            List<UnitQuantity> newList = new ArrayList<>();
+            boolean found = false;
+            for (UnitQuantity it : list) {
+                if (it.getUnit().equals(lastBuiltUnit)) {
+                    found = true;
+                }            
+                if (found) {
+                    newList.add(it);
+                }
+            }
+            list = newList;
+        }
 
         boolean trainedSomething = false;
 
-        if (!TEST) {
-            // I don't think I should check every thing.
-            for (int i = 0; i < list.size(); i++) {
-                TroopQuantity troopQuantity = list.get(i);
-                System.out.println("Trying " + troopQuantity.getUnit().name());
-                int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
-                armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
+        if (TEST) {
+            //train(titleBarracksPoint, Unit.DRAGON_VIII, 1);
+            //train(titleBarracksPoint, Unit.ELEMENTAL_VIII, 1);
+            //train(titleBarracksPoint, Unit.GIANT_VIII, 1);
+            train(titleBarracksPoint, Unit.G6_RANGED, 1);
+            return;
+        }
+        
+        // I don't think I should check every thing.
+        for (int i = 0; i < list.size(); i++) {
+            UnitQuantity unitQuantityQuantity = list.get(i);
+            player.setBuildingUnit(unitQuantityQuantity.getUnit().name());
+            //System.out.println("Trying " + unitQuantityQuantity.getUnit().name());
+            int currentSize = getCurrentUnitNumber(titleBarracksPoint, unitQuantityQuantity.getUnit());
 
-                if (currentSize < troopQuantity.getTarget()) {
-                    if (troopQuantity.getUnit().getPool() == Pool.DOMINANCE) {
-                        lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-                        log.info("Player finished to train Guardsmen and Specialists");
-                        if (player == Player.PALERMO) {
-                            WhatsappUtil.send(player.getName() + " has finished building the Guardsman");
-                        }
-                    }
-                    train(titleBarracksPoint, troopQuantity.getUnit(), troopQuantity.getTarget() - currentSize);
-                    trainedSomething = true;
-                    break;
-                }
-                else {
-                    log.info("Troop {} is not needed {} / {}", troopQuantity.getUnit().name(), currentSize, troopQuantity.getTarget());
-                }
+            if (currentSize < unitQuantityQuantity.getQuantity()) {
+                train(titleBarracksPoint, unitQuantityQuantity.getUnit(), (int) (unitQuantityQuantity.getQuantity() - currentSize));
+                trainedSomething = true;
+                break;
             }
+            else {
+                log.info("Troop {} is not needed {} / {}", unitQuantityQuantity.getUnit().name(), currentSize, unitQuantityQuantity.getQuantity());
+            }
+        }
 
-            if (!trainedSomething) {
-                lockService.lock(player, Scenario.FINISHED_TRAINING_NON_MONSTERS, LocalDateTime.now().plusHours(1));
-                lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
+        if (!trainedSomething) {
+            player.setBuildingUnit(null);
+            
+            if (list.size() > 1) {
+                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                        .expiration(LocalDateTime.now().plusHours(1))
+                        .message("Player is ready to ATTACK!")
+                        .build());
                 log.info("Player is ready to ATTACK!");
                 WhatsappUtil.send(player.getName() + " has finished building the army");
             }
         }
-        else {
-            //train(titleBarracksPoint, Unit.DRAGON_VIII, 1);
-            //train(titleBarracksPoint, Unit.ELEMENTAL_VIII, 1);
-            //train(titleBarracksPoint, Unit.GIANT_VIII, 1);
-            train(titleBarracksPoint, Unit.BEAST_VIII, 1);
-        }
     }
 
-    public void internalBuildArmy() {
-        if (lockService.isLocked(player, Scenario.FINISHED_TRAINING_ALL_TROOPS)) {
-            log.info("Building Army is locked because player is ready to ATTACK!");
-            return;
-        }
-
-        if (!armyService.shouldBuildArmy(player)) {
-            return;
-        }
-
-        if (!TEST) {
-            Captain captain = player.isHasHelen() ? Captain.HELEN : Captain.XI_GUIYING;
-            if (!playerStateService.hasCaptain(player, captain)) {
-                (new CaptainSelector(player)).select(captain);
-            }
+    public void internalBuildArmy(boolean checkCaptain) {
+        if (!TEST && checkCaptain) {
+            Captain captain = player.getName().equals("Palermo") ? Captain.HELEN : Captain.XI_GUIYING;
+            (new CaptainSelector(player)).select(captain);
         }
 
         Point labelArmyPoint = findArmyLabel();
 
         // Click on Army Label
         robot.leftClick(labelArmyPoint.move(12, -30));
-        robot.sleep(1000);
         
         playBarracksPopUp();
 
@@ -182,14 +191,14 @@ public class BuildArmy {
     }
     
     private void playBarracksPopUp() {
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage titleBarracks = ImageUtil.loadResource("player/barracks/title_barracks.png");
-        Area titleBarracksArea = Area.fromTwoPoints(920, 306, 1044, 338);
-        Point titleBarracksPoint = ImageUtil.searchSurroundings(titleBarracks, screen, titleBarracksArea, 0.1, 20).orElse(null);
-
+        Navigate titleBarracks = Navigate.builder()
+                .resourceName("player/barracks/title_barracks.png")
+                .area(Area.fromTwoPoints(920, 306, 1044, 338))
+                .waitLimit(5000)
+                .build();
+        
+        Point titleBarracksPoint = titleBarracks.search().orElse(null);
         if (titleBarracksPoint == null) {
-            ImageUtil.write(ImageUtil.crop(screen, titleBarracksArea), "error_screen.png");
-            ImageUtil.write(titleBarracks, "error_image.png");
             throw new RuntimeException("Couldn't find Barracks title!");
         }
 
@@ -197,7 +206,6 @@ public class BuildArmy {
         Navigate navigateHelpButton = Navigate.builder()
                 .resourceName("player/barracks/button_help.png")
                 .area(buttonArea)
-                .waitLimit(1500)
                 .build();
 
         if (navigateHelpButton.exist()) {
@@ -233,17 +241,9 @@ public class BuildArmy {
         }
     }
     
-    private void updateTroopQuantities(Point titleBarracksPoint) {
-        for (TroopQuantity troopQuantity : armyService.getProductionList(player)) {
-            int currentSize = getCurrentUnitNumber(titleBarracksPoint, troopQuantity.getUnit());
-            armyService.setCurrentTroopQuantity(player, troopQuantity.getUnit(), currentSize);
-        }
-    }
-    
-    private LocalDateTime getTimeLeft(Navigate navigateHourglass) {
-        BufferedImage timeLeft = robot.captureScreen(Area.of(navigateHourglass.getPoint(), 18, -2, 92, 18));
-        String timeLeftAsText = treatTimeLeft(timeLeft);
-        System.out.println("Time Left: " + timeLeftAsText);
+    private LocalDateTime getTimeLeft(BufferedImage image) {
+        String timeLeftAsText = treatTimeLeft(image);
+        log.info("Time Left: " + timeLeftAsText);
         LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
         if (nextLocalDateTime == null) {
             throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
@@ -252,11 +252,7 @@ public class BuildArmy {
     }
     
     private String treatTimeLeft(BufferedImage input) {
-        BufferedImage limit = ImageUtil.loadResource("player/speed_up/limit.png");
-        Point limitPoint = ImageUtil.search(limit, input, 0.01).orElse(null);
-        if (limitPoint != null) {
-            input = ImageUtil.crop(input, Area.of(0, 0, limitPoint.getX() ,input.getHeight()));
-        }
+        //ImageUtil.showImageAndWait(input);
 
         BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"FFF7BF"});
         timeLeft = ImageUtil.linearNormalization(timeLeft);
@@ -265,22 +261,20 @@ public class BuildArmy {
         if (timeLeft.getHeight() < OcrUtil.OCR_HEIGHT) {
             timeLeft = ImageUtil.resize(timeLeft, OcrUtil.OCR_HEIGHT);
         }
-        // ImageUtil.showImageAndWait(timeLeft);
-        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN, manualOcr);
+        //ImageUtil.showImageAndWait(timeLeft);
+        return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN, false);
     }
 
     private int treatCurrentInputFieldValue(BufferedImage input) {
-        BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"4C2727"});
-        timeLeft = ImageUtil.linearNormalization(timeLeft);
-        timeLeft = ImageUtil.cropText(timeLeft);
-        timeLeft = ImageUtil.linearNormalization(timeLeft);
-        if (timeLeft.getHeight() < OcrUtil.OCR_HEIGHT) {
-            timeLeft = ImageUtil.resize(timeLeft, OcrUtil.OCR_HEIGHT);
+        BufferedImage imageValue = ImageUtil.toGrayscale(input, new String[] {"4C2727"});
+        imageValue = ImageUtil.linearNormalization(imageValue);
+        imageValue = ImageUtil.cropText(imageValue);
+        imageValue = ImageUtil.linearNormalization(imageValue);
+        if (imageValue.getHeight() < OcrUtil.OCR_HEIGHT) {
+            imageValue = ImageUtil.resize(imageValue, OcrUtil.OCR_HEIGHT);
         }
-        // ImageUtil.showImageAndWait(timeLeft);
-        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String temporary = OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR_AND_PLUS, manualOcr);
+        //ImageUtil.showImageAndWait(imageValue);
+        String temporary = OcrUtil.ocr(imageValue, OcrUtil.WHITELIST_FOR_NUMBERS_WITH_THOUSAND_SEPARATOR_AND_PLUS, false);
         temporary = temporary.replaceAll("\\+", "");
         temporary = temporary.replaceAll(",", "");
         temporary = temporary.trim();
@@ -327,12 +321,24 @@ public class BuildArmy {
             }
 
             Navigate navigateHourglass = Navigate.builder()
-                    .area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
+                    //.area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
                     .resourceName("player/barracks/icon_hourglass.png")
                     .waitLimit(1500)
                     .build();
 
-            LocalDateTime dateTime = getTimeLeft(navigateHourglass);
+            Navigate doubleGtButton = Navigate.builder()
+                    //.area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
+                    .resourceName("player/speed_up/button_double_gt.png")
+                    .waitLimit(1500)
+                    .build();
+
+
+            BufferedImage screen = robot.captureScreen();
+            int width = (doubleGtButton.getPoint().getX() - navigateHourglass.getPoint().getX()) - 26;
+            Area timeLeftArea = Area.of(navigateHourglass.getPoint(), 18, -2, width, 18);
+            // ImageUtil.showImageAndWait(ImageUtil.crop(screen, area));
+            
+            LocalDateTime dateTime = getTimeLeft(ImageUtil.crop(screen, timeLeftArea));
             long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
             if (doubleCheck == -1) {
@@ -467,7 +473,7 @@ public class BuildArmy {
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI, Unit.G8_MOUNTED).contains(unit)) {
                     shift = 41;
                 }
-                inputArea = transformation.transform(Point.of(817, 711 + shift), Point.of(914, 730 + shift));
+                inputArea = transformation.transform(Point.of(817, 709 + shift), Point.of(914, 730 + shift));
                 inputPoint = transformation.transform(Point.of(822, 719 + shift));
                 silverArea = transformation.transform(Point.of(790, 775 + shift), Point.of(798, 783 + shift));
                 foodArea = transformation.transform(Point.of(790, 775 + 35 + shift), Point.of(798, 818 + shift));
@@ -485,7 +491,7 @@ public class BuildArmy {
                 if (Sets.newHashSet(Unit.DRAGON_VII, Unit.ELEMENTAL_VII, Unit.GIANT_VII, Unit.BEAST_VII, Unit.G8_COURAX).contains(unit)) {
                     shift = 41;
                 }
-                inputArea = transformation.transform(Point.of(817 + 261, 711 + shift), Point.of(914 + 261, 730 + shift));
+                inputArea = transformation.transform(Point.of(817 + 261, 709 + shift), Point.of(914 + 261, 730 + shift));
                 inputPoint = transformation.transform(Point.of(822 + 261, 719 + shift));
                 silverArea = transformation.transform(Point.of(790 + 261, 775 + shift), Point.of(798 + 261, 783 + shift));
                 foodArea = transformation.transform(Point.of(790 + 261, 775 + 35 + shift), Point.of(798 + 261, 783 + 35 + shift));
@@ -496,12 +502,13 @@ public class BuildArmy {
             case G1_MOUNTED, G2_MOUNTED, G3_MOUNTED, G4_MOUNTED, G5_MOUNTED,
                  G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
-                 S5_DEADSHOT, S6_RANGED, S6_MELEE, DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII:
+                 S5_DEADSHOT, S6_RANGED, S6_MELEE, DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII,
+                 EC8_ENGINEER:
 
                 if (Sets.newHashSet(Unit.DRAGON_VIII, Unit.ELEMENTAL_VIII, Unit.GIANT_VIII, Unit.BEAST_VIII).contains(unit)) {
                     shift = 41;
                 }
-                inputArea = transformation.transform(Point.of(817 + 523, 711 + shift), Point.of(914 + 523, 730 + shift));
+                inputArea = transformation.transform(Point.of(817 + 523, 709 + shift), Point.of(914 + 523, 730 + shift));
                 inputPoint = transformation.transform(Point.of(822 + 523, 719 + shift));
                 silverArea = transformation.transform(Point.of(790 + 522, 775 + shift), Point.of(798 + 522, 783 + shift));
                 foodArea = transformation.transform(Point.of(790 + 522, 775 + 35 + shift), Point.of(798 + 522, 783 + 35 + shift));
@@ -513,25 +520,6 @@ public class BuildArmy {
             default:
                 throw new RuntimeException("Not implemented for unit " + unit.name());
         }
-        
-        if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > quantity) {
-            robot.leftClick(inputPoint);
-            robot.sleep(250);
-            robot.typeString(String.valueOf(quantity));
-            robot.sleep(1000);
-        }
-
-        // handleResourcesIfNeeded(unit, silverPoint, silverArea, foodPoint, foodArea);
-        robot.mouseMove(titleBarracksPoint);
-        if (!isResourceEnough(silverArea)) {
-            robot.leftClick(silverPoint);
-            fillResource();
-        }
-        robot.mouseMove(titleBarracksPoint);
-        if (!isResourceEnough(foodArea)) {
-            robot.leftClick(foodPoint);
-            fillResource();
-        }
 
         int target;
         int counter = 0;
@@ -540,15 +528,22 @@ public class BuildArmy {
         do {
             target = Math.max((int) Math.round(quantity / Math.pow(2, counter)), 1);
 
-            if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > target) {
-                robot.leftClick(titleBarracksPoint); // I need to take the focus from the text area
-                robot.leftClick(inputPoint);
-                robot.sleep(250);
-                robot.typeString(String.valueOf(target));
-                robot.sleep(1000);
-            }
+            checkAndSetValue(inputArea, target, titleBarracksPoint, inputPoint);
             
-            counter = counter + 1;
+            if (counter == 0) {
+                robot.mouseMove(titleBarracksPoint);
+                if (!isResourceEnough(silverArea)) {
+                    robot.leftClick(silverPoint);
+                    fillResource();
+                }
+                robot.mouseMove(titleBarracksPoint);
+                if (!isResourceEnough(foodArea)) {
+                    robot.leftClick(foodPoint);
+                    fillResource();
+                }
+
+                checkAndSetValue(inputArea, target, titleBarracksPoint, inputPoint);
+            }
 
             robot.mouseMove(titleBarracksPoint);
             if (isResourceEnough(silverArea) && isResourceEnough(foodArea)) {
@@ -568,11 +563,34 @@ public class BuildArmy {
             
             if (target == 1) {
                 continueTrying = false;
-                log.info("User {} doesnt have resources for one {}" , player.name(), unit.name());
-                lockService.lock(player, Scenario.FINISHED_TRAINING_ALL_TROOPS, LocalDateTime.now().plusHours(1));
+                log.info("User {} doesnt have resources for one {}" , player.getName(), unit.name());
+                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                                .message("Not enough resources")
+                                .expiration(LocalDateTime.now().plusHours(1))
+                        .build());
             }
-            
+
+            counter = counter + 1;
         } while(continueTrying);
+    }
+    
+    private void checkAndSetValue(Area inputArea, int target, Point titleBarracksPoint, Point inputPoint) {
+        if (treatCurrentInputFieldValue(robot.captureScreen(inputArea)) > target) {
+            robot.leftClick(titleBarracksPoint); // I need to take the focus from the text area
+            robot.leftClick(inputPoint);
+            robot.selectAllText();
+            robot.sleep(250);
+            robot.typeString(String.valueOf(target));
+            robot.sleep(1000);
+        }
+        
+        int current = treatCurrentInputFieldValue(robot.captureScreen(inputArea)); 
+        
+        if (current > target) {
+            throw new RuntimeException("It was not possible to set the correct value as target " + target);    
+        }
+        //ImageUtil.showImageAndWait(robot.captureScreen(inputArea));
+        log.info("Current: " + current);
     }
 
     private boolean isResourceEnough(Area area) {
@@ -582,7 +600,7 @@ public class BuildArmy {
 
         //ImageUtil.showImageAndWait(screen, area);
         
-        return ImageUtil.search(colorOkImage, screen, area, 0.1).isPresent();
+        return ImageUtil.search(colorOkImage, screen, area, 0.01).isPresent();
     }
 
     private void handleResourcesIfNeeded(Unit unit, Point silverPoint, Area silverArea, Point foodPoint, Area foodArea) {
@@ -1137,6 +1155,18 @@ public class BuildArmy {
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(951, tierPos)));
                     robot.sleep(wait);
                     break;
+
+                case EC8_ENGINEER:
+                    // Click on Engineer corps
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 486)));
+                    robot.sleep(wait);
+
+                    // Click on Tier
+                    tierPos = 458 + ((unit.getTier() - 8) * 26);
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1212, tierPos)));
+                    robot.sleep(wait);
+                    break;
+                    
                 default:
                     throw new RuntimeException("Not implemented for unit " + unit.name());
             }
@@ -1183,7 +1213,8 @@ public class BuildArmy {
                  G6_MELEE, G7_MELEE, G8_MELEE,
                  DRAGON_V, ELEMENTAL_V, GIANT_V, BEAST_V,
                  S5_DEADSHOT, S6_RANGED, S6_MELEE,
-                 DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII :
+                 DRAGON_VIII, ELEMENTAL_VIII, GIANT_VIII, BEAST_VIII,
+                 EC8_ENGINEER:
                 if (Sets.newHashSet(Unit.DRAGON_VIII, Unit.ELEMENTAL_VIII, Unit.GIANT_VIII, Unit.BEAST_VIII).contains(unit)) {
                     shift = 41;
                 }
@@ -1205,9 +1236,8 @@ public class BuildArmy {
             quantityImage = ImageUtil.resize(quantityImage, 70);
         }
 
-        boolean manualOcr = gameStateService.getPropertyAsBoolean(GameStateService.PROPERTY_MANUAL_OCR);
-        String quantityAsString = OcrUtil.ocr(quantityImage, OcrUtil.WHITELIST_FOR_ONLY_NUMBERS, OcrUtil.PATTERN_FOR_ONLY_NUMBERS, manualOcr);
-        System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
+        String quantityAsString = OcrUtil.ocr(quantityImage, OcrUtil.WHITELIST_FOR_ONLY_NUMBERS, OcrUtil.PATTERN_FOR_ONLY_NUMBERS, false);
+        // System.out.println("Quantity of " + unit.name() + " - " + quantityAsString);
 
         return Integer.parseInt(quantityAsString);
     }
