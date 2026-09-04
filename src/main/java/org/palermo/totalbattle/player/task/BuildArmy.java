@@ -590,7 +590,7 @@ public class BuildArmy {
             throw new RuntimeException("It was not possible to set the correct value as target " + target);    
         }
         //ImageUtil.showImageAndWait(robot.captureScreen(inputArea));
-        log.info("Current: " + current);
+        //log.info("Current: " + current);
     }
 
     private boolean isResourceEnough(Area area) {
