@@ -133,7 +133,6 @@ public class Task {
                     "--disable-session-crashed-bubble",
                     "--restore-last-session=false",
                     "--remote-debugging-port=9222",
-                    "--disable-features=Vulkan",
                     "--use-gl=desktop",
                     "--user-data-dir=" + userDataDir.toAbsolutePath()
             );
