@@ -8,8 +8,10 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import lombok.SneakyThrows;
+import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.util.bean.Army;
 import org.palermo.totalbattle.util.bean.Cache;
+import org.palermo.totalbattle.util.bean.ExplicitBuildItem;
 import org.palermo.totalbattle.util.bean.State;
 
 import java.io.FileInputStream;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,8 +42,9 @@ public class SheetUtil {
     private static Army army;
 
     public static void main(String[] args) {
-        System.out.println(getState("Palermo"));
-        System.out.println(getArmy("Lovern"));
+        // System.out.println(getState("Palermo"));
+        // System.out.println(getArmy("Lovern"));
+        System.out.println(getExplicitBuildItems("Mightshaper"));
     }
 
     private static final Cache cache = new Cache();
@@ -59,6 +63,41 @@ public class SheetUtil {
         Object object = cache.get("conf_" + name, Object.class, () -> internalGetConfiguration(name, clazz));
         return clazz.cast(object);
     }
+
+    public static List<ExplicitBuildItem> getExplicitBuildItems(String playerName) {
+        return cache.get("ebi_" + playerName, List.class, () -> internalExplicitBuildItems(playerName));
+    }
+
+    @SneakyThrows
+    public static List<ExplicitBuildItem> internalExplicitBuildItems(String playerName) {
+
+        ValueRange valueRange = service.spreadsheets().values()
+                .get(SPREAD_SHEET_ID, "ExplicitBuild")
+                .execute();
+
+        java.util.List<java.util.List<Object>> rows = valueRange.getValues();
+
+        List<ExplicitBuildItem> result = new ArrayList<>();
+        
+        for (int i = 1; i < rows.size(); i++) {
+            List<Object> row = rows.get(i);
+            
+            if (row.size() < 4) {
+                continue;
+            }
+
+            if (playerName.equals(row.get(0).toString())) {
+                ExplicitBuildItem item = ExplicitBuildItem.builder()
+                        .amount(toInt(row.get(3)))
+                        .type(ExplicitBuildItem.Type.valueOf(row.get(2).toString()))
+                        .unit(Unit.valueOf(row.get(1).toString()))
+                        .build();
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
 
     @SneakyThrows
     public static Optional<State> internalGetState(String playerName) {

@@ -83,7 +83,7 @@ public class BuildArmy {
         State state = SheetUtil.getState(player.getName()).orElseThrow(() -> new RuntimeException());
         Army army = SheetUtil.getArmy(player.getName()).orElseThrow(() -> new RuntimeException());
         
-        List<UnitQuantity> list = armyService.getProductionOrder(state, army);
+        List<UnitQuantity> list = armyService.getProductionOrder(player, state, army);
 
         Unit lastBuiltUnit = null;
         if (player.getBuildingUnit() != null) {
@@ -558,16 +558,16 @@ public class BuildArmy {
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                 robot.sleep(350);
 
-                continueTrying = false;
+                return;
             }
             
             if (target == 1) {
-                continueTrying = false;
                 log.info("User {} doesnt have resources for one {}" , player.getName(), unit.name());
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
-                                .message("Not enough resources")
+                                .message(String.format("Not enough resources for %s", unit.name()))
                                 .expiration(LocalDateTime.now().plusHours(1))
                         .build());
+                return;
             }
 
             counter = counter + 1;

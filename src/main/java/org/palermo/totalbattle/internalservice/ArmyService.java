@@ -11,7 +11,9 @@ import org.palermo.totalbattle.selenium.stacking.ConfigurationBuilder;
 import org.palermo.totalbattle.selenium.stacking.Pool;
 import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.server.model.Player;
+import org.palermo.totalbattle.util.SheetUtil;
 import org.palermo.totalbattle.util.bean.Army;
+import org.palermo.totalbattle.util.bean.ExplicitBuildItem;
 import org.palermo.totalbattle.util.bean.State;
 
 import java.util.ArrayList;
@@ -36,8 +38,7 @@ public class ArmyService {
                 .compareToIgnoreCase(u2.getUnit().name()); // User anything...
     };
     
-    //Working!!!
-    public List<UnitQuantity> getProductionOrder(State state, Army army) {
+    public List<UnitQuantity> getProductionOrder(Player player, State state, Army army) {
 
         List<Unit> units = getUnits(state);
 
@@ -58,6 +59,18 @@ public class ArmyService {
                     .unit(units.get(i))
                     .quantity(Configuration.computeWaves(units.get(i), qtds[i], army.getWaves()))
                     .build());
+        }
+
+        List<ExplicitBuildItem> items = SheetUtil.getExplicitBuildItems(player.getName());
+        for (ExplicitBuildItem item: items) {
+            switch(item.getType()) {
+                case TOP_UP:
+                    unitQuantities = topUp(unitQuantities, item.getUnit(), item.getAmount());
+                    break;
+                case INCREASE:
+                    unitQuantities = increase(unitQuantities, item.getUnit(), item.getAmount()); 
+                    break;
+            }
         }
 
         unitQuantities.sort(UNIT_QUANTITY_COMPARATOR);

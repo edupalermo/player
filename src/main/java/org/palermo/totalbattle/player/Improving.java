@@ -15,7 +15,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Peter").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Mightshaper").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");
@@ -23,8 +23,9 @@ public class Improving {
         BuildArmy buildArmy = new BuildArmy(player);
         buildArmy.buildArmy(true);
 
+        
         /*
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 80; i++) {
             try {
                 buildArmy.buildArmy(false);
             } catch (Exception e) {
