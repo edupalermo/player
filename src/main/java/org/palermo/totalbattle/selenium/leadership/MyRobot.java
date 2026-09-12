@@ -1,5 +1,8 @@
 package org.palermo.totalbattle.selenium.leadership;
 
+import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.util.ImageUtil;
+
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -8,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 public enum MyRobot {
     
     INSTANCE;
@@ -143,7 +147,21 @@ public enum MyRobot {
     }
     
     public BufferedImage captureScreen() {
-        return robot.createScreenCapture(screenBounds);
+        BufferedImage screen;
+        boolean isToastPresent;
+        do {
+            screen = robot.createScreenCapture(screenBounds);
+            BufferedImage firstQuarter = ImageUtil.crop(screen, Area.of(0,0, screen.getWidth() / 2, screen.getWidth()/2));
+            BufferedImage toast = ImageUtil.loadResource("player/toast.png");
+
+            isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
+            if (isToastPresent) {
+                log.info("Toast found, waiting 1.5 seconds...");
+                robot.delay(1500);
+            }
+            
+        } while (isToastPresent);
+        return screen;
     }
     
     public Area getScreenArea() {

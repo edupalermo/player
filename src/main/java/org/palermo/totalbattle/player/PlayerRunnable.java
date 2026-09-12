@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player;
 
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.BuildArmy;
+import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
@@ -98,6 +99,9 @@ public class PlayerRunnable implements Runnable {
             Task.login(player);
             
             (new BuildArmy(player)).buildArmy();
+
+            (new ClanContribution(player)).helpClanMembers();
+            (new ClanContribution(player)).collectChests();
 
             // log.info("Waiting 120 seconds for no reason! :)");
             // robot.sleep(120000);
