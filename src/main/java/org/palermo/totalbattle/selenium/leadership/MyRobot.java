@@ -156,8 +156,8 @@ public enum MyRobot {
 
             isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
             if (isToastPresent) {
-                log.info("Toast found, waiting 1.5 seconds...");
-                robot.delay(1500);
+                log.info("Toast found, waiting 1 second...");
+                robot.delay(1000);
             }
             
         } while (isToastPresent);

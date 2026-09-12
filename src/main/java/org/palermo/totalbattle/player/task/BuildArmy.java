@@ -281,6 +281,7 @@ public class BuildArmy {
         return Integer.parseInt(temporary);
     }
     
+    /*
     
     public void testSpeedUps() {
         BufferedImage screen = robot.captureScreen();
@@ -298,7 +299,7 @@ public class BuildArmy {
             SpeedUp.clickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
         }
     }
-
+    */
     
     public void playSpeedUpPopup(int turns) {
         Navigate speedUpsTitle = Navigate.builder()
@@ -368,7 +369,7 @@ public class BuildArmy {
             return null;
         }
 
-        while (!SpeedUp.clickOnSpeedUp(bestSpeedUp, speedUpsTitle.getPoint())) {
+        while (!SpeedUp.clickOnSpeedUp(speedUpsTitle, bestSpeedUp, speedUpsTitle.getPoint())) {
             if (speedUpsTitle.searchAgain().isEmpty()) { // Alguem doou e janela sumiu
                 return null;
             }

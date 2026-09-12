@@ -24,6 +24,22 @@ public class ClanContribution {
     }
 
     public void collectChests() {
+        try {
+            internalCollectChests();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        finally {
+            robot.sleep(500);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(500);
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+        }
+    }
+
+
+    public void internalCollectChests() {
 
         BufferedImage screen = robot.captureScreen();
 
@@ -146,12 +162,6 @@ public class ClanContribution {
             }
             shouldContinue = false;
         }
-
-        robot.sleep(500);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(500);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
     }
 
     public void helpClanMembers() {

@@ -6,6 +6,7 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.Navigate;
 
 import java.awt.image.BufferedImage;
 import java.time.Duration;
@@ -71,19 +72,25 @@ public class SpeedUp {
                 .build());
     }
 
-    public static boolean clickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
-        boolean result = internalClickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
+    public static boolean clickOnSpeedUp(Navigate speedUpsTitle, SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
+        boolean result = internalClickOnSpeedUp(speedUpsTitle, speedUpBean, speedUpsTitlePoint);
         log.info("Searching for {} {}", speedUpBean.getLabel(), result);
         return result;
     }
 
 
-    public static boolean internalClickOnSpeedUp(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
+    public static boolean internalClickOnSpeedUp(Navigate speedUpsTitle, SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
         Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 826));
         BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
         Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
         
         for (int i = 0; i < 4; i++) { // One more, we try to click without scroll
+            
+             if (speedUpsTitle.searchAgain().isEmpty()) {
+                 log.info("Speed Up title pop up disappeared");
+                return false;
+            }
+            
             BufferedImage screen = robot.captureScreen();
             //ImageUtil.showImageAndWait(screen, searchArea);
             Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
