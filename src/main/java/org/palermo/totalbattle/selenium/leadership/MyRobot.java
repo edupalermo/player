@@ -149,6 +149,7 @@ public enum MyRobot {
     public BufferedImage captureScreen(boolean checkToast) {
         BufferedImage screen;
         boolean isToastPresent;
+        int count = 0;
         do {
             screen = robot.createScreenCapture(screenBounds);
             
@@ -157,12 +158,17 @@ public enum MyRobot {
                 BufferedImage toast = ImageUtil.loadResource("player/toast.png");
 
                 isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
+                if (count > 20) {
+                    log.warn("Toast is appearing too much!");
+                    isToastPresent = false;
+                }
                 if (isToastPresent) {
                     robot.mouseMove(155, 155); // Sometimes the mouse stop over the hero picture and we can see the same sign
                     robot.mouseMove(105, 120); // Sometimes the mouse stop over the hero picture and we can see the same sign
                     robot.mouseMove(300, 450); // Sometimes the mouse stop over the hero picture and we can see the same sign
                     log.info("Toast found, waiting 1 second...");
                     robot.delay(1000);
+                    count++;
                 }
             }
             else {
