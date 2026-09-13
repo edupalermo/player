@@ -158,9 +158,9 @@ public enum MyRobot {
 
                 isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
                 if (isToastPresent) {
-                    robot.mouseMove(5, 5); // Sometimes the mouse stop over the hero picture and we can see the same sign
-                    robot.mouseMove(5, 120); // Sometimes the mouse stop over the hero picture and we can see the same sign
-                    robot.mouseMove(5, 450); // Sometimes the mouse stop over the hero picture and we can see the same sign
+                    robot.mouseMove(155, 155); // Sometimes the mouse stop over the hero picture and we can see the same sign
+                    robot.mouseMove(105, 120); // Sometimes the mouse stop over the hero picture and we can see the same sign
+                    robot.mouseMove(300, 450); // Sometimes the mouse stop over the hero picture and we can see the same sign
                     log.info("Toast found, waiting 1 second...");
                     robot.delay(1000);
                 }
