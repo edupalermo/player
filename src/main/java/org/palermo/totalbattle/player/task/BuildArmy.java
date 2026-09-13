@@ -83,13 +83,14 @@ public class BuildArmy {
         State state = SheetUtil.getState(player.getName()).orElseThrow(() -> new RuntimeException());
         Army army = SheetUtil.getArmy(player.getName()).orElseThrow(() -> new RuntimeException());
         
-        List<UnitQuantity> list = armyService.getProductionOrder(player, state, army);
-
+        FlagInfo flagInfo = player.getFlags().get(FlagScenario.KEEP_CURRENT_BUILD_QUEUE);
         Unit lastBuiltUnit = null;
-        if (player.getBuildingUnit() != null) {
+        if (player.getBuildingUnit() != null && flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
             lastBuiltUnit = Unit.valueOf(player.getBuildingUnit());
             log.info("Last building troop was: " + lastBuiltUnit.name());
         }
+        
+        List<UnitQuantity> list = armyService.getProductionOrder(player, state, army);
         if (lastBuiltUnit != null && list.stream().map(UnitQuantity::getUnit).anyMatch((it) -> it == Unit.valueOf(player.getBuildingUnit()))) {
             List<UnitQuantity> newList = new ArrayList<>();
             boolean found = false;
@@ -118,6 +119,9 @@ public class BuildArmy {
         for (int i = 0; i < list.size(); i++) {
             UnitQuantity unitQuantityQuantity = list.get(i);
             player.setBuildingUnit(unitQuantityQuantity.getUnit().name());
+            player.getFlags().put(FlagScenario.KEEP_CURRENT_BUILD_QUEUE, FlagInfo.builder()
+                    .expiration(LocalDateTime.now().plusMinutes(45))
+                    .build());
             //System.out.println("Trying " + unitQuantityQuantity.getUnit().name());
             int currentSize = getCurrentUnitNumber(titleBarracksPoint, unitQuantityQuantity.getUnit());
 
@@ -133,7 +137,8 @@ public class BuildArmy {
 
         if (!trainedSomething) {
             player.setBuildingUnit(null);
-            
+            player.getFlags().remove(FlagScenario.KEEP_CURRENT_BUILD_QUEUE);
+
             if (list.size() > 1) {
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
                         .expiration(LocalDateTime.now().plusHours(1))

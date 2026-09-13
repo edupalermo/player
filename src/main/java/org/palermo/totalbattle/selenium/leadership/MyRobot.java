@@ -145,23 +145,35 @@ public enum MyRobot {
             throw new RuntimeException(e);
         }
     }
-    
-    public BufferedImage captureScreen() {
+
+    public BufferedImage captureScreen(boolean checkToast) {
         BufferedImage screen;
         boolean isToastPresent;
         do {
             screen = robot.createScreenCapture(screenBounds);
-            BufferedImage firstQuarter = ImageUtil.crop(screen, Area.of(0,0, screen.getWidth() / 2, screen.getWidth()/2));
-            BufferedImage toast = ImageUtil.loadResource("player/toast.png");
-
-            isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
-            if (isToastPresent) {
-                log.info("Toast found, waiting 1 second...");
-                robot.delay(1000);
-            }
             
+            if (checkToast) {
+                BufferedImage firstQuarter = ImageUtil.crop(screen, Area.of(0,0, screen.getWidth() / 2, screen.getWidth()/2));
+                BufferedImage toast = ImageUtil.loadResource("player/toast.png");
+
+                isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
+                if (isToastPresent) {
+                    robot.mouseMove(5, 5); // Sometimes the mouse stop over the hero picture and we can see the same sign
+                    log.info("Toast found, waiting 1 second...");
+                    robot.delay(1000);
+                }
+            }
+            else {
+                isToastPresent = false;
+            }
+
         } while (isToastPresent);
         return screen;
+    }
+
+
+    public BufferedImage captureScreen() {
+        return captureScreen(true);
     }
     
     public Area getScreenArea() {
