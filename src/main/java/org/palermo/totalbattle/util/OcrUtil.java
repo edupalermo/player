@@ -145,6 +145,10 @@ public class OcrUtil {
         throw new RuntimeException("It was not possible to make ocr of the given image!");
     }
 
+    public static String ocr(BufferedImage image, String whitelist, Pattern pattern) {
+        return ocr(image, whitelist, pattern, false);
+    }
+    
     private static String callOcrService(
             BufferedImage image,    // input image
             String lang,             // "eng"
