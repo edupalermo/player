@@ -46,8 +46,13 @@ public class PlayerRunnable implements Runnable {
             finally {
                 if (player != null) {
                     // It could be only one service!
-                    serverFacade.updatePlayer(player);
-                    serverFacade.stopPlaying(player);
+                    try {
+                        serverFacade.updatePlayer(player);
+                        serverFacade.stopPlaying(player);
+                    }
+                    catch(Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
                 }
             }
         }
