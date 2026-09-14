@@ -65,11 +65,19 @@ public class PlayerRunnable implements Runnable {
 
             ConfigurationMode mode = SheetUtil.getConfiguration(SheetUtil.CONF_MODE, ConfigurationMode.class);
             if (mode == ConfigurationMode.BUILD_TROOPS) {
-                FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
-                if (flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
-                    log.info("Skipped Mode is BUILD_TROOPS and SKIP_BUILDING_TROOPS: " + FlagUtil.duration(flagInfo) + " " + flagInfo.getMessage());
+                if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
+                    FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
+                    FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
                     return;
                 }                
+            }
+            else {
+                if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS) &&
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
+                    FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
+                    FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
+                    return;
+                }
             }
             
             log.info("Started new player");

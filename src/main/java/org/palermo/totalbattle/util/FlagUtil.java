@@ -1,5 +1,6 @@
 package org.palermo.totalbattle.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
@@ -8,6 +9,7 @@ import org.palermo.totalbattle.util.bean.ConfigurationMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+@Slf4j
 public class FlagUtil {
     
     public static boolean isActive(Player player, FlagScenario scenario) {
@@ -40,5 +42,9 @@ public class FlagUtil {
         result.append(seconds).append(" s");
 
         return result.toString();
+    }
+    
+    public static void log(Player player, FlagScenario scenario) {
+        log.info(String.format("Flag [%s] ", FlagUtil.duration(player.getFlags().get(scenario)), player.getFlags().get(scenario).getMessage()));
     }
 }

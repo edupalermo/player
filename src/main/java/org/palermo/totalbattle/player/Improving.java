@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player;
 
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
@@ -17,7 +18,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Elanin").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Robur").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");
@@ -28,7 +29,8 @@ public class Improving {
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
 
-        (new Quests(player)).evaluate();
+        // (new Quests(player)).evaluate();
+        (new FreeSale(player)).freeSale();
         
         /*
         BuildArmy buildArmy = new BuildArmy(player);

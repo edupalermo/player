@@ -18,6 +18,7 @@ import org.palermo.totalbattle.selenium.stacking.Unit;
 import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
+import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
@@ -59,9 +60,8 @@ public class BuildArmy {
     public void buildArmy(boolean checkCaptain) {
         this.lastSelected = null;
 
-        FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
-        if (flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
-            log.info("Building Army is blocked: " + flagInfo.getMessage());
+        if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
+            FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
             return;
         }
 
