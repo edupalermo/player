@@ -18,6 +18,9 @@ public class FlagUtil {
     }
 
     public static String duration(FlagInfo flagInfo) {
+        if (flagInfo == null || flagInfo.getExpiration() == null) {
+            return "Something is null inside the flagInfo";
+        } 
         Duration duration = Duration.between(LocalDateTime.now(), flagInfo.getExpiration());
 
         long days = duration.toDays();

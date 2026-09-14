@@ -148,15 +148,17 @@ public class Quests {
             String timeLeftAsText = treatTimeLeft(timeLeft, new String[] {"FFF6C2"});
             log.info("Time left: " + timeLeftAsText);
             LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-            if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
-                speedUp(trans);
-            }
-            else {
-                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
-                        .expiration(nextLocalDateTime)
-                        .createdAt(LocalDateTime.now())
-                        .message("Waiting job to finish.")
-                        .build());
+            if (nextLocalDateTime != null) {
+                if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
+                    speedUp(trans);
+                }
+                else if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() <= 3) {
+                    player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
+                            .expiration(nextLocalDateTime)
+                            .createdAt(LocalDateTime.now())
+                            .message("Waiting job to finish.")
+                            .build());    
+                }
             }
             return; // If there is already a hourglass... nothing else to be done
         }
