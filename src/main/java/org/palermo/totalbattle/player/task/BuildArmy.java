@@ -119,7 +119,7 @@ public class BuildArmy {
         for (int i = 0; i < list.size(); i++) {
             UnitQuantity unitQuantityQuantity = list.get(i);
             player.setBuildingUnit(unitQuantityQuantity.getUnit().name());
-            player.getFlags().put(FlagScenario.KEEP_CURRENT_BUILD_QUEUE, FlagInfo.builder()
+            player.getFlags().put(FlagScenario.KEEP_CURRENT_BUILD_QUEUE.name(), FlagInfo.builder()
                     .expiration(LocalDateTime.now().plusMinutes(45))
                     .build());
             //System.out.println("Trying " + unitQuantityQuantity.getUnit().name());
@@ -140,7 +140,7 @@ public class BuildArmy {
             player.getFlags().remove(FlagScenario.KEEP_CURRENT_BUILD_QUEUE);
 
             if (list.size() > 1) {
-                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                         .expiration(LocalDateTime.now().plusHours(1))
                         .message("Player is ready to ATTACK!")
                         .build());
@@ -565,7 +565,7 @@ public class BuildArmy {
                 robot.sleep(350);
                 
                 if (counter > 0) {
-                    player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                    player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                             .message(String.format("Not enough resources to train %d %s", quantity, unit.name()))
                             .expiration(LocalDateTime.now().plusMinutes(30))
                             .build());
@@ -576,7 +576,7 @@ public class BuildArmy {
             
             if (target == 1) {
                 log.info("User {} doesnt have resources for one {}" , player.getName(), unit.name());
-                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                                 .message(String.format("Not enough resources for 1 %s", unit.name()))
                                 .expiration(LocalDateTime.now().plusMinutes(45))
                         .build());
