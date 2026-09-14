@@ -34,7 +34,7 @@ public class Quests {
     public void evaluate() {
         try {
             if (FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
-                FlagInfo flagInfo = player.getFlags().get(FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
+                FlagInfo flagInfo = player.getFlags().get(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name());
                 log.info(String.format("Daily Jobs is frozen[%s]: %s", FlagUtil.duration(flagInfo), flagInfo.getMessage()));
                 return;
             }

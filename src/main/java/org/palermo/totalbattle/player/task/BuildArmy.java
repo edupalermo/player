@@ -83,7 +83,7 @@ public class BuildArmy {
         State state = SheetUtil.getState(player.getName()).orElseThrow(() -> new RuntimeException());
         Army army = SheetUtil.getArmy(player.getName()).orElseThrow(() -> new RuntimeException());
         
-        FlagInfo flagInfo = player.getFlags().get(FlagScenario.KEEP_CURRENT_BUILD_QUEUE);
+        FlagInfo flagInfo = player.getFlags().get(FlagScenario.KEEP_CURRENT_BUILD_QUEUE.name());
         Unit lastBuiltUnit = null;
         if (player.getBuildingUnit() != null && flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
             lastBuiltUnit = Unit.valueOf(player.getBuildingUnit());

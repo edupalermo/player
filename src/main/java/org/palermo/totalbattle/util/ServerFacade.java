@@ -198,7 +198,7 @@ public class ServerFacade {
         }
         
         Player upToDatePlayer = response.body();
-        FlagInfo flagInfo = upToDatePlayer.getFlags().get(scenario); 
+        FlagInfo flagInfo = upToDatePlayer.getFlags().get(scenario.name()); 
         if (flagInfo == null) {
             return false;
         } 
