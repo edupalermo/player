@@ -17,7 +17,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Grirana").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Elanin").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");

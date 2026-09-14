@@ -3,11 +3,13 @@ package org.palermo.totalbattle.player;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.CdpUtil;
+import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ServerFacade;
 import org.palermo.totalbattle.util.SheetUtil;
 import org.palermo.totalbattle.util.bean.ConfigurationMode;
@@ -50,45 +52,17 @@ public class PlayerRunnable implements Runnable {
             }
         }
     }
-
-    public static String duration(FlagInfo flagInfo) {
-        Duration duration = Duration.between(LocalDateTime.now(), flagInfo.getExpiration());
-
-        long days = duration.toDays();
-        long hours = duration.toHoursPart();
-        long minutes = duration.toMinutesPart();
-        long seconds = duration.toSecondsPart();
-
-        StringBuilder result = new StringBuilder();
-
-        if (days > 0) {
-            result.append(days).append(" d ");
-        }
-
-        if (hours > 0 || days > 0) {
-            result.append(hours).append(" h ");
-        }
-
-        if (minutes > 0 || hours > 0 || days > 0) {
-            result.append(minutes).append(" m ");
-        }
-
-        result.append(seconds).append(" s");
-
-        return result.toString();
-    }
     
     private void play(Player player) {
         Process process = null;
         try {
             MDC.put("playerName", player.getName());
 
-
             ConfigurationMode mode = SheetUtil.getConfiguration(SheetUtil.CONF_MODE, ConfigurationMode.class);
             if (mode == ConfigurationMode.BUILD_TROOPS) {
                 FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
                 if (flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now())) {
-                    log.info("Skipped Mode is BUILD_TROOPS and SKIP_BUILDING_TROOPS: " + duration(flagInfo) + " " + flagInfo.getMessage());
+                    log.info("Skipped Mode is BUILD_TROOPS and SKIP_BUILDING_TROOPS: " + FlagUtil.duration(flagInfo) + " " + flagInfo.getMessage());
                     return;
                 }                
             }
@@ -97,7 +71,11 @@ public class PlayerRunnable implements Runnable {
             process = Task.openOrdinaryBrowser(player);
             
             Task.login(player);
-            
+
+            if (mode == ConfigurationMode.NORMAL) {
+                (new Quests(player)).evaluate();
+            }
+
             (new BuildArmy(player)).buildArmy();
 
             (new ClanContribution(player)).helpClanMembers();

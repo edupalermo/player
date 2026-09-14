@@ -6,6 +6,7 @@ import lombok.Builder;
 public class Transformation {
     
     private Point real;
+    // Reference is normally hardcoded via gimp check
     private Point reference;
 
     public Point transform(int x, int y) {

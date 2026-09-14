@@ -8,7 +8,10 @@ import org.palermo.totalbattle.selenium.leadership.Area;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.selenium.leadership.Transformation;
+import org.palermo.totalbattle.server.model.FlagInfo;
+import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
+import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
@@ -30,11 +33,18 @@ public class Quests {
 
     public void evaluate() {
         try {
+            if (FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
+                FlagInfo flagInfo = player.getFlags().get(FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
+                log.info(String.format("Daily Jobs is frozen[%s]: %s", FlagUtil.duration(flagInfo), flagInfo.getMessage()));
+                return;
+            }
             internal();
         }
         catch (Exception e) {
             log.error(e.getMessage(), e);
-            
+        }
+        finally {
+            robot.sleep(300);
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
             robot.type(KeyEvent.VK_ESCAPE);
@@ -97,7 +107,7 @@ public class Quests {
                 .reference(Point.of(1022, 366))
                 .build();
         
-        Area claimArea = Area.of(weeklyReward.getPoint(), Point.of(1022, 366), Point.of(1238, 750), Point.of(1293, 770));
+        Area claimArea = trans.transform(Point.of(1238, 750), Point.of(1293, 770));
         BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
         Point buttonClaimPoint = ImageUtil.search(buttonClaim, screen, claimArea, 0.1).orElse(null);
 
@@ -108,39 +118,52 @@ public class Quests {
         // Daily Jobs Tab
         robot.leftClick(weeklyReward.getPoint().move(-310, 65));
         robot.sleep(300);
+        
+        playDailyJobsTab();
+
+
+    }
+    
+    private void playDailyJobsTab() {
+
+        Point refDailyJobsPoint = Navigate.builder()
+                .resourceName("player/ref_daily_jobs.png")
+                .build().ensureExistence().getPoint();
+
+        Transformation trans = Transformation.builder()
+                .reference(Point.of(980, 320))
+                .real(refDailyJobsPoint)
+                .build();
 
         Navigate icon = Navigate.builder()
-                .area(trans.transform(Point.of(1014, 379), Point.of(1046, 407)))
-                .resourceName("player/daily_quests/icon_hourglass.png")
-                .waitLimit(1000)
-                .build();
+            .area(trans.transform(Point.of(1014, 379), Point.of(1046, 407)))
+            .resourceName("player/daily_quests/icon_hourglass.png")
+            .waitLimit(1000)
+            .build();
         
+        BufferedImage screen = robot.captureScreen();
         if (icon.exist()) {
-            log.info("Found hourglass");
-
-            screen = robot.captureScreen();
+            // log.info("Found hourglass");
             BufferedImage timeLeft = ImageUtil.crop(screen, trans.transform(icon.getPoint().move(18, -2), Point.of(1128, 403)));
-            String timeLeftAsText = treatTimeLeft(timeLeft);
+            String timeLeftAsText = treatTimeLeft(timeLeft, new String[] {"FFF6C2"});
             log.info("Time left: " + timeLeftAsText);
             LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-            if (nextLocalDateTime != null) {
-                if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
-                    speedUp(trans);
-                }
+            if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
+                speedUp(trans);
             }
-            
+            else {
+                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION, FlagInfo.builder()
+                        .expiration(nextLocalDateTime)
+                        .createdAt(LocalDateTime.now())
+                        .message("Waiting job to finish.")
+                        .build());
+            }
+            return; // If there is already a hourglass... nothing else to be done
         }
+        
+        screen = robot.captureScreen();
 
-        BufferedImage refDailyJobs = ImageUtil.loadResource("player/ref_daily_jobs.png");
-        Point refDailyJobsPoint = ImageUtil.searchSurroundings(refDailyJobs, screen, 0.1, 20).orElse(null);
-
-        if (refDailyJobsPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(refDailyJobs, "error_image.png");
-            throw new RuntimeException("Couldn't find Daily Jobs reference!");
-        }
-
-        Area topButtonArea = Area.of(refDailyJobsPoint, Point.of(980, 320), Point.of(1218, 391), Point.of(1298, 416));
+        Area topButtonArea = trans.transform(Point.of(1218, 391), Point.of(1298, 416));
         BufferedImage claimButton = ImageUtil.loadResource("player/button_dj_claim.png");
         Point claimButtonPoint = ImageUtil.search(claimButton, screen, topButtonArea, 0.35).orElse(null);
 
@@ -154,21 +177,53 @@ public class Quests {
         Point speedUpButtonPoint = ImageUtil.search(speedUpButton, screen, topButtonArea, 0.1).orElse(null);
         if (speedUpButtonPoint == null) {
 
-            Area area = Area.of(refDailyJobsPoint, Point.of(980, 320), Point.of(1237, 496), Point.of(1297, 517));
+            Area area = trans.transform(Point.of(1237, 496), Point.of(1297, 517));
             BufferedImage claimStart = ImageUtil.loadResource("player/button_dj_start.png");
             Point startButtonPoint = ImageUtil.search(claimStart, screen, area, 0.1).orElse(null);
 
             if (startButtonPoint != null) {
                 robot.leftClick(startButtonPoint, claimStart);
                 robot.sleep(500);
+                return;
+            }
+            
+            robot.mouseMove(Point.of(50, 50));
+            Navigate freeNavigate = Navigate.builder()
+                    .area(area)
+                    .resourceName("player/button_dj_free.png")
+                    .build();             
+            
+            if (freeNavigate.exist()) {
+                freeNavigate.leftClick();
+                return;
+            }
+            
+            //No job to start, should lock daily jobs evaluation!
+            BufferedImage hourglass = ImageUtil.loadResource("player/daily_quests/icon_hourglass_2.png");
+            
+            BufferedImage slice = robot.captureScreen(trans.transform(Point.of(1026, 849), Point.of(1184, 889)));
+            
+            Point hourglassPoint = ImageUtil.search(hourglass, slice, 0.05).orElse(null);
+            if (hourglassPoint == null) {
+                log.warn("Hourglass not found!");
+                return;
+            }
+
+            slice = ImageUtil.crop(slice, Area.fromTwoPoints(hourglassPoint.move(hourglass.getWidth() + 1,0), Point.of(slice.getWidth() - 1, slice.getHeight() - 1)));
+
+            String timeLeftAsText = treatTimeLeft(slice, new String[] {"FFF7BF"});
+            //log.info("Time to reload daily jobs: " + timeLeftAsText);
+            LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
+            if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 2) {
+                //log.info("Lower than 2 hours! Let's lock it!");
+                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION, FlagInfo.builder()
+                                .expiration(nextLocalDateTime)
+                                .createdAt(LocalDateTime.now())
+                                .message("Waiting daily jobs reload.")
+                        .build());
+                return;
             }
         }
-
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
-        robot.type(KeyEvent.VK_ESCAPE);
-        robot.sleep(300);
     }
     
     private void speedUp(Transformation transformation) {
@@ -204,8 +259,8 @@ public class Quests {
 
     }
 
-    private String treatTimeLeft(BufferedImage input) {
-        BufferedImage timeLeft = ImageUtil.toGrayscale(input, new String[] {"FFF6C2"});
+    private String treatTimeLeft(BufferedImage input, String[] mainColor) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
