@@ -39,7 +39,7 @@ public class ServerFacade {
 
     private static final ObjectMapper objectMapper = createObjectMapper();
     
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(2); 
+    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(5); 
 
     private final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(DEFAULT_TIMEOUT)

@@ -563,6 +563,13 @@ public class BuildArmy {
                 // Click on help button
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                 robot.sleep(350);
+                
+                if (counter > 0) {
+                    player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
+                            .message(String.format("Not enough resources to train %d %s", quantity, unit.name()))
+                            .expiration(LocalDateTime.now().plusMinutes(30))
+                            .build());
+                }
 
                 return;
             }
@@ -570,8 +577,8 @@ public class BuildArmy {
             if (target == 1) {
                 log.info("User {} doesnt have resources for one {}" , player.getName(), unit.name());
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS, FlagInfo.builder()
-                                .message(String.format("Not enough resources for %s", unit.name()))
-                                .expiration(LocalDateTime.now().plusHours(1))
+                                .message(String.format("Not enough resources for 1 %s", unit.name()))
+                                .expiration(LocalDateTime.now().plusMinutes(45))
                         .build());
                 return;
             }
