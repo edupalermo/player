@@ -45,6 +45,6 @@ public class FlagUtil {
     }
     
     public static void log(Player player, FlagScenario scenario) {
-        log.info(String.format("Flag [%s] ", FlagUtil.duration(player.getFlags().get(scenario)), player.getFlags().get(scenario).getMessage()));
+        log.info(String.format("Flag %s [%s]: %s ", scenario.name(), FlagUtil.duration(player.getFlags().get(scenario)), player.getFlags().get(scenario).getMessage()));
     }
 }

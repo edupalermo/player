@@ -66,7 +66,6 @@ public class PlayerRunnable implements Runnable {
             ConfigurationMode mode = SheetUtil.getConfiguration(SheetUtil.CONF_MODE, ConfigurationMode.class);
             if (mode == ConfigurationMode.BUILD_TROOPS) {
                 if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
-                    FlagInfo flagInfo = player.getFlags().get(FlagScenario.SKIP_BUILDING_TROOPS);
                     FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
                     return;
                 }                
