@@ -1,11 +1,28 @@
 package org.palermo.totalbattle.player;
 
+import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.OcrUtil;
+
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TimeLeftUtil {
+
+    public static Optional<LocalDateTime> parse(BufferedImage input, String[] mainColor) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        timeLeft = ImageUtil.cropText(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        if (timeLeft.getHeight() < 100) {
+            timeLeft = ImageUtil.resize(timeLeft, 100);
+        }
+        // ImageUtil.showImageAndWait(timeLeft);
+        String timeLeftAsString = OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN);
+        return parse(timeLeftAsString);
+    }
 
     public static Optional<LocalDateTime> parse(String input) {
         Pattern pattern = Pattern.compile("(\\d+)h[:]?([\\d+]+)m");

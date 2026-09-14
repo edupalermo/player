@@ -11,6 +11,7 @@ import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ImageUtil;
+import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
 
 import java.awt.event.KeyEvent;
@@ -63,16 +64,14 @@ public class FreeSale {
 
         // Click on the Free Sale Icon
         robot.leftClick(logoTotalBattlePoint.move(1870 - logoTotalBattlePoint.getX(), 73));
-        robot.sleep(1000);
+        robot.sleep(2500);
 
-        screen = robot.captureScreen();
-
-        BufferedImage refBonusSales = ImageUtil.loadResource("player/ref_bonus_sales.png");
-        Point refBonusSalesPoint = ImageUtil.searchSurroundings(refBonusSales, screen, 0.1, 20).orElse(null);
-
-        if (refBonusSalesPoint == null) {
-            ImageUtil.write(screen, "error_screen.png");
-            ImageUtil.write(refBonusSales, "error_image.png");
+        Navigate refBonusSales = Navigate.builder()
+                .resourceName("player/ref_bonus_sales.png")
+                .waitLimit(3000)
+                .build();
+        
+        if (refBonusSales.search().isEmpty()) {
             throw new RuntimeException("Couldn't Bonus Sales reference!");
         }
 
@@ -87,13 +86,13 @@ public class FreeSale {
         tabs.add(Point.of(78, 374));
 
         // Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(377, 873), Point.of(425, 896));
-        Area area = Area.of(refBonusSalesPoint, Point.of(66, 404), Point.of(341, 873), Point.of(798, 896));
+        Area area = Area.of(refBonusSales.getPoint(), Point.of(66, 404), Point.of(341, 873), Point.of(798, 896));
 
         BufferedImage buttonFree = ImageUtil.loadResource("player/button_bs_free.png");
         BufferedImage iconHourglass = ImageUtil.loadResource("player/icon_bs_hourglass.png");
 
         for (Point move: tabs) {
-            robot.leftClick(refBonusSalesPoint.move(move.getX(), move.getY()));
+            robot.leftClick(refBonusSales.getPoint().move(move.getX(), move.getY()));
             robot.sleep(750);
 
             screen = robot.captureScreen();
@@ -102,6 +101,11 @@ public class FreeSale {
 
             if (buttonFreePoint != null) {
                 robot.leftClick(buttonFreePoint, buttonFree);
+                player.getFlags().put(FlagScenario.FREEZE_FREE_SALE_EVALUATION.name(), FlagInfo.builder()
+                        .expiration(LocalDateTime.now().plusHours(20))
+                        .createdAt(LocalDateTime.now())
+                        .message("Waiting free sale to be available.")
+                        .build());
                 break;
             }
 
@@ -115,7 +119,7 @@ public class FreeSale {
                 LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText).orElse(null);
 
                 if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() <= 20) {
-                    player.getFlags().put(FlagScenario.FREEZE_FREE_SALE_EVALUATION, FlagInfo.builder()
+                    player.getFlags().put(FlagScenario.FREEZE_FREE_SALE_EVALUATION.name(), FlagInfo.builder()
                             .expiration(nextLocalDateTime)
                             .createdAt(LocalDateTime.now())
                             .message("Waiting free sale to be available.")

@@ -152,7 +152,7 @@ public class Quests {
                 speedUp(trans);
             }
             else {
-                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION, FlagInfo.builder()
+                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
                         .expiration(nextLocalDateTime)
                         .createdAt(LocalDateTime.now())
                         .message("Waiting job to finish.")
@@ -216,7 +216,7 @@ public class Quests {
             LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
             if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 2) {
                 //log.info("Lower than 2 hours! Let's lock it!");
-                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION, FlagInfo.builder()
+                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
                                 .expiration(nextLocalDateTime)
                                 .createdAt(LocalDateTime.now())
                                 .message("Waiting daily jobs reload.")
@@ -270,6 +270,4 @@ public class Quests {
         // ImageUtil.showImageAndWait(timeLeft);
         return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN);
     }
-
-
 }

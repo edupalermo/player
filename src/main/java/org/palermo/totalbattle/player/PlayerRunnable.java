@@ -3,7 +3,9 @@ package org.palermo.totalbattle.player;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.Quests;
+import org.palermo.totalbattle.player.task.Thelensia;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
@@ -72,9 +74,11 @@ public class PlayerRunnable implements Runnable {
             }
             else {
                 if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS) &&
-                        FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION) &&
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION)) {
                     FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
                     FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
+                    FlagUtil.log(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION);
                     return;
                 }
             }
@@ -84,9 +88,11 @@ public class PlayerRunnable implements Runnable {
             
             Task.login(player);
 
+            (new FreeSale(player)).freeSale();
             if (mode == ConfigurationMode.NORMAL) {
                 (new Quests(player)).evaluate();
             }
+            (new Thelensia(player)).evaluate();
 
             (new BuildArmy(player)).buildArmy();
 

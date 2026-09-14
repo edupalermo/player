@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class FlagUtil {
     
     public static boolean isActive(Player player, FlagScenario scenario) {
-        FlagInfo flagInfo = player.getFlags().get(scenario);
+        FlagInfo flagInfo = player.getFlags().get(scenario.name());
         return flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now());
     }
 
@@ -45,6 +45,7 @@ public class FlagUtil {
     }
     
     public static void log(Player player, FlagScenario scenario) {
-        log.info(String.format("Flag %s [%s]: %s ", scenario.name(), FlagUtil.duration(player.getFlags().get(scenario)), player.getFlags().get(scenario).getMessage()));
+        FlagInfo flagInfo = player.getFlags().get(scenario.name());
+        log.info(String.format("Flag %s [%s]: %s ", scenario.name(), FlagUtil.duration(flagInfo), flagInfo.getMessage()));
     }
 }

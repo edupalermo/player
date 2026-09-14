@@ -148,7 +148,20 @@ public class OcrUtil {
     public static String ocr(BufferedImage image, String whitelist, Pattern pattern) {
         return ocr(image, whitelist, pattern, false);
     }
-    
+
+    public static String treatTimeLeft(BufferedImage input, String[] mainColor) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        timeLeft = ImageUtil.cropText(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        if (timeLeft.getHeight() < 100) {
+            timeLeft = ImageUtil.resize(timeLeft, 100);
+        }
+        // ImageUtil.showImageAndWait(timeLeft);
+        return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN);
+    }
+
+
     private static String callOcrService(
             BufferedImage image,    // input image
             String lang,             // "eng"
