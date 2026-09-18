@@ -104,6 +104,7 @@ public class PlayerRunnable implements Runnable {
 
             (new ClanContribution(player)).helpClanMembers();
             (new ClanContribution(player)).collectChests();
+            (new SummoningCircle(player)).evaluate();
 
             // log.info("Waiting 120 seconds for no reason! :)");
             // robot.sleep(120000);
