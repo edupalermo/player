@@ -133,7 +133,7 @@ public class SummoningCircle {
             player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT.name(),
                     FlagInfo.builder()
                             .createdAt(LocalDateTime.now())
-                            .expiration(LocalDateTime.now().plusHours(20))
+                            .expiration(LocalDateTime.now().plusHours(24))
                             .message("Player is lower than G4")
                             .build());
             return;
@@ -191,11 +191,11 @@ public class SummoningCircle {
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
 
             LocalDateTime nextEvaluation = OcrUtil.ocrTimer(timerImage, true);
-            if (Duration.between(LocalDateTime.now(), nextEvaluation).abs().toHours() < 24) {
+            if (Duration.between(LocalDateTime.now(), nextEvaluation).abs().toHours() < 44) {
                 player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT.name(),
                         FlagInfo.builder()
                                 .createdAt(LocalDateTime.now())
-                                .expiration(OcrUtil.ocrTimer(timerImage, true))
+                                .expiration(nextEvaluation)
                                 .message("Waiting for new Artifact Fragments")
                                 .build());
             }
@@ -290,12 +290,16 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT.name(),
-                    FlagInfo.builder()
-                            .createdAt(LocalDateTime.now())
-                            .expiration(OcrUtil.ocrTimer(timerImage, true))
-                            .message("Waiting for new Common Captain Fragments")
-                            .build());
+
+            LocalDateTime nextEvaluation = OcrUtil.ocrTimer(timerImage, true);
+            if (Duration.between(LocalDateTime.now(), nextEvaluation).abs().toHours() < 20) {
+                player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT.name(),
+                        FlagInfo.builder()
+                                .createdAt(LocalDateTime.now())
+                                .expiration(OcrUtil.ocrTimer(timerImage, true))
+                                .message("Waiting for new Common Captain Fragments")
+                                .build());
+            }
         }
         else {
             collectCommonCaptainFragments(commonArtifactQtd);
@@ -313,12 +317,15 @@ public class SummoningCircle {
             }
 
             BufferedImage timerImage = ImageUtil.crop(screen, Area.of(iconHourglassPoint.getX() + 16, iconHourglassPoint.getY() - 2, 110, 20));
-            player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT.name(),
-                    FlagInfo.builder()
-                            .createdAt(LocalDateTime.now())
-                            .expiration(OcrUtil.ocrTimer(timerImage, true))
-                            .message("Waiting for new Elite Captain Fragments")
-                            .build());
+            LocalDateTime nextEvaluation = OcrUtil.ocrTimer(timerImage, true);
+            if (Duration.between(LocalDateTime.now(), nextEvaluation).abs().toHours() < 20) {
+                player.getFlags().put(FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT.name(),
+                        FlagInfo.builder()
+                                .createdAt(LocalDateTime.now())
+                                .expiration(OcrUtil.ocrTimer(timerImage, true))
+                                .message("Waiting for new Elite Captain Fragments")
+                                .build());
+            }
         }
         else {
             collectEliteCaptainFragments(eliteArtifactQtd);
