@@ -26,6 +26,8 @@ public class Navigate {
     private MyRobot robot = MyRobot.INSTANCE;
     
     private Point point = null;
+    
+    private boolean skipToastEvaluation = false;
 
     @Builder
     public Navigate(Area area, 
@@ -35,8 +37,12 @@ public class Navigate {
                     Long waitLimit, 
                     Boolean pressEscapeWhileWaiting, 
                     Double comparationLimit,
-                    Boolean debug) {
-        lastScreen = robot.captureScreen();
+                    Boolean debug,
+                    Boolean skipToastEvaluation) {
+        if (skipToastEvaluation != null) {
+            this.skipToastEvaluation = skipToastEvaluation.booleanValue();
+        }
+        lastScreen = robot.captureScreen(!this.skipToastEvaluation);
         if (areaName != null) {
             this.area = RegionSelector.selectArea(areaName, lastScreen);
         }
@@ -68,7 +74,7 @@ public class Navigate {
     public Optional<Point> searchAgain() {
         long start = System.currentTimeMillis();
         do {
-            lastScreen = robot.captureScreen();
+            lastScreen = robot.captureScreen(!this.skipToastEvaluation);
             if (debug) {
                 ImageUtil.showImageAndWait(lastScreen, area);
             }

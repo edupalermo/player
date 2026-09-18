@@ -75,10 +75,16 @@ public class PlayerRunnable implements Runnable {
             else {
                 if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION) &&
-                        FlagUtil.isActive(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION)) {
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION) &&
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT) &&
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT) &&
+                        FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT)) {
                     FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
                     FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
                     FlagUtil.log(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION);
+                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT);
+                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
+                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT);
                     return;
                 }
             }

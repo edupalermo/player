@@ -356,15 +356,7 @@ public class OcrUtil {
         String timeLeftAsText = ocr(timeLeft, WHITELIST_FOR_COUNTDOWN, LINE_OF_PRINTED_TEXT);
         System.out.println("Time Left: " + timeLeftAsText);
 
-        LocalDateTime localDateTime = null;
-        try {
-            localDateTime = calculateNext(timeLeftAsText).orElse(null);
-        } catch (Exception e) {
-            ImageUtil.showImageFor5Seconds(image, "Fail to parse timer");
-            throw e;
-        }
-
-        return localDateTime;
+        return calculateNext(timeLeftAsText).orElse(null);
     }
 
     public static int ocrNumber(BufferedImage image, boolean invert) {
