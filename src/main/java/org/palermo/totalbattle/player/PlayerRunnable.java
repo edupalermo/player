@@ -3,6 +3,7 @@ package org.palermo.totalbattle.player;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.player.task.Thelensia;
