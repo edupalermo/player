@@ -120,6 +120,7 @@ public class BuildArmy {
             UnitQuantity unitQuantityQuantity = list.get(i);
             player.setBuildingUnit(unitQuantityQuantity.getUnit().name());
             player.getFlags().put(FlagScenario.KEEP_CURRENT_BUILD_QUEUE.name(), FlagInfo.builder()
+                    .createdAt(LocalDateTime.now())
                     .expiration(LocalDateTime.now().plusMinutes(45))
                     .build());
             //System.out.println("Trying " + unitQuantityQuantity.getUnit().name());
@@ -141,7 +142,8 @@ public class BuildArmy {
 
             if (list.size() > 1) {
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
-                        .expiration(LocalDateTime.now().plusHours(1))
+                        .createdAt(LocalDateTime.now())
+                        .expiration(LocalDateTime.now().plusHours(2).plusMinutes(30))
                         .message("Player is ready to ATTACK!")
                         .build());
                 log.info("Player is ready to ATTACK!");
