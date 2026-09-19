@@ -199,7 +199,31 @@ public class SummoningCircle {
                                 .message("Waiting for new Artifact Fragments")
                                 .build());
             }
+            return;
         }
+
+        screen = robot.captureScreen(false);
+        BufferedImage iconQuestionMark = ImageUtil.loadResource("player/sc/icon_question_mark.png");
+        Point iconQuestionMarkPoint = ImageUtil.searchSurroundings(iconQuestionMark, screen, 0.15, 20).orElse(null);
+
+        if (iconQuestionMarkPoint == null) {
+            throw new RuntimeException("Could not find question mark!");
+        }
+
+        robot.leftClick(iconQuestionMarkPoint.move(0, 56));
+        robot.sleep(5000);
+        robot.mouseMove(Point.of(986, 250)); // Removing the focus the other button can be on the same spot
+
+
+        Navigate buttonReturn = Navigate.builder()
+                .resourceName("player/sc/button_return.png")
+                .area(RegionSelector.selectArea("SUMMON_CIRCLE_COMMON_RETURN_BUTTON", screen))
+                .waitLimit(10000)
+                .build();
+
+        buttonReturn.leftClick();
+        robot.sleep(500);
+        
     }
 
     private int getArtifactQuantity(BufferedImage input) {

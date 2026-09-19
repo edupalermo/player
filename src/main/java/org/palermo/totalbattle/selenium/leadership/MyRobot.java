@@ -157,7 +157,7 @@ public enum MyRobot {
                 BufferedImage firstQuarter = ImageUtil.crop(screen, Area.of(0,0, screen.getWidth() / 2, screen.getWidth()/2));
                 BufferedImage toast = ImageUtil.loadResource("player/toast.png");
 
-                isToastPresent = ImageUtil.search(toast, firstQuarter, 0.05).isPresent();
+                isToastPresent = ImageUtil.search(toast, firstQuarter, 0.04).isPresent();
                 if (count > 20) {
                     log.warn("Toast is appearing too much!", new RuntimeException("Toast is appearing too much!"));
                     isToastPresent = false;
