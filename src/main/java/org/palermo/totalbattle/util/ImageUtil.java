@@ -59,6 +59,52 @@ public class ImageUtil {
             throw new RuntimeException(e);
         }
     }
+    
+    public static double[] average(BufferedImage input) {
+        int width = input.getWidth();
+        int height = input.getHeight();
+
+        double[] data = new double[3];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = input.getRGB(x, y);
+
+                // Extract color components
+                int alpha = (argb >> 24) & 0xFF;
+                int r = (argb >> 16) & 0xFF;
+                int g = (argb >> 8) & 0xFF;
+                int b = argb & 0xFF;
+
+                if (alpha == 0) {
+                    continue; // Transparent
+                }
+
+                data[0] = data[0] + r;
+                data[1] = data[1] + g;
+                data[2] = data[2] + b;
+            }
+        }
+        data[0] = data[0] / (width * height);
+        data[1] = data[1] / (width * height);
+        data[2] = data[2]  / (width * height);
+
+        return data;
+    }
+
+    public static boolean averageMatch(BufferedImage input, double[] template, double error) {
+        double[] average = average(input);
+        
+        for (int i = 0; i < 3; i++) {
+            //System.out.println("Diff: " + (Math.abs(average[i] - template[i]) / template[i]));
+            if ((Math.abs(average[i] - template[i]) / template[i]) > error) {
+                
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
     public static Mat loadResourceAsMat(String resourceName) {
         try (InputStream is = Thread.currentThread()

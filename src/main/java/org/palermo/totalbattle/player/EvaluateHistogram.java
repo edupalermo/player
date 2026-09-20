@@ -52,7 +52,7 @@ public class EvaluateHistogram {
             System.out.println("Loop! " + (System.currentTimeMillis() - lastChange) + " " + (System.currentTimeMillis() - start));
             
             screen = robot.captureScreen();
-            for (int i = 3; i <= 3; i++) {
+            for (int i = 0; i <= 2; i++) {
                 
                 BufferedImage it = ImageUtil.crop(screen, transformation.transform(Point.of(884 + (i * 79), 590), 55, 58));
                 Histogram histogramIt = Histogram.from(it);

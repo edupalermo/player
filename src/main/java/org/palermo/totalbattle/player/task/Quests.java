@@ -28,6 +28,8 @@ public class Quests {
     private final MyRobot robot = MyRobot.INSTANCE;
     private final Player player;
 
+    private static final double[] OPENED = new double[] {166.4, 149.5, 106.7};
+
     public Quests(Player player) {
         this.player = player;
     }
@@ -217,15 +219,13 @@ public class Quests {
                 .real(refDailyJobsPoint)
                 .build();
 
-        Histogram minOpenedHistogram = Histogram.loadResource("player/daily_quests/dailyRewardOpenedChest.bin");
         BufferedImage screen = robot.captureScreen();
         
         for (int i = 0; i < 5; i++) {
             int x = 884 + (i * 79);
             int y = 590;
             BufferedImage it = ImageUtil.crop(screen, transformation.transform(Point.of(x, y), 55, 58));
-            Histogram histogramIt = Histogram.from(it);
-            if (minOpenedHistogram.contained(Histogram.from(it))) {
+            if (ImageUtil.averageMatch(it, OPENED, 0.01)) {
                 robot.leftClick(Point.of(x, y), it);
                 robot.sleep(350);
             }
