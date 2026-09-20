@@ -21,6 +21,10 @@ public class Transformation {
         return Area.of(real, reference, p1, p2);
     }
 
+    public Area transform(Point p1, int width, int height) {
+        return Area.of(real, reference, p1, p1.move(width, height));
+    }
+
     public int transformX(int x) {
         return Point.of(real, reference, Point.of(x, 100)).getX();
     }

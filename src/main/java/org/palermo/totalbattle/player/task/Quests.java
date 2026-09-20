@@ -15,6 +15,7 @@ import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
+import org.palermo.totalbattle.util.bean.Histogram;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -69,31 +70,7 @@ public class Quests {
         robot.leftClick(labelQuestesPoint.move(14, -30));
         robot.sleep(1000);
 
-        // Tem que checar se tem ouro
-        /* 
-        if (lockService.isFree(player, Scenario.QUESTS_TRY_FULL_CHESTS))  {
-
-            List<Point> chests = new ArrayList<Point>();
-
-            chests.add(Point.of(958, 455));
-            chests.add(Point.of(1088, 455));
-            chests.add(Point.of(1222, 455));
-
-            chests.add(Point.of(910, 620));
-            chests.add(Point.of(990, 620));
-            chests.add(Point.of(1068, 620));
-            chests.add(Point.of(1144, 620));
-            chests.add(Point.of(1220, 620));
-            chests.add(Point.of(1304, 620));
-
-            for (Point point : chests) {
-                robot.leftClick(point);
-                robot.sleep(450);
-            }
-            robot.sleep(3500); // Wait toast to disappear
-            lockService.lock(player, Scenario.QUESTS_TRY_FULL_CHESTS, LocalDateTime.now().plusHours(2));
-        }
-         */
+        evaluateDailyRewardChests();        
 
         screen = robot.captureScreen();
         Navigate weeklyReward = Navigate.builder()
@@ -107,12 +84,14 @@ public class Quests {
                 .reference(Point.of(1022, 366))
                 .build();
         
-        Area claimArea = trans.transform(Point.of(1238, 750), Point.of(1293, 770));
-        BufferedImage buttonClaim = ImageUtil.loadResource("player/button_wr_claim.png");
-        Point buttonClaimPoint = ImageUtil.search(buttonClaim, screen, claimArea, 0.1).orElse(null);
+        Navigate navigateClaim = Navigate.builder()
+                .area(trans.transform(Point.of(1238, 750), Point.of(1293, 770)))
+                .resourceName("player/button_wr_claim.png")
+                .build(); 
 
-        if (buttonClaimPoint != null) {
-            robot.leftClick(buttonClaimPoint, buttonClaim);
+        while (navigateClaim.searchAgain().isPresent()) {
+            navigateClaim.leftClick();
+            robot.sleep(350);
         }
 
         // Daily Jobs Tab
@@ -224,6 +203,31 @@ public class Quests {
                                 .message("Waiting daily jobs reload.")
                         .build());
                 return;
+            }
+        }
+    }
+    
+    private void evaluateDailyRewardChests() {
+        Point refDailyJobsPoint = Navigate.builder()
+                .resourceName("player/ref_daily_jobs.png")
+                .build().ensureExistence().getPoint();
+
+        Transformation transformation = Transformation.builder()
+                .reference(Point.of(980, 320))
+                .real(refDailyJobsPoint)
+                .build();
+
+        Histogram minOpenedHistogram = Histogram.loadResource("player/daily_quests/dailyRewardOpenedChest.bin");
+        BufferedImage screen = robot.captureScreen();
+        
+        for (int i = 0; i < 5; i++) {
+            int x = 884 + (i * 79);
+            int y = 590;
+            BufferedImage it = ImageUtil.crop(screen, transformation.transform(Point.of(x, y), 55, 58));
+            Histogram histogramIt = Histogram.from(it);
+            if (minOpenedHistogram.contained(Histogram.from(it))) {
+                robot.leftClick(Point.of(x, y), it);
+                robot.sleep(350);
             }
         }
     }

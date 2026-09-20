@@ -20,7 +20,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Palermo").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Peter").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");
@@ -31,11 +31,11 @@ public class Improving {
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
 
-        // (new Quests(player)).evaluate();
+         (new Quests(player)).evaluate();
         // (new FreeSale(player)).freeSale();
         // new Thelensia(player).evaluate();
 
-        new SummoningCircle(player).evaluate();
+        // new SummoningCircle(player).evaluate();
         
         /*
         BuildArmy buildArmy = new BuildArmy(player);
