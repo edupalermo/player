@@ -26,8 +26,8 @@ public class Improving {
         //Player player = new Player();
         //player.setName("Palermo");
 
-         BuildArmy buildArmy = new BuildArmy(player);
-         buildArmy.buildArmy(true);
+         //BuildArmy buildArmy = new BuildArmy(player);
+         //buildArmy.buildArmy(true);
 
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
@@ -36,7 +36,7 @@ public class Improving {
         // (new FreeSale(player)).freeSale();
         // new Thelensia(player).evaluate();
 
-        new SummoningCircle(player).evaluate();
+        //new SummoningCircle(player).evaluate();
         
         /*
         BuildArmy buildArmy = new BuildArmy(player);
@@ -49,7 +49,7 @@ public class Improving {
         }
          */
         
-        new PayTaxes(player).pay();
+        //new PayTaxes(player).pay();
         
         // buildArmy.playSpeedUpPopup(60);
         

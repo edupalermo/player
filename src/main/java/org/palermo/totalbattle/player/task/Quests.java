@@ -15,12 +15,14 @@ import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ImageUtil;
 import org.palermo.totalbattle.util.Navigate;
 import org.palermo.totalbattle.util.OcrUtil;
-import org.palermo.totalbattle.util.bean.Histogram;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 @Slf4j
 public class Quests {
@@ -29,6 +31,9 @@ public class Quests {
     private final Player player;
 
     private static final double[] OPENED = new double[] {166.4, 149.5, 106.7};
+
+    private static DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");    
 
     public Quests(Player player) {
         this.player = player;
@@ -72,8 +77,6 @@ public class Quests {
         robot.leftClick(labelQuestesPoint.move(14, -30));
         robot.sleep(1000);
 
-        evaluateDailyRewardChests();        
-
         screen = robot.captureScreen();
         Navigate weeklyReward = Navigate.builder()
                 .resourceName("player/label_weekly_reward.png")
@@ -96,17 +99,16 @@ public class Quests {
             robot.sleep(350);
         }
 
+        evaluateDailyRewardChests();
+
         // Daily Jobs Tab
         robot.leftClick(weeklyReward.getPoint().move(-310, 65));
         robot.sleep(300);
         
         playDailyJobsTab();
-
-
     }
     
     private void playDailyJobsTab() {
-
         Point refDailyJobsPoint = Navigate.builder()
                 .resourceName("player/ref_daily_jobs.png")
                 .build().ensureExistence().getPoint();
@@ -116,35 +118,11 @@ public class Quests {
                 .real(refDailyJobsPoint)
                 .build();
 
-        Navigate icon = Navigate.builder()
-            .area(trans.transform(Point.of(1014, 379), Point.of(1046, 407)))
-            .resourceName("player/daily_quests/icon_hourglass.png")
-            .waitLimit(1000)
-            .build();
-        
-        BufferedImage screen = robot.captureScreen();
-        if (icon.exist()) {
-            // log.info("Found hourglass");
-            BufferedImage timeLeft = ImageUtil.crop(screen, trans.transform(icon.getPoint().move(18, -2), Point.of(1128, 403)));
-            String timeLeftAsText = treatTimeLeft(timeLeft, new String[] {"FFF6C2"});
-            log.info("Time left: " + timeLeftAsText);
-            LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-            if (nextLocalDateTime != null) {
-                if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
-                    speedUp(trans);
-                }
-                else if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() <= 3) {
-                    player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
-                            .expiration(nextLocalDateTime)
-                            .createdAt(LocalDateTime.now())
-                            .message("Waiting job to finish.")
-                            .build());    
-                }
-            }
-            return; // If there is already a hourglass... nothing else to be done
+        if (playedHourglass(trans)) {
+            return;
         }
         
-        screen = robot.captureScreen();
+        BufferedImage screen = robot.captureScreen();
 
         Area topButtonArea = trans.transform(Point.of(1218, 391), Point.of(1298, 416));
         BufferedImage claimButton = ImageUtil.loadResource("player/button_dj_claim.png");
@@ -158,55 +136,113 @@ public class Quests {
         screen = robot.captureScreen();
         BufferedImage speedUpButton = ImageUtil.loadResource("player/button_dj_speed_up.png");
         Point speedUpButtonPoint = ImageUtil.search(speedUpButton, screen, topButtonArea, 0.1).orElse(null);
-        if (speedUpButtonPoint == null) {
-
-            Area area = trans.transform(Point.of(1237, 496), Point.of(1297, 517));
-            BufferedImage claimStart = ImageUtil.loadResource("player/button_dj_start.png");
-            Point startButtonPoint = ImageUtil.search(claimStart, screen, area, 0.1).orElse(null);
-
-            if (startButtonPoint != null) {
-                robot.leftClick(startButtonPoint, claimStart);
-                robot.sleep(500);
-                return;
-            }
-            
-            robot.mouseMove(Point.of(50, 50));
-            Navigate freeNavigate = Navigate.builder()
-                    .area(area)
-                    .resourceName("player/button_dj_free.png")
-                    .build();             
-            
-            if (freeNavigate.exist()) {
-                freeNavigate.leftClick();
-                return;
-            }
-            
-            //No job to start, should lock daily jobs evaluation!
-            BufferedImage hourglass = ImageUtil.loadResource("player/daily_quests/icon_hourglass_2.png");
-            
-            BufferedImage slice = robot.captureScreen(trans.transform(Point.of(1026, 849), Point.of(1184, 889)));
-            
-            Point hourglassPoint = ImageUtil.search(hourglass, slice, 0.05).orElse(null);
-            if (hourglassPoint == null) {
-                log.warn("Hourglass not found!");
-                return;
-            }
-
-            slice = ImageUtil.crop(slice, Area.fromTwoPoints(hourglassPoint.move(hourglass.getWidth() + 1,0), Point.of(slice.getWidth() - 1, slice.getHeight() - 1)));
-
-            String timeLeftAsText = treatTimeLeft(slice, new String[] {"FFF7BF"});
-            //log.info("Time to reload daily jobs: " + timeLeftAsText);
-            LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-            if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 2) {
-                //log.info("Lower than 2 hours! Let's lock it!");
-                player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
-                                .expiration(nextLocalDateTime)
-                                .createdAt(LocalDateTime.now())
-                                .message("Waiting daily jobs reload.")
-                        .build());
-                return;
-            }
+        if (speedUpButtonPoint != null) {
+            return;
         }
+
+        Area area = trans.transform(Point.of(1237, 496), Point.of(1297, 517));
+        BufferedImage claimStart = ImageUtil.loadResource("player/button_dj_start.png");
+        Point startButtonPoint = ImageUtil.search(claimStart, screen, area, 0.1).orElse(null);
+
+        if (startButtonPoint != null) {
+            robot.leftClick(startButtonPoint, claimStart);
+            robot.sleep(1000);
+
+            playedHourglass(trans);
+            return;
+        }
+        
+        robot.mouseMove(Point.of(50, 50));
+        Navigate freeNavigate = Navigate.builder()
+                .area(area)
+                .resourceName("player/button_dj_free.png")
+                .build();             
+        
+        if (freeNavigate.exist()) {
+            freeNavigate.leftClick();
+            return;
+        }
+        
+        //No job to start, should lock daily jobs evaluation!
+        BufferedImage hourglass = ImageUtil.loadResource("player/daily_quests/icon_hourglass_2.png");
+        BufferedImage slice = robot.captureScreen(trans.transform(Point.of(1026, 849), Point.of(1184, 889)));
+        Point hourglassPoint = ImageUtil.search(hourglass, slice, 0.05).orElse(null);
+        if (hourglassPoint == null) {
+            log.warn("Hourglass not found!");
+            return;
+        }
+
+        slice = ImageUtil.crop(slice, Area.fromTwoPoints(hourglassPoint.move(hourglass.getWidth() + 1,0), Point.of(slice.getWidth() - 1, slice.getHeight() - 1)));
+
+        String timeLeftAsText = treatTimeLeft(slice, new String[] {"FFF7BF"});
+        //log.info("Time to reload daily jobs: " + timeLeftAsText);
+        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
+        if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 3) {
+            //log.info("Lower than 2 hours! Let's lock it!");
+            player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
+                            .expiration(nextLocalDateTime)
+                            .createdAt(LocalDateTime.now())
+                            .message("Waiting daily jobs reload.")
+                    .build());
+            return;
+        }
+    }
+    
+    private boolean playedHourglass(Transformation trans) {
+        Navigate hourglassIcon = Navigate.builder()
+                .area(trans.transform(Point.of(1014, 379), Point.of(1046, 407)))
+                .resourceName("player/daily_quests/icon_hourglass.png")
+                .waitLimit(1000)
+                .build();
+        
+            if (!hourglassIcon.exist()) {
+                return false;
+            }
+            
+            LocalDateTime nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans).orElse(null);
+            if (nextLocalDateTime == null) {
+                throw new RuntimeException("Couldn't read date time from hourglass");
+            }
+
+            long minutes = Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes();
+            if (minutes > 15) {
+                speedUp(trans, (int) (minutes / 15));
+
+                nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans).orElse(null);
+                if (nextLocalDateTime == null) {
+                    throw new RuntimeException("Couldn't read date time from hourglass");
+                }
+            }
+
+            if (Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toMinutes() > 15) {
+                throw new RuntimeException("Fail to speed up daily quest, it is still higher than 15 minutes, maybe there is no 15 min speed ups");
+            }
+
+            log.info("Setting FREEZE_DAILY_JOB_EVALUATION to: " + formatter.format(nextLocalDateTime));
+            player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
+                    .expiration(nextLocalDateTime)
+                    .createdAt(LocalDateTime.now())
+                    .message("Waiting job to finish.")
+                    .build());
+                
+            return true; 
+    }
+    
+    private Optional<LocalDateTime> getTimeLeftFromHourglass(Navigate hourglassIcon, Transformation trans) {
+        Supplier<BufferedImage> supplier = () -> getTimeLeftImageFromHourglass(hourglassIcon, trans);
+        String timeLeftAsText = treatTimeLeft(supplier, new String[] {"FFF6C2"});
+        log.info("Time left: " + timeLeftAsText);
+        return TimeLeftUtil.parse(timeLeftAsText);
+    }
+    
+    private BufferedImage getTimeLeftImageFromHourglass(Navigate hourglassIcon, Transformation trans) {
+        if (hourglassIcon.searchAgain().isEmpty()) {
+            throw new RuntimeException("Hourglass disappeared");
+        }
+        BufferedImage screen = hourglassIcon.getLastScreen();
+        BufferedImage result = ImageUtil.crop(screen, trans.transform(hourglassIcon.getPoint().move(18, -2), Point.of(1128, 403)));
+        //ImageUtil.showImageAndWait(result);
+        return result;
     }
     
     private void evaluateDailyRewardChests() {
@@ -225,14 +261,14 @@ public class Quests {
             int x = 884 + (i * 79);
             int y = 590;
             BufferedImage it = ImageUtil.crop(screen, transformation.transform(Point.of(x, y), 55, 58));
-            if (ImageUtil.averageMatch(it, OPENED, 0.01)) {
+            if (ImageUtil.averageMatch(it, OPENED, 0.04)) {
                 robot.leftClick(Point.of(x, y), it);
                 robot.sleep(350);
             }
         }
     }
     
-    private void speedUp(Transformation transformation) {
+    private void speedUp(Transformation transformation, int times) {
         //Click of the speed up button
         robot.leftClick(transformation.transform(Point.of(1257, 407)));
         robot.sleep(300);
@@ -253,10 +289,12 @@ public class Quests {
                 .orElse(null);
         
         if (fifteenMinutes == null) { 
-            return;
+            throw new RuntimeException("No 15 minutes speed up?");
         }
         
-        SpeedUp.clickOnSpeedUp(speedUpsTitle, fifteenMinutes, speedUpsTitle.getPoint());
+        for (int i = 0; i < times; i++) {
+            SpeedUp.clickOnSpeedUp(speedUpsTitle, fifteenMinutes, speedUpsTitle.getPoint());
+        }
 
         if (speedUpsTitle.searchAgain().isPresent()) {
             robot.type(KeyEvent.VK_ESCAPE);
@@ -266,14 +304,37 @@ public class Quests {
     }
 
     private String treatTimeLeft(BufferedImage input, String[] mainColor) {
+        for (int i = 0; i < 5; i++) {
+            try {
+                return treatTimeLeft(input, mainColor, 100 + (100 * i));
+            }
+            catch (Exception e) {
+                log.info("Fail ocr attempt: " + (i + 1), e);
+            }
+        }
+        throw new RuntimeException("Fail all ocr attempts!");
+    }
+
+    private String treatTimeLeft(Supplier<BufferedImage> input, String[] mainColor) {
+        for (int i = 0; i < 5; i++) {
+            try {
+                return treatTimeLeft(input.get(), mainColor, 100 + (100 * i));
+            }
+            catch (Exception e) {
+                log.info("Fail ocr attempt: " + (i + 1), e);
+            }
+        }
+        throw new RuntimeException("Fail all ocr attempts!");
+    }    
+
+    private String treatTimeLeft(BufferedImage input, String[] mainColor, int height) {
         BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
-        if (timeLeft.getHeight() < 100) {
-            timeLeft = ImageUtil.resize(timeLeft, 100);
-        }
-        // ImageUtil.showImageAndWait(timeLeft);
+        timeLeft = ImageUtil.resize(timeLeft, height);
+        //ImageUtil.showImageAndWait(timeLeft);
         return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN);
     }
+
 }

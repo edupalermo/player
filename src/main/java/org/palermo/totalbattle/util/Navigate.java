@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.util;
 
 import lombok.Builder;
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.selenium.leadership.Area;
@@ -22,6 +23,7 @@ public class Navigate {
     
     private boolean debug = false;
 
+    @Getter
     private BufferedImage lastScreen;
     private MyRobot robot = MyRobot.INSTANCE;
     
