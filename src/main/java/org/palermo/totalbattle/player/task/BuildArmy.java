@@ -143,7 +143,7 @@ public class BuildArmy {
             if (list.size() > 1) {
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                         .createdAt(LocalDateTime.now())
-                        .expiration(LocalDateTime.now().plusHours(2).plusMinutes(30))
+                        .expiration(LocalDateTime.now().plusHours(4))
                         .message("Player is ready to ATTACK!")
                         .build());
                 log.info("Player is ready to ATTACK!");
