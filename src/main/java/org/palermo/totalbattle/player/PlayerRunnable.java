@@ -42,7 +42,7 @@ public class PlayerRunnable implements Runnable {
                 player = serverFacade.startPlaying().orElse(null);
                 if (player == null) {
                     log.warn("Couldn't retrieve a player to play, waiting 15 seconds");
-                    Thread.sleep(15000);
+                    robot.sleep(15000);
                     continue;
                 }
                 play(player);
@@ -56,10 +56,6 @@ public class PlayerRunnable implements Runnable {
                     counter++;
                 }
                 
-                if (counter >= 10) {
-                    log.warn("Nothing to do! Waiting 15 seconds");
-                    Thread.sleep(15000);
-                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -73,6 +69,11 @@ public class PlayerRunnable implements Runnable {
                     catch(Exception e) {
                         log.error(e.getMessage(), e);
                     }
+                }
+
+                if (counter >= 10) {
+                    log.warn("Nothing to do! Waiting 15 seconds");
+                    robot.sleep(15000);
                 }
             }
         }
