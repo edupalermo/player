@@ -2,6 +2,7 @@ package org.palermo.totalbattle.player.task;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.RegionSelector;
 import org.palermo.totalbattle.player.TimeLeftUtil;
@@ -574,7 +575,8 @@ public class BuildArmy {
                 if (counter > 0) {
                     player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                             .message(String.format("Not enough resources to train %d %s", quantity, unit.name()))
-                            .expiration(LocalDateTime.now().plusMinutes(30))
+                            .createdAt(LocalDateTime.now())
+                            .expiration(LocalDateTime.now().plusHours(2))
                             .build());
                 }
 
@@ -585,7 +587,8 @@ public class BuildArmy {
                 log.info("User {} doesnt have resources for one {}" , player.getName(), unit.name());
                 player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
                                 .message(String.format("Not enough resources for 1 %s", unit.name()))
-                                .expiration(LocalDateTime.now().plusMinutes(45))
+                                .createdAt(LocalDateTime.now())
+                                .expiration(LocalDateTime.now().plusHours(2))
                         .build());
                 return;
             }
