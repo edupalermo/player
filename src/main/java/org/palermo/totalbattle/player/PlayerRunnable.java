@@ -34,16 +34,32 @@ public class PlayerRunnable implements Runnable {
         log.info("Player Thread running");
 
         Player player = null;
+        long minute = 0;
+        int counter = 0;
         
         while (true) {
             try {
                 player = serverFacade.startPlaying().orElse(null);
                 if (player == null) {
-                    log.warn("Couldn't retrieve a player to play, waiting 10 seconds");
-                    Thread.sleep(10000);
+                    log.warn("Couldn't retrieve a player to play, waiting 15 seconds");
+                    Thread.sleep(15000);
                     continue;
                 }
                 play(player);
+
+                long minuteIt = System.currentTimeMillis() / (60 * 1000);
+                if (minuteIt != minute) {
+                    minute = minuteIt;
+                    counter = 0;
+                }
+                else {
+                    counter++;
+                }
+                
+                if (counter >= 10) {
+                    log.warn("Nothing to do! Waiting 15 seconds");
+                    Thread.sleep(15000);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -116,6 +132,7 @@ public class PlayerRunnable implements Runnable {
             throw new RuntimeException(e);
         }
         finally {
+            MDC.remove("playerName");
             if (process != null && process.isAlive()) {
                 process.destroy();
 
