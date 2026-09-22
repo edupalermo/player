@@ -94,15 +94,12 @@ public class ImageUtil {
 
     public static boolean averageMatch(BufferedImage input, double[] template, double error) {
         double[] average = average(input);
-        
         for (int i = 0; i < 3; i++) {
             //System.out.println("Diff: " + (Math.abs(average[i] - template[i]) / template[i]));
             if ((Math.abs(average[i] - template[i]) / template[i]) > error) {
-                
                 return false;
             }
         }
-        
         return true;
     }
 

@@ -3,6 +3,7 @@ package org.palermo.totalbattle.player;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.FreeSale;
+import org.palermo.totalbattle.player.task.PayTaxes;
 import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Thelensia;
@@ -20,22 +21,22 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Peter").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Mightshaper").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");
 
-        // BuildArmy buildArmy = new BuildArmy(player);
-        // buildArmy.buildArmy(true);
+         BuildArmy buildArmy = new BuildArmy(player);
+         buildArmy.buildArmy(true);
 
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
 
-         (new Quests(player)).evaluate();
+        (new Quests(player)).evaluate();
         // (new FreeSale(player)).freeSale();
         // new Thelensia(player).evaluate();
 
-        // new SummoningCircle(player).evaluate();
+        new SummoningCircle(player).evaluate();
         
         /*
         BuildArmy buildArmy = new BuildArmy(player);
@@ -47,6 +48,8 @@ public class Improving {
             }
         }
          */
+        
+        new PayTaxes(player).pay();
         
         // buildArmy.playSpeedUpPopup(60);
         

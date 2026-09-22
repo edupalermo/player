@@ -163,7 +163,12 @@ public class BuildArmy {
         // Click on Army Label
         robot.leftClick(labelArmyPoint.move(12, -30));
         
-        playBarracksPopUp();
+        for (int i = 0; i < 4; i++) {
+            playBarracksPopUp();
+            if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
+                break;
+            }
+        }
 
         robot.type(KeyEvent.VK_ESCAPE);
         robot.sleep(300);
