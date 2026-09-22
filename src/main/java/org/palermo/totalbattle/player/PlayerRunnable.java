@@ -3,6 +3,7 @@ package org.palermo.totalbattle.player;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
+import org.palermo.totalbattle.player.task.PayTaxes;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.FreeSale;
 import org.palermo.totalbattle.player.task.Quests;
@@ -106,6 +107,7 @@ public class PlayerRunnable implements Runnable {
             (new ClanContribution(player)).helpClanMembers();
             (new ClanContribution(player)).collectChests();
             (new SummoningCircle(player)).evaluate();
+            (new PayTaxes(player)).pay();
 
             // log.info("Waiting 120 seconds for no reason! :)");
             // robot.sleep(120000);
