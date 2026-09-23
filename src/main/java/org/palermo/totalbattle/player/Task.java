@@ -181,7 +181,7 @@ public class Task {
             System.out.println("User already logged");
         }
 
-        robot.sleep(5000);
+        robot.sleep(10000);
 
         // Search and click accept all cookies button
         Navigate.builder()
