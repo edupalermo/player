@@ -1,6 +1,7 @@
 package org.palermo.totalbattle.player;
 
 import lombok.extern.slf4j.Slf4j;
+import org.palermo.totalbattle.player.task.AttackArena;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
 import org.palermo.totalbattle.player.task.PayTaxes;
@@ -71,6 +72,15 @@ public class PlayerRunnable implements Runnable {
                     }
                 }
 
+                try {
+                    new ProcessBuilder("sh", "-c", "rm -rf /tmp/*")
+                            .inheritIO()
+                            .start()
+                            .waitFor();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+                
                 if (counter >= 10) {
                     log.warn("Nothing to do! Waiting 15 seconds");
                     robot.sleep(15000);
@@ -125,6 +135,10 @@ public class PlayerRunnable implements Runnable {
             (new ClanContribution(player)).collectChests();
             (new SummoningCircle(player)).evaluate();
             (new PayTaxes(player)).pay();
+
+            if (mode == ConfigurationMode.NORMAL) {
+                (new AttackArena(player)).evaluate();
+            }
 
             // log.info("Waiting 120 seconds for no reason! :)");
             // robot.sleep(120000);

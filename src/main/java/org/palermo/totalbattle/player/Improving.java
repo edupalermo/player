@@ -1,12 +1,6 @@
 package org.palermo.totalbattle.player;
 
-import org.palermo.totalbattle.player.task.BuildArmy;
-import org.palermo.totalbattle.player.task.ClanContribution;
-import org.palermo.totalbattle.player.task.FreeSale;
-import org.palermo.totalbattle.player.task.PayTaxes;
-import org.palermo.totalbattle.player.task.Quests;
-import org.palermo.totalbattle.player.task.SummoningCircle;
-import org.palermo.totalbattle.player.task.Thelensia;
+import org.palermo.totalbattle.player.task.*;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
 import org.palermo.totalbattle.selenium.leadership.Point;
 import org.palermo.totalbattle.server.model.Player;
@@ -21,7 +15,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Mightshaper").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Grirana").orElseThrow(() -> new RuntimeException());
         
         //Player player = new Player();
         //player.setName("Palermo");
@@ -32,7 +26,7 @@ public class Improving {
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
 
-        (new Quests(player)).evaluate();
+        // (new Quests(player)).evaluate();
         // (new FreeSale(player)).freeSale();
         // new Thelensia(player).evaluate();
 
@@ -55,6 +49,10 @@ public class Improving {
         
         // buildArmy.fillResource(13900000);
         // buildArmy.playOpenBoostersPopUp();
+
+        (new AttackArena(player)).evaluate();
+        //(new CollectAdministrationGift(player)).evaluate();
+        //(new MineSilver(player)).evaluate();
         
         facade.updatePlayer(player);
     }
