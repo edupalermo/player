@@ -184,6 +184,7 @@ public class Quests {
                             .createdAt(LocalDateTime.now())
                             .message("Waiting daily jobs reload.")
                     .build());
+            FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);            
             return;
         }
     }
@@ -224,7 +225,7 @@ public class Quests {
                     .createdAt(LocalDateTime.now())
                     .message("Waiting job to finish.")
                     .build());
-                
+            FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
             return true; 
     }
     

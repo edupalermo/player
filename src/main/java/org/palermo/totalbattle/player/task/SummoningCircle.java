@@ -136,6 +136,7 @@ public class SummoningCircle {
                             .expiration(LocalDateTime.now().plusHours(24))
                             .message("Player is lower than G4")
                             .build());
+            FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT);            
             return;
         }
         robot.leftClick(iconArtifactPoint, iconArtifact);
@@ -198,6 +199,7 @@ public class SummoningCircle {
                                 .expiration(nextEvaluation)
                                 .message("Waiting for new Artifact Fragments")
                                 .build());
+                FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT);                
             }
             return;
         }
@@ -323,6 +325,7 @@ public class SummoningCircle {
                                 .expiration(OcrUtil.ocrTimer(timerImage, true))
                                 .message("Waiting for new Common Captain Fragments")
                                 .build());
+                FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT);                
             }
         }
         else {
@@ -349,6 +352,7 @@ public class SummoningCircle {
                                 .expiration(OcrUtil.ocrTimer(timerImage, true))
                                 .message("Waiting for new Elite Captain Fragments")
                                 .build());
+                FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);                
             }
         }
         else {
