@@ -67,10 +67,12 @@ public class PlayerRunnable implements Runnable {
                 }
 
                 try {
+                    System.out.println("Trying to clean tmp dir");
                     new ProcessBuilder("sh", "-c", "rm -rf /tmp/*")
                             .inheritIO()
                             .start()
                             .waitFor();
+                    System.out.println("Finish cleaning up");
                 } catch (Throwable e) {
                     log.error(e.getMessage(), e);
                 }
