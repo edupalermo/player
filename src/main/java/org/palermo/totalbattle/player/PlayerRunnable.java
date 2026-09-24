@@ -4,25 +4,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.player.task.AttackArena;
 import org.palermo.totalbattle.player.task.BuildArmy;
 import org.palermo.totalbattle.player.task.ClanContribution;
-import org.palermo.totalbattle.player.task.PayTaxes;
-import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.FreeSale;
+import org.palermo.totalbattle.player.task.PayTaxes;
 import org.palermo.totalbattle.player.task.Quests;
+import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Thelensia;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
-import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
-import org.palermo.totalbattle.util.CdpUtil;
 import org.palermo.totalbattle.util.FlagUtil;
 import org.palermo.totalbattle.util.ServerFacade;
 import org.palermo.totalbattle.util.SheetUtil;
 import org.palermo.totalbattle.util.bean.ConfigurationMode;
 import org.slf4j.MDC;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Slf4j
 public class PlayerRunnable implements Runnable {
@@ -151,36 +145,27 @@ public class PlayerRunnable implements Runnable {
             if (process != null && process.isAlive()) {
                 process.destroy();
 
-                String os = System.getProperty("os.name").toLowerCase();
-                if (os.contains("win")) {
-                    try {
-                        Process killerProcess = new ProcessBuilder("powershell", "Stop-Process", "-Name", "chrome").start();
-                        // Process killerProcess = new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
-                        killerProcess.waitFor();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                killChromeProcesses();
             }
         }
     }
-    
-    private static void login() {
-        if (CdpUtil.evaluate("""
-                (() => {
-                            const element = document.querySelector('span[data-id="login"]');
-                
-                            if (!element) {
-                                return false;
-                            }
-                
-                            element.click();
-                            return true;
-                        })()                    """)) {
-            System.out.println("Clicked in the login button!");
-        }
 
+    private void killChromeProcesses() {
+        Process killerProcess = null;
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                killerProcess = new ProcessBuilder("powershell", "Stop-Process", "-Name", "chrome").start();
+                // Process killerProcess = new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
+            } else if (os.contains("linux")) {
+                killerProcess = new ProcessBuilder("pkill", "-f", "chrome").start();
+            }
+            
+            if (killerProcess != null) {
+                killerProcess.waitFor();
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);;
+        }
     }
 }

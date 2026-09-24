@@ -18,12 +18,9 @@ public class Improving {
         Player player = facade.retrievePlayer("Palermo").orElseThrow(() -> new RuntimeException());
 
 
-        Process process = Task.openOrdinaryBrowser(player);
-        Task.login(player);
+        //Process process = Task.openOrdinaryBrowser(player);
+        //Task.login(player);
         
-        System.out.println("Ready to play!");
-        
-        robot.sleep(1000000000);
         
         //Player player = new Player();
         //player.setName("Palermo");
@@ -58,7 +55,7 @@ public class Improving {
         // buildArmy.fillResource(13900000);
         // buildArmy.playOpenBoostersPopUp();
 
-        //(new AttackArena(player)).evaluate();
+        (new AttackArena(player)).evaluate();
         //(new CollectAdministrationGift(player)).evaluate();
         //(new MineSilver(player)).evaluate();
         
