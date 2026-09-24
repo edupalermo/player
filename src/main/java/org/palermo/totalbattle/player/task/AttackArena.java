@@ -34,6 +34,9 @@ public class AttackArena {
         try {
             attack();            
         }
+        catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         finally {
             robot.type(KeyEvent.VK_ESCAPE);
             robot.sleep(300);
