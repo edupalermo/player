@@ -213,6 +213,7 @@ public class Task {
             Area labelClanArea = Area.fromTwoPoints(Point.of(989, 1012), Point.of(1074, 1035));
             Point point = ImageUtil.searchSurroundings(labelClan, screen, labelClanArea, 0.12, 20).orElse(null);
             if (point != null) {
+                found = true;
                 break;
             }
             
