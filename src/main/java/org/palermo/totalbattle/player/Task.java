@@ -181,7 +181,7 @@ public class Task {
             System.out.println("User already logged");
         }
 
-        robot.sleep(10000);
+        robot.sleep(5000); // This is horrible!
 
         // Search and click accept all cookies button
         Navigate.builder()
@@ -206,33 +206,43 @@ public class Task {
         //BufferedImage buttonBonusSalesClose = ImageUtil.loadResource("player/button_bonus_sales_close.png");
         BufferedImage screen = null;
         long start = System.currentTimeMillis();
+        boolean switchedToClassic = false;
         boolean found = false;
         do {
             screen = robot.captureScreen();
             Area labelClanArea = Area.fromTwoPoints(Point.of(989, 1012), Point.of(1074, 1035));
             Point point = ImageUtil.searchSurroundings(labelClan, screen, labelClanArea, 0.12, 20).orElse(null);
             if (point != null) {
-                found = true;
+                break;
+            }
+            
+            Navigate buttonCloseNavigate = Navigate.builder()
+                    .resourceName("player/button_bonus_sales_close.png")
+                    .areaName(Area.BONUS_SALE_BUTTON_CLOSE)
+                    .build();
+            if (buttonCloseNavigate.exist()) { // Sometimes the left click on close doesn't work!
+                buttonCloseNavigate.leftClick();
+                robot.sleep(500);
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(300);
             }
             else {
-                screen = robot.captureScreen();
-                Navigate buttonCloseNavigate = Navigate.builder()
-                        .resourceName("player/button_bonus_sales_close.png")
-                        .areaName(Area.BONUS_SALE_BUTTON_CLOSE)
+                System.out.println("Trying to hit scape to close initial pop-ups");
+                robot.type(KeyEvent.VK_ESCAPE);
+                robot.sleep(1000);
+            }
+
+            if (!switchedToClassic) {
+                Navigate switchToClassicVersion = Navigate.builder()
+                        .resourceName("player/label_switch_to_classic_version.png")
                         .build();
-                if (buttonCloseNavigate.exist()) { // Sometimes the left click on close doesn't work!
-                    buttonCloseNavigate.leftClick();
-                    robot.sleep(500);
-                    robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(300);
-                }
-                else {
-                    System.out.println("Trying to hit scape to close initial pop-ups");
-                    robot.type(KeyEvent.VK_ESCAPE);
-                    robot.sleep(1000);
+                if (switchToClassicVersion.exist()) {
+                    switchToClassicVersion.leftClickIfExists();
+                    switchedToClassic = true;
                 }
             }
-        } while (!found && (System.currentTimeMillis() - start) < 60000);
+
+        } while (!found && (System.currentTimeMillis() - start) < 200000);
         if (!found) {
             ImageUtil.write(screen, "error_screen.png");
             ImageUtil.write(labelClan, "error_image.png");
