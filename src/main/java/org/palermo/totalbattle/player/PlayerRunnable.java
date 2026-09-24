@@ -71,7 +71,7 @@ public class PlayerRunnable implements Runnable {
                             .inheritIO()
                             .start()
                             .waitFor();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     log.error(e.getMessage(), e);
                 }
                 
