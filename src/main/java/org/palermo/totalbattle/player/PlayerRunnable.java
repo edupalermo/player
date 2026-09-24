@@ -158,7 +158,7 @@ public class PlayerRunnable implements Runnable {
                 killerProcess = new ProcessBuilder("powershell", "Stop-Process", "-Name", "chrome").start();
                 // Process killerProcess = new ProcessBuilder("taskkill", "/IM", "chrome.exe", "/F").start();
             } else if (os.contains("linux")) {
-                killerProcess = new ProcessBuilder("pkill", "-f", "chrome").start();
+                killerProcess = new ProcessBuilder("pkill", "-f", "chrome").inheritIO().start();
             }
             
             if (killerProcess != null) {
