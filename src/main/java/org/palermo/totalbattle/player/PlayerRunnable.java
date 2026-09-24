@@ -32,57 +32,61 @@ public class PlayerRunnable implements Runnable {
         long minute = 0;
         int counter = 0;
         
-        while (true) {
-            try {
-                player = serverFacade.startPlaying().orElse(null);
-                if (player == null) {
-                    log.warn("Couldn't retrieve a player to play, waiting 15 seconds");
-                    robot.sleep(15000);
-                    continue;
-                }
-                play(player);
+        try {
 
-                long minuteIt = System.currentTimeMillis() / (60 * 1000);
-                if (minuteIt != minute) {
-                    minute = minuteIt;
-                    counter = 0;
-                }
-                else {
-                    counter++;
-                }
-                
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-            finally {
-                if (player != null) {
-                    // It could be only one service!
-                    try {
-                        serverFacade.updatePlayer(player);
-                        serverFacade.stopPlaying(player);
-                    }
-                    catch(Exception e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-
+            while (true) {
                 try {
-                    System.out.println("Trying to clean tmp dir");
-                    new ProcessBuilder("sh", "-c", "rm -rf /tmp/*")
-                            .inheritIO()
-                            .start()
-                            .waitFor();
-                    System.out.println("Finish cleaning up");
+                    player = serverFacade.startPlaying().orElse(null);
+                    if (player == null) {
+                        log.warn("Couldn't retrieve a player to play, waiting 15 seconds");
+                        robot.sleep(15000);
+                        continue;
+                    }
+                    play(player);
+
+                    long minuteIt = System.currentTimeMillis() / (60 * 1000);
+                    if (minuteIt != minute) {
+                        minute = minuteIt;
+                        counter = 0;
+                    } else {
+                        counter++;
+                    }
+
                 } catch (Throwable e) {
                     log.error(e.getMessage(), e);
-                }
-                
-                if (counter >= 10) {
-                    log.warn("Nothing to do! Waiting 15 seconds");
-                    robot.sleep(15000);
+                } finally {
+                    if (player != null) {
+                        // It could be only one service!
+                        try {
+                            serverFacade.updatePlayer(player);
+                            serverFacade.stopPlaying(player);
+                        } catch (Throwable e) {
+                            log.error(e.getMessage(), e);
+                        }
+                    }
+
+                    try {
+                        System.out.println("Trying to clean tmp dir");
+                        new ProcessBuilder("sh", "-c", "rm -rf /tmp/*")
+                                .inheritIO()
+                                .start()
+                                .waitFor();
+                        System.out.println("Finish cleaning up");
+                    } catch (Throwable e) {
+                        log.error(e.getMessage(), e);
+                    }
+
+                    if (counter >= 10) {
+                        log.warn("Nothing to do! Waiting 15 seconds");
+                        robot.sleep(15000);
+                    }
                 }
             }
+
+        } catch(Throwable e) {
+            log.error(e.getMessage(), e);
         }
+        System.out.println("It was not supposed to get here");
     }
     
     private void play(Player player) {
