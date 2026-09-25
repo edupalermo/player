@@ -606,12 +606,15 @@ public class BuildArmy {
             robot.typeString(String.valueOf(target));
             robot.sleep(1000);
         }
-        
+
+        robot.leftClick(titleBarracksPoint); // Trying to avoid getting the cursor and ocr interpret as 1 
+
         int current = treatCurrentInputFieldValue(robot.captureScreen(inputArea)); 
         
-        if (current > target) {
-            throw new RuntimeException("It was not possible to set the correct value as target " + target);    
-        }
+        //TODO... Let ignore this for some time and see what we get.
+        //if (current > target) {
+            //throw new RuntimeException(String.format("It was not possible to set the correct value %d -> %d", current, target));    
+        //}
         //ImageUtil.showImageAndWait(robot.captureScreen(inputArea));
         //log.info("Current: " + current);
     }

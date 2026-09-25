@@ -25,8 +25,8 @@ public class Improving {
         //Player player = new Player();
         //player.setName("Palermo");
 
-         //BuildArmy buildArmy = new BuildArmy(player);
-         //buildArmy.buildArmy(true);
+         BuildArmy buildArmy = new BuildArmy(player);
+         buildArmy.buildArmy(false);
 
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
@@ -55,7 +55,7 @@ public class Improving {
         // buildArmy.fillResource(13900000);
         // buildArmy.playOpenBoostersPopUp();
 
-        (new AttackArena(player)).evaluate();
+        //(new AttackArena(player)).evaluate();
         //(new CollectAdministrationGift(player)).evaluate();
         //(new MineSilver(player)).evaluate();
         
