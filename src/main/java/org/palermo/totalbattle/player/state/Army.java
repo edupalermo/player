@@ -16,8 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 public class Army {
 
+    @Builder.Default
     private int productionReduction = 1;
+    @Builder.Default
     private boolean checkedExistingQuantity = false;
+    @Builder.Default
     private List<TroopQuantity> productionOrder = new ArrayList<>();
     private ArmyTarget target;
 }
