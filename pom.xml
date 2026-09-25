@@ -174,7 +174,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.palermo.totalbattle.server.Main</mainClass>
+                    <mainClass>org.palermo.totalbattle.Application</mainClass>
                 </configuration>
             </plugin>
      
