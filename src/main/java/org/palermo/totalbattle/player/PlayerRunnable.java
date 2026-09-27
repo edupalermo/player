@@ -10,6 +10,7 @@ import org.palermo.totalbattle.player.task.Quests;
 import org.palermo.totalbattle.player.task.SummoningCircle;
 import org.palermo.totalbattle.player.task.Thelensia;
 import org.palermo.totalbattle.selenium.leadership.MyRobot;
+import org.palermo.totalbattle.server.model.FlagInfo;
 import org.palermo.totalbattle.server.model.FlagScenario;
 import org.palermo.totalbattle.server.model.Player;
 import org.palermo.totalbattle.util.FlagUtil;
@@ -17,6 +18,9 @@ import org.palermo.totalbattle.util.ServerFacade;
 import org.palermo.totalbattle.util.SheetUtil;
 import org.palermo.totalbattle.util.bean.ConfigurationMode;
 import org.slf4j.MDC;
+
+import java.util.Comparator;
+import java.util.Map;
 
 @Slf4j
 public class PlayerRunnable implements Runnable {
@@ -31,7 +35,7 @@ public class PlayerRunnable implements Runnable {
         Player player = null;
         long minute = 0;
         int counter = 0;
-        
+
         try {
 
             while (true) {
@@ -83,12 +87,12 @@ public class PlayerRunnable implements Runnable {
                 }
             }
 
-        } catch(Throwable e) {
+        } catch (Throwable e) {
             log.error(e.getMessage(), e);
         }
         System.out.println("It was not supposed to get here");
     }
-    
+
     private void play(Player player) {
         Process process = null;
         try {
@@ -99,28 +103,23 @@ public class PlayerRunnable implements Runnable {
                 if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
                     FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
                     return;
-                }                
-            }
-            else {
+                }
+            } else {
                 if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT) &&
                         FlagUtil.isActive(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT)) {
-                    FlagUtil.log(player, FlagScenario.SKIP_BUILDING_TROOPS);
-                    FlagUtil.log(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION);
-                    FlagUtil.log(player, FlagScenario.FREEZE_FREE_SALE_EVALUATION);
-                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_COMMON_CAPTAIN_FRAGMENT);
-                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ELITE_CAPTAIN_FRAGMENT);
-                    FlagUtil.log(player, FlagScenario.FREEZE_SUMMONING_CIRCLE_ARTIFACT_FRAGMENT);
                     return;
                 }
             }
-            
+
             log.info("Started new player");
+            printFlags(player);
+
             process = Task.openOrdinaryBrowser(player);
-            
+
             Task.login(player);
 
             (new FreeSale(player)).freeSale();
@@ -142,11 +141,10 @@ public class PlayerRunnable implements Runnable {
 
             // log.info("Waiting 120 seconds for no reason! :)");
             // robot.sleep(120000);
-            
+
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        finally {
+        } finally {
             MDC.remove("playerName");
             if (process != null && process.isAlive()) {
                 process.destroy();
@@ -166,12 +164,36 @@ public class PlayerRunnable implements Runnable {
             } else if (os.contains("linux")) {
                 killerProcess = new ProcessBuilder("pkill", "-f", "chrome").inheritIO().start();
             }
-            
+
             if (killerProcess != null) {
                 killerProcess.waitFor();
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);;
+            log.error(e.getMessage(), e);
+            ;
         }
+    }
+
+    private void printFlags(Player player) {
+        player.getFlags().entrySet()
+                .stream()
+                .sorted(Comparator.comparing((Map.Entry<String, FlagInfo> e) -> FlagUtil.isActive(player, e.getKey()))
+                        .thenComparing((Map.Entry<String, FlagInfo> e) -> e.getValue().getExpiration()))
+                .forEach((entry) -> {
+            if (FlagUtil.isActive(player, entry.getKey())) {
+                log.info(String.format("%s %s", filler(entry.getKey(), 48), FlagUtil.duration(entry.getValue())));
+
+            } else {
+                log.info(String.format("%s FREE", filler(entry.getKey(), 48)));
+            }
+        });
+    }
+
+    private String filler(String name, int size) {
+        int count = 0;
+        if (size > name.length()) {
+            count = size - name.length();
+        }
+        return name + ".".repeat(count);
     }
 }

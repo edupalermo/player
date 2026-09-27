@@ -49,6 +49,7 @@ public class AttackArena {
         Navigate activeTelescope = Navigate.builder()
                 .areaName("ACTIVE_TELESCOPE")
                 .resourceName("player/icon_telescope.png")
+                .comparationLimit(0.02)
                 .build();
 
         if (!activeTelescope.exist()) {

@@ -11,9 +11,13 @@ import java.time.LocalDateTime;
 
 @Slf4j
 public class FlagUtil {
-    
+
     public static boolean isActive(Player player, FlagScenario scenario) {
-        FlagInfo flagInfo = player.getFlags().get(scenario.name());
+        return isActive(player, scenario.name());
+    }
+    
+    public static boolean isActive(Player player, String scenario) {
+        FlagInfo flagInfo = player.getFlags().get(scenario);
         return flagInfo != null && flagInfo.getExpiration().isAfter(LocalDateTime.now());
     }
 
