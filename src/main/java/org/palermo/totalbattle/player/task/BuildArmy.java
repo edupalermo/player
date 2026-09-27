@@ -359,7 +359,7 @@ public class BuildArmy {
                 doubleCheck = seconds;
             }
             if (doubleCheck != -1 && seconds > doubleCheck) {
-                log.info("Spped up cannot go up, never!");
+                log.info("Speed up cannot go up, never! {} > {}", seconds, doubleCheck);
                 continue;
             }
             doubleCheck = seconds;
