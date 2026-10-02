@@ -176,7 +176,7 @@ public class Quests {
 
         String timeLeftAsText = treatTimeLeft(slice, new String[] {"FFF7BF"});
         //log.info("Time to reload daily jobs: " + timeLeftAsText);
-        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
+        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText);
         if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 3) {
             //log.info("Lower than 2 hours! Let's lock it!");
             player.getFlags().put(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name(), FlagInfo.builder()
@@ -200,7 +200,7 @@ public class Quests {
                 return false;
             }
             
-            LocalDateTime nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans).orElse(null);
+            LocalDateTime nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans);
             if (nextLocalDateTime == null) {
                 throw new RuntimeException("Couldn't read date time from hourglass");
             }
@@ -209,7 +209,7 @@ public class Quests {
             if (minutes > 15) {
                 speedUp(trans, (int) (minutes / 15));
 
-                nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans).orElse(null);
+                nextLocalDateTime = getTimeLeftFromHourglass(hourglassIcon, trans);
                 if (nextLocalDateTime == null) {
                     throw new RuntimeException("Couldn't read date time from hourglass");
                 }
@@ -229,7 +229,7 @@ public class Quests {
             return true; 
     }
     
-    private Optional<LocalDateTime> getTimeLeftFromHourglass(Navigate hourglassIcon, Transformation trans) {
+    private LocalDateTime getTimeLeftFromHourglass(Navigate hourglassIcon, Transformation trans) {
         Supplier<BufferedImage> supplier = () -> getTimeLeftImageFromHourglass(hourglassIcon, trans);
         String timeLeftAsText = treatTimeLeft(supplier, new String[] {"FFF6C2"});
         log.info("Time left: " + timeLeftAsText);

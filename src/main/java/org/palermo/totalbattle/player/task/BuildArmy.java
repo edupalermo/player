@@ -2,10 +2,8 @@ package org.palermo.totalbattle.player.task;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.palermo.totalbattle.internalservice.ArmyService;
 import org.palermo.totalbattle.player.RegionSelector;
-import org.palermo.totalbattle.player.TimeLeftUtil;
 import org.palermo.totalbattle.player.bean.SpeedUpBean;
 import org.palermo.totalbattle.player.bean.UnitQuantity;
 import org.palermo.totalbattle.player.task.shared.SpeedUp;
@@ -37,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Slf4j
 public class BuildArmy {
@@ -49,16 +48,20 @@ public class BuildArmy {
     private final boolean TEST = false; 
     
     private Unit lastSelected = null;
+    private boolean checkCaptain = true;
+    private int trainSequence = 6;
 
+    public BuildArmy(Player player, boolean checkCaptain, int trainSequence) {
+        this.player = player;
+        this.checkCaptain = checkCaptain;
+        this.trainSequence = trainSequence;
+    }
+    
     public BuildArmy(Player player) {
         this.player = player;
     }
 
     public void buildArmy() {
-        buildArmy(true);
-    }
-
-    public void buildArmy(boolean checkCaptain) {
         this.lastSelected = null;
 
         if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
@@ -67,6 +70,22 @@ public class BuildArmy {
         }
 
         try {
+            Navigate navigate = Navigate.builder()
+                    .areaName("MAIN_HERO_PICTURE")
+                    .resourceName("player/hero/dead_66.png")
+                    .comparationLimit(0.05)
+                    .build();
+
+            if (navigate.exist()) {
+                player.getFlags().put(FlagScenario.SKIP_BUILDING_TROOPS.name(), FlagInfo.builder()
+                        .createdAt(LocalDateTime.now())
+                        .expiration(LocalDateTime.now().plusHours(4))
+                        .message("Player is dead!")
+                        .build());
+                log.info("Player is dead!");
+                return;
+            }
+            
             internalBuildArmy(checkCaptain);
         } catch(Exception e) {
             log.error(e.getMessage(), e);
@@ -164,7 +183,7 @@ public class BuildArmy {
         // Click on Army Label
         robot.leftClick(labelArmyPoint.move(12, -30));
         
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < trainSequence; i++) {
             playBarracksPopUp();
             if (FlagUtil.isActive(player, FlagScenario.SKIP_BUILDING_TROOPS)) {
                 break;
@@ -254,16 +273,6 @@ public class BuildArmy {
         }
     }
     
-    private LocalDateTime getTimeLeft(BufferedImage image) {
-        String timeLeftAsText = treatTimeLeft(image);
-        log.info("Time Left: " + timeLeftAsText);
-        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(timeLeftAsText).orElse(null);
-        if (nextLocalDateTime == null) {
-            throw new RuntimeException("Failed to parse time left: " + timeLeftAsText);
-        }
-        return nextLocalDateTime;
-    }
-    
     private String treatTimeLeft(BufferedImage input) {
         //ImageUtil.showImageAndWait(input);
 
@@ -294,26 +303,6 @@ public class BuildArmy {
         return Integer.parseInt(temporary);
     }
     
-    /*
-    
-    public void testSpeedUps() {
-        BufferedImage screen = robot.captureScreen();
-        BufferedImage speedUpsTitle = ImageUtil.loadResource("player/speed_up/title_speed_ups.png");
-        Area speedUpsTitleArea = Area.fromTwoPoints(910, 325, 1066, 361);
-        Point speedUpsTitlePoint = ImageUtil.search(speedUpsTitle, screen, speedUpsTitleArea, 0.1).orElse(null);
-        if (speedUpsTitlePoint == null) {
-            throw new RuntimeException("Could not find speed up title");
-        }
-        
-        for (SpeedUpBean speedUpBean : SpeedUp.speedUps) {
-            robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
-            robot.sleep(500);
-
-            SpeedUp.clickOnSpeedUp(speedUpBean, speedUpsTitlePoint);
-        }
-    }
-    */
-    
     public void playSpeedUpPopup(int turns) {
         Navigate speedUpsTitle = Navigate.builder()
                 .resourceName("player/speed_up/title_speed_ups.png")
@@ -334,25 +323,29 @@ public class BuildArmy {
                 return;
             }
 
+            Transformation transformation = Transformation.builder()
+                    .reference(Point.of(956, 346))
+                    .real(speedUpsTitle.getPoint())
+                    .build();
+            
             Navigate navigateHourglass = Navigate.builder()
                     //.area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
                     .resourceName("player/barracks/icon_hourglass.png")
                     .waitLimit(1500)
                     .build();
 
-            Navigate doubleGtButton = Navigate.builder()
-                    //.area(Area.of(speedUpsTitle.getPoint(), Point.of(958, 346), Point.of(1079, 406), Point.of(1202, 434)))
-                    .resourceName("player/speed_up/button_double_gt.png")
-                    .waitLimit(1500)
-                    .build();
+            if (!navigateHourglass.exist()) {
+                // Assume that the speed up pop up disappeared!
+                return;
+            }
+             
+             Supplier<BufferedImage> supplier = () -> {
+                 navigateHourglass.searchAgain();
+                 Area timeLeftArea = Area.fromTwoPoints(navigateHourglass.getPoint().move(16, -2), transformation.transform(1206, 428));
+                 return robot.captureScreen(timeLeftArea);
+             };
 
-
-            BufferedImage screen = robot.captureScreen();
-            int width = (doubleGtButton.getPoint().getX() - navigateHourglass.getPoint().getX()) - 26;
-            Area timeLeftArea = Area.of(navigateHourglass.getPoint(), 18, -2, width, 18);
-            // ImageUtil.showImageAndWait(ImageUtil.crop(screen, area));
-            
-            LocalDateTime dateTime = getTimeLeft(ImageUtil.crop(screen, timeLeftArea));
+            LocalDateTime dateTime = OcrUtil.treatTimeLeft(supplier, "FFF7BF");
             long seconds = Duration.between(LocalDateTime.now(), dateTime).getSeconds();
 
             if (doubleCheck == -1) {

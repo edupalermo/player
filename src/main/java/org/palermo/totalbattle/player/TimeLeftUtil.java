@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class TimeLeftUtil {
 
-    public static Optional<LocalDateTime> parse(BufferedImage input, String[] mainColor) {
+    public static LocalDateTime parse(BufferedImage input, String[] mainColor) {
         BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
@@ -24,7 +24,7 @@ public class TimeLeftUtil {
         return parse(timeLeftAsString);
     }
 
-    public static Optional<LocalDateTime> parse(String input) {
+    public static LocalDateTime parse(String input) {
         Pattern pattern = Pattern.compile("(\\d+)h[:]?([\\d+]+)m");
         Matcher matcher = pattern.matcher(input.trim());
 
@@ -88,13 +88,11 @@ public class TimeLeftUtil {
             throw new RuntimeException("Impossible to parse " + input);
         }
 
-        LocalDateTime answer = LocalDateTime.now()
+        return LocalDateTime.now()
                 .plusDays(days)
                 .plusHours(hours)
                 .plusMinutes(minutes)
                 .plusSeconds(seconds)
                 .plusSeconds(error);
-
-        return Optional.of(answer);
     }
 }

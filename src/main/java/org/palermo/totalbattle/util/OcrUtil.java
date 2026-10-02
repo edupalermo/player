@@ -3,6 +3,7 @@ package org.palermo.totalbattle.util;
 import lombok.extern.slf4j.Slf4j;
 import org.palermo.totalbattle.dao.OcrDao;
 import org.palermo.totalbattle.entity.ProcessedImage;
+import org.palermo.totalbattle.player.TimeLeftUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,7 +151,7 @@ public class OcrUtil {
         return ocr(image, whitelist, pattern, false);
     }
 
-    public static String treatTimeLeft(BufferedImage input, String[] mainColor) {
+    public static String treatTimeLeft(BufferedImage input, String ... mainColor) {
         BufferedImage timeLeft = ImageUtil.toGrayscale(input, mainColor);
         timeLeft = ImageUtil.linearNormalization(timeLeft);
         timeLeft = ImageUtil.cropText(timeLeft);
@@ -469,5 +471,30 @@ public class OcrUtil {
 
         return (int) Math.round(multiplier * Double.parseDouble(input));
     }
-    
+
+    public static LocalDateTime treatTimeLeft(Supplier<BufferedImage> input, String ... mainColor) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 2; j++) {
+                try {
+                    String timeLeftAsString = treatTimeLeft(input, mainColor, 100 + (100 * i));
+                    return TimeLeftUtil.parse(timeLeftAsString);
+                }
+                catch (Exception e) {
+                    log.info("Fail ocr attempt: {} {} {}", i, j, e.getMessage());
+                }
+            }
+        }
+        throw new RuntimeException("Fail all ocr attempts!");
+    }
+
+    private static String treatTimeLeft(Supplier<BufferedImage> input, String[] mainColor, int height) {
+        BufferedImage timeLeft = ImageUtil.toGrayscale(input.get(), mainColor);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        timeLeft = ImageUtil.cropText(timeLeft);
+        timeLeft = ImageUtil.linearNormalization(timeLeft);
+        timeLeft = ImageUtil.resize(timeLeft, height);
+        //ImageUtil.showImageAndWait(timeLeft);
+        return OcrUtil.ocr(timeLeft, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.PATTERN_FOR_COUNTDOWN);
+    }
+
 }

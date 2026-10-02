@@ -91,7 +91,7 @@ public class SpeedUp {
                 return false;
             }
             
-            BufferedImage screen = robot.captureScreen();
+            BufferedImage screen = robot.captureScreen(false);
             //ImageUtil.showImageAndWait(screen, searchArea);
             Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
             if (speedUpPoint != null) {
@@ -114,43 +114,13 @@ public class SpeedUp {
                 if (i == 0) {
                     // Move to scroll to the top, the button is not visible!
                     robot.leftClick(Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494)));
-                    robot.sleep(350);
+                    robot.sleep(175);
                 } else if (i > 0) {
                     robot.mouseDrag(scrollPoint, 0, 140);
-                    robot.sleep(500);
+                    robot.sleep(250);
                     scrollPoint = scrollPoint.move(0, 140);
                 }
             }
-        }
-        return false;
-    }
-    
-    private boolean something(SpeedUpBean speedUpBean, Point speedUpsTitlePoint) {
-        Area searchArea = Area.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(749, 463), Point.of(797, 780));
-        BufferedImage buttonUse = ImageUtil.loadResource("player/speed_up/button_use.png");
-        Point scrollPoint = Point.of(speedUpsTitlePoint, Point.of(958, 346), Point.of(1258, 494));
-
-        BufferedImage screen = robot.captureScreen();
-        Point speedUpPoint = ImageUtil.search(speedUpBean.getImage(), screen, searchArea, 0.03).orElse(null);
-        if (speedUpPoint != null) {
-            Area useButtonArea = Area.of(speedUpPoint, 376, 42, 54, 26);
-            Point buttonUsePoint = ImageUtil.search(buttonUse, screen, useButtonArea, 0.1).orElse(null);
-            if (buttonUsePoint == null) {
-                //log.info("Speed up {} not available", speedUpBean.getLabel());
-                return false;
-            }
-            //log.info("Speed up {} is available, position {}, y {}", speedUpBean.getLabel(), i, buttonUsePoint.getY());
-            robot.leftClick(buttonUsePoint, buttonUse);
-            robot.sleep(200);
-            return true;
-        }
-        else {
-            if (speedUpBean.getLabel().equals("1m")) {
-                return false;
-            }
-            robot.mouseDrag(scrollPoint, 0, 150);
-            robot.sleep(150);
-            scrollPoint = scrollPoint.move(0, 150);
         }
         return false;
     }

@@ -68,8 +68,7 @@ public class Thelensia {
             return;
         }
 
-        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(robot.captureScreen(transformation.transform(Point.of(83, 264), Point.of(148, 280))), new String[] {"FFF6C2"})
-                .orElse(null);
+        LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(robot.captureScreen(transformation.transform(Point.of(83, 264), Point.of(148, 280))), new String[] {"FFF6C2"});
         
         if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() < 20) {
             player.getFlags().put(FlagScenario.FREEZE_THELENSIA_CHEST_EVALUATION.name(), FlagInfo.builder()

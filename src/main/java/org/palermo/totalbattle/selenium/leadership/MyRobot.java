@@ -35,7 +35,7 @@ public enum MyRobot {
     }
     
     private long getDelayBetweenTasks() {
-        return ThreadLocalRandom.current().nextInt(155, 421);
+        return ThreadLocalRandom.current().nextInt(155, 285);
     }
 
     public void leftClick(int x, int y) {
@@ -122,7 +122,7 @@ public enum MyRobot {
                 robot.mouseMove(newX, newY);
                 Thread.sleep(5); // Optional: control speed of drag
             }
-            Thread.sleep(200);
+            Thread.sleep(150);
             robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
             Thread.sleep(getDelayBetweenTasks());
         } catch (InterruptedException e) {

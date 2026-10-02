@@ -116,7 +116,7 @@ public class FreeSale {
                 next = ImageUtil.invertGrayscale(next);
                 next = ImageUtil.linearNormalization(next);
                 String nextAsText = OcrUtil.ocr(next, OcrUtil.WHITELIST_FOR_COUNTDOWN, OcrUtil.LINE_OF_PRINTED_TEXT);
-                LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText).orElse(null);
+                LocalDateTime nextLocalDateTime = TimeLeftUtil.parse(nextAsText);
 
                 if (nextLocalDateTime != null && Duration.between(LocalDateTime.now(), nextLocalDateTime).abs().toHours() <= 20) {
                     player.getFlags().put(FlagScenario.FREEZE_FREE_SALE_EVALUATION.name(), FlagInfo.builder()

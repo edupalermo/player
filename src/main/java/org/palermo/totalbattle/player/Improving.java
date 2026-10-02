@@ -22,8 +22,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Mightshaper").orElseThrow(() -> new RuntimeException());
-
+        Player player = facade.retrievePlayer("Lovern").orElseThrow(() -> new RuntimeException());
 
         //Process process = Task.openOrdinaryBrowser(player);
         //Task.login(player);
@@ -32,8 +31,8 @@ public class Improving {
         //Player player = new Player();
         //player.setName("Palermo");
 
-         //BuildArmy buildArmy = new BuildArmy(player);
-         //buildArmy.buildArmy(false);
+         BuildArmy buildArmy = new BuildArmy(player, false, 2);
+         buildArmy.buildArmy();
 
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
@@ -46,7 +45,7 @@ public class Improving {
         
         /*
         BuildArmy buildArmy = new BuildArmy(player);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 120; i++) {
             try {
                 buildArmy.buildArmy(false);
             } catch (Exception e) {
@@ -65,25 +64,6 @@ public class Improving {
         //(new AttackArena(player)).evaluate();
         //(new CollectAdministrationGift(player)).evaluate();
         //(new MineSilver(player)).evaluate();
-        
-        
-        player.getFlags().entrySet().stream()
-                .sorted(
-                        Comparator
-                                .comparing((Map.Entry<String, FlagInfo> e) ->
-                                        FlagUtil.isActive(player, e.getKey()))
-                                .thenComparing((Map.Entry<String, FlagInfo> e) -> e.getValue().getExpiration())
-                )
-            .forEach((entry) -> {
-                if (FlagUtil.isActive(player, entry.getKey())) {
-                    System.out.println(String.format("%s %s", filler(entry.getKey(), 48), FlagUtil.duration(entry.getValue())));
-                    
-                }
-                else {
-                    System.out.println(String.format("%s FREE", filler(entry.getKey(), 48)));
-                }
-            }); 
-                
         
         facade.updatePlayer(player);
     }
