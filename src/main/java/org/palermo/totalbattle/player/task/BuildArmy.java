@@ -70,6 +70,7 @@ public class BuildArmy {
         }
 
         try {
+            /*
             Navigate navigate = Navigate.builder()
                     .areaName("MAIN_HERO_PICTURE")
                     .resourceName("player/hero/dead_66.png")
@@ -85,6 +86,7 @@ public class BuildArmy {
                 log.info("Player is dead!");
                 return;
             }
+             */
             
             internalBuildArmy(checkCaptain);
         } catch(Exception e) {
