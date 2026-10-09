@@ -133,7 +133,8 @@ public class BuildArmy {
             //train(titleBarracksPoint, Unit.DRAGON_VIII, 1);
             //train(titleBarracksPoint, Unit.ELEMENTAL_VIII, 1);
             //train(titleBarracksPoint, Unit.GIANT_VIII, 1);
-            train(titleBarracksPoint, Unit.G6_RANGED, 1);
+            // train(titleBarracksPoint, Unit.S7_MOUNTED, 1);
+            train(titleBarracksPoint, Unit.S6_MOUNTED, 1);
             return;
         }
         
@@ -478,7 +479,7 @@ public class BuildArmy {
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
                  S5_LION_RIDER,
-                 S6_SPY, S6_MOUNTED:
+                 S6_SPY, S6_MOUNTED, S7_MOUNTED:
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI, Unit.G8_MOUNTED).contains(unit)) {
                     shift = 41;
                 }
@@ -1029,7 +1030,7 @@ public class BuildArmy {
                     robot.sleep(wait);
                     break;
     
-                case S5_LION_RIDER, S6_MOUNTED:
+                case S5_LION_RIDER, S6_MOUNTED, S7_MOUNTED:
                     // Click on Specialists left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
                     robot.sleep(wait);
@@ -1209,7 +1210,7 @@ public class BuildArmy {
                  DRAGON_VI, ELEMENTAL_VI, GIANT_VI, BEAST_VI,
                  G5_GRIFFIN, G6_GRIFFIN, G7_GRIFFIN,
                  EC1_ENGINEER, EC2_ENGINEER, EC3_ENGINEER, EC4_ENGINEER, EC5_ENGINEER,
-                 S5_LION_RIDER, S6_MOUNTED, S6_SPY:
+                 S5_LION_RIDER, S6_MOUNTED, S7_MOUNTED, S6_SPY:
                 
                 if (Sets.newHashSet(Unit.DRAGON_VI, Unit.ELEMENTAL_VI, Unit.GIANT_VI, Unit.BEAST_VI, Unit.G8_MOUNTED).contains(unit)) {
                     shift = 41;
