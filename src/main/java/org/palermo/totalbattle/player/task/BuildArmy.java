@@ -1023,6 +1023,10 @@ public class BuildArmy {
                     // Click on Specialists left tab
                     robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(579, 435)));
                     robot.sleep(wait);
+
+                    // Scroll up (player S7 needs to scroll up)
+                    robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1463, 454)));
+                    robot.sleep(wait);
     
                     // Click on Tier
                     tierPos = 458 + ((unit.getTier() - 5) * 26);
