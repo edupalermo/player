@@ -32,6 +32,9 @@ public enum Unit {
     S6_FLYING(940, 2820, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_vi.png", Pool.LEADERSHIP, 1),
     S6_MOUNTED(1900, 5700, UnitType.UNKNOWN, 6, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/s_mounted_vi.png", Pool.LEADERSHIP, 2),
 
+    S7_MELEE(1700, 5100, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.HUMAN, Attribute.MELEE, Attribute.SPECIALIST), "leadership/s_melee_vii.png", Pool.LEADERSHIP, 1),
+    S7_RANGED(1700, 5100, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.HUMAN, Attribute.RANGED, Attribute.SPECIALIST), "leadership/deadshot_vii.png", Pool.LEADERSHIP, 1),
+    S7_FLYING(1700, 5100, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.HUMAN, Attribute.FLYING, Attribute.SPECIALIST), "leadership/vulture_vii.png", Pool.LEADERSHIP, 1),
     S7_MOUNTED(3400, 10200, UnitType.UNKNOWN, 7, ImmutableSet.of(Attribute.HUMAN, Attribute.MOUNTED, Attribute.SPECIALIST), "leadership/s_mounted_vii.png", Pool.LEADERSHIP, 2),
 
     G1_MELEE(50, 150, UnitType.MELEE, 1, Attribute.GUARDSMAN_SPEARMAN, "leadership/melee_i.png", Pool.LEADERSHIP, 1),
