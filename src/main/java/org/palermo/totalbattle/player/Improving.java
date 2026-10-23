@@ -22,7 +22,7 @@ public class Improving {
     public static void main(String[] args) {
         robot.leftClick(Point.of(467, 50));
         
-        Player player = facade.retrievePlayer("Palermo").orElseThrow(() -> new RuntimeException());
+        Player player = facade.retrievePlayer("Peter").orElseThrow(() -> new RuntimeException());
 
         //Process process = Task.openOrdinaryBrowser(player);
         //Task.login(player);
@@ -31,9 +31,10 @@ public class Improving {
         //Player player = new Player();
         //player.setName("Palermo");
 
-        
+        /*
         BuildArmy buildArmy = new BuildArmy(player, false, 1);
         buildArmy.buildArmy();
+         */
 
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
@@ -44,7 +45,6 @@ public class Improving {
 
         //new SummoningCircle(player).evaluate();
         
-        /*
         BuildArmy buildArmy = new BuildArmy(player, false, 5);
         for (int i = 0; i < 120; i++) {
             try {
@@ -53,7 +53,6 @@ public class Improving {
                 System.out.println(e.getMessage());
             }
         }
-         */
                 
         //new PayTaxes(player).pay();
         
