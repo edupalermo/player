@@ -177,7 +177,7 @@ public class BuildArmy {
 
     public void internalBuildArmy(boolean checkCaptain) {
         if (!TEST && checkCaptain) {
-            Captain captain = player.getName().equals("Palermo") ? Captain.HELEN : Captain.XI_GUIYING;
+            Captain captain = player.getName().equals("Palermo") || player.getName().equals("Peter") ? Captain.HELEN : Captain.XI_GUIYING;
             (new CaptainSelector(player)).select(captain);
         }
 
