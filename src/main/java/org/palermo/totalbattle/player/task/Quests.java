@@ -158,7 +158,7 @@ public class Quests {
                 .resourceName("player/button_dj_free.png")
                 .build();             
         
-        if (freeNavigate.exist()) {
+        while (freeNavigate.searchAgain().isEmpty()) {
             freeNavigate.leftClick();
             return;
         }

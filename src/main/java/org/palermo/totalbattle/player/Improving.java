@@ -39,11 +39,12 @@ public class Improving {
         // (new ClanContribution(player)).helpClanMembers();
         // (new ClanContribution(player)).collectChests();
 
-        // (new Quests(player)).evaluate();
+        (new Quests(player)).evaluate();
         // (new FreeSale(player)).freeSale();
         // new Thelensia(player).evaluate();
 
         //new SummoningCircle(player).evaluate();
+        
         
         BuildArmy buildArmy = new BuildArmy(player, false, 5);
         for (int i = 0; i < 120; i++) {

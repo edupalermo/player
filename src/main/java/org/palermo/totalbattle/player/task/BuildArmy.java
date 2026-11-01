@@ -50,6 +50,7 @@ public class BuildArmy {
     private Unit lastSelected = null;
     private boolean checkCaptain = true;
     private int trainSequence = 6;
+    private Boolean premium = null;
 
     public BuildArmy(Player player, boolean checkCaptain, int trainSequence) {
         this.player = player;
@@ -236,43 +237,89 @@ public class BuildArmy {
         if (titleBarracksPoint == null) {
             throw new RuntimeException("Couldn't find Barracks title!");
         }
+        
+        Transformation transformation = Transformation.builder()
+                .reference(Point.of(961, 324))
+                .real(titleBarracks.getPoint())
+                .build();
 
-        Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
+        //Area buttonArea = Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(1076, 377), Point.of(1184, 404));
         Navigate navigateHelpButton = Navigate.builder()
                 .resourceName("player/barracks/button_help.png")
-                .area(buttonArea)
+                .waitLimit(1000)
+                // .area(buttonArea)
                 .build();
 
         if (navigateHelpButton.exist()) {
             navigateHelpButton.leftClick();
             robot.sleep(200);
+            
+            return;
         }
-        else {
-            Navigate navigateHourglass = Navigate.builder()
-                    .area(Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397)))
-                    .resourceName("player/barracks/icon_hourglass.png")
-                    .waitLimit(1500)
-                    .build();
+        
+        
+        Navigate navigateHourglass = Navigate.builder()
+                .area(Area.of(titleBarracksPoint, Point.of(961, 324), Point.of(919, 376), Point.of(995, 397)))
+                .resourceName("player/barracks/icon_hourglass.png")
+                .waitLimit(1500)
+                .build();
 
-            if (navigateHourglass.exist()) {
+        if (navigateHourglass.exist()) {
+
+            evaluatePremium(transformation);            
+            
+            if  (!this.premium.booleanValue()) {
                 // Click of the speed-up button
                 robot.leftClick(Point.of(titleBarracksPoint, Point.of(961, 324), Point.of(1174, 390)));
                 robot.sleep(350);
 
                 playSpeedUpPopup(24);
             }
+        }
 
-            if (navigateHourglass.searchAgain().isEmpty() && 
-                    navigateHelpButton.searchAgain().isEmpty()) {
-                Navigate.builder()
-                        .resourceName("player/barracks/button_complete.png")
-                        .area(buttonArea)
-                        .waitLimit(1500)
-                        .build()
-                        .leftClickIfExists();
+        if (navigateHourglass.searchAgain().isEmpty() && 
+                navigateHelpButton.searchAgain().isEmpty()) {
+            
+            Navigate.builder()
+                    .resourceName("player/barracks/button_complete.png")
+                    // .area(buttonArea)
+                    .waitLimit(1500)
+                    .build()
+                    .leftClickIfExists();
 
-                chooseTroopToBuild(titleBarracksPoint);
-            }
+            chooseTroopToBuild(titleBarracksPoint);
+        }
+    }
+    
+    private void evaluatePremium(Transformation transformation) {
+        if (this.premium != null && !this.premium.booleanValue()) {
+            // It was evaluated before and premium is false!
+            return;
+        }
+        // Click on the double >>
+        robot.leftClick(transformation.transform(Point.of(1070, 390)));
+
+        Navigate activateButton = Navigate.builder()
+                .resourceName("player/barracks/button_activate.png")
+                .waitLimit(1000)
+                .build();
+
+        if (activateButton.exist()) {
+            robot.type(KeyEvent.VK_ESCAPE);
+            robot.sleep(300);
+            
+            this.premium = false;
+            return;
+        }
+
+        Navigate useButton = Navigate.builder()
+                .resourceName("player/barracks/button_use.png")
+                .waitLimit(1000)
+                .build();
+        
+        if (useButton.exist()) {
+            useButton.leftClick();
+            this.premium = true;
         }
     }
     
