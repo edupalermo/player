@@ -40,8 +40,13 @@ public class Quests {
     }
 
     public void evaluate() {
+        evaluate(false);
+    }
+
+
+    public void evaluate(boolean skipFlag) {
         try {
-            if (FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
+            if (!skipFlag && FlagUtil.isActive(player, FlagScenario.FREEZE_DAILY_JOB_EVALUATION)) {
                 FlagInfo flagInfo = player.getFlags().get(FlagScenario.FREEZE_DAILY_JOB_EVALUATION.name());
                 log.info(String.format("Daily Jobs is frozen[%s]: %s", FlagUtil.duration(flagInfo), flagInfo.getMessage()));
                 return;
@@ -94,7 +99,7 @@ public class Quests {
                 .resourceName("player/button_wr_claim.png")
                 .build(); 
 
-        while (navigateClaim.searchAgain().isPresent()) {
+        if (navigateClaim.exist()) {
             navigateClaim.leftClick();
             robot.sleep(350);
         }
@@ -153,14 +158,16 @@ public class Quests {
         }
         
         robot.mouseMove(Point.of(50, 50));
+        // ImageUtil.showImageAndWait(robot.captureScreen(area));
+        
         Navigate freeNavigate = Navigate.builder()
                 .area(area)
                 .resourceName("player/button_dj_free.png")
+                // .comparationLimit(0.3)
                 .build();             
         
-        while (freeNavigate.searchAgain().isEmpty()) {
+        while (freeNavigate.searchAgain().isPresent()) {
             freeNavigate.leftClick();
-            return;
         }
         
         //No job to start, should lock daily jobs evaluation!
